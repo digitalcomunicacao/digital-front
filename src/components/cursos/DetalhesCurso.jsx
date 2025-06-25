@@ -11,6 +11,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { VisaoGeral } from "./VisaoGeral";
+import { ConteudoCurso } from "./ConteudoCurso";
 export const DetalhesCurso = () => {
     const location = useLocation();
     const curso = location.state?.curso;
@@ -24,7 +25,7 @@ export const DetalhesCurso = () => {
     return (
         <>
             <ResponsiveAppBar />
-            <Box sx={{ mt: {xs:5,md:10} }}>
+            <Box sx={{ mt: { xs: 10, md: 15 } }}>
                 <Container>
                     <IconButton onClick={() => navigate('/')} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
                         <KeyboardBackspaceIcon sx={{ color: theme.palette.text.secondary }} />
@@ -33,7 +34,7 @@ export const DetalhesCurso = () => {
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Box sx={{ display: "flex", flexDirection: "column" }}>
                             <Typography color="textPrimary" sx={{ fontSize: 30 }}>{curso.titulo}</Typography>
-                            <Typography color="textSecondary" sx={{ fontSize: 18, width:{xs:"100%",md:"60%"} }}>{curso.descricao}</Typography>
+                            <Typography color="textSecondary" sx={{ fontSize: 18, width: { xs: "100%", md: "60%" } }}>{curso.descricao}</Typography>
                             <Box>
                                 <Chip
                                     label={curso.level}
@@ -47,32 +48,39 @@ export const DetalhesCurso = () => {
                                 />
                             </Box>
                         </Box>
-                        <Box sx={{ display:{xs:"none",md:"block"},width: "400px", height: "auto" }}>
+                        <Box sx={{ display: { xs: "none", md: "block" }, width: "400px", height: "auto" }}>
                             <img src={`http://10.10.10.214:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
                         </Box>
                     </Box>
 
-                    <Box sx={{ mt: 5 }}>
-                        <TabContext value={value}>
+
+                </Container>
+                <Box sx={{ mt: 5 }}>
+                    <TabContext value={value}>
+                        <Container>
                             <Box sx={{ display: "flex", justifyContent: "start" }}>
                                 <TabList value={value} onChange={handleChange} aria-label="basic tabs example">
                                     <Tab icon={<WidgetsIcon />} iconPosition="start" label="Visão geral" />
                                     <Tab icon={<PlayCircleOutlineIcon />} iconPosition="start" label="Conteúdos" />
                                 </TabList>
-                            </Box>
-                            <Box sx={{ width: "100vw", ml: "-50vw", left: "50%", position: "relative" }}>
-                                <Divider />
-                            </Box>
-                            <TabPanel value={0}>
-                                    <VisaoGeral curso={curso} />
-                            </TabPanel>
-                            <TabPanel value={1}>
-                                    <VisaoGeral curso={curso} />
-                            </TabPanel>
-                        </TabContext>
-                    </Box>
-                </Container>
 
+                            </Box>
+                        </Container>
+
+                        <Box sx={{ width: "100%" }}>
+                            <Divider />
+                        </Box>
+                        <Container>
+                        <TabPanel value={0}>
+                            <VisaoGeral curso={curso} />
+                        </TabPanel>
+                        <TabPanel value={1}>
+                           <ConteudoCurso curso={curso}/>
+                        </TabPanel>
+                         </Container>
+                    </TabContext>
+
+                </Box>
             </Box>
 
         </>

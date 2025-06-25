@@ -127,7 +127,7 @@ export const CardCurso = ({ curso }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <PlayArrow sx={{ fontSize: 16, color: "text.secondary" }} />
                         <Typography variant="caption" color="text.secondary">
-                            {curso.modulos.length} aulas
+                        {curso.modulos.reduce((acc, modulo) => acc + modulo.videos.length, 0)} aulas
                         </Typography>
                     </Box>
                 </Box>

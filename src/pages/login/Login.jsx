@@ -32,6 +32,8 @@ export const Login = () => {
         <Typography sx={{ mt: 2, fontWeight: 'bolder', fontSize: 30 }}>Acelere sua carreira em tecnologia</Typography>
       </Box>
       {passo === 0 ? (
+        <Box sx={{width:"50%",display:"flex",justifyContent:"center",alignItems:"center"}}>
+         
         <Box sx={{ width: "400px", p: 5 }}>
           <Box sx={{ display: "flex", justifyContent: "end" }}>
             <Box sx={{ width: "100px", height: "auto" }}>
@@ -97,7 +99,7 @@ export const Login = () => {
               </span>
             </Typography>
           </Box>
-
+ </Box>
         </Box>
       ) : (
         <Cadastro setPasso={setPasso} />

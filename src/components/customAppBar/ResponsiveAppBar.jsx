@@ -20,18 +20,18 @@ import theme from '../../theme/theme';
 const pages = ['Início', 'Cursos', 'Sobre'];
 
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar({ onMenuClick }) {
 
   const [openDrawer, setOpenDrawer] = React.useState(false);
-const navigate=useNavigate()
+  const navigate = useNavigate()
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen);
   };
   return (
-    <AppBar position="static" sx={{borderBottomLeftRadius:5,borderBottomRightRadius:5,py:0.5}}>
+    <AppBar position="fixed" sx={{ borderBottomLeftRadius: 5, borderBottomRightRadius: 5, py: 0.5 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1,display: { xs: 'flex', md: 'none'},justifyContent:'space-between',alignItems:"center"}}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'space-between', alignItems: "center" }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -43,54 +43,60 @@ const navigate=useNavigate()
               <MenuIcon />
             </IconButton>
 
-           <Drawer  PaperProps={{sx:{width:"100%"}}}  open={openDrawer} onClose={toggleDrawer(false)}>
-            <HeaderLogo handleClose={toggleDrawer(false)}/>
-            <Box sx={{mt:3}}>
-              {pages.map((page) => (
-                <MenuItem key={page} >
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
-                </Box>
-           <Box sx={{display:"flex",flexDirection:"column",gap:2,mt:2,pl:1}}>
-                 <Button color='primary' startIcon={<PermIdentityIcon/>} variant='outlined' onClick={()=>navigate("/login")} sx={{width:"105px",height:"44px",fontWeight:'bolder'}}>Entrar</Button>
-                  <Button  variant='contained' endIcon={<ArrowRightIcon/>} sx={{width:"140px",height:"44px",fontWeight:'bolder'}}>Assinatura</Button>
+            <Drawer PaperProps={{ sx: { width: "100%" } }} open={openDrawer} onClose={toggleDrawer(false)}>
+              <HeaderLogo handleClose={toggleDrawer(false)} />
+              <Box sx={{ mt: 3 }}>
+                {pages.map((page) => (
+                  <MenuItem
+                    key={page}
+                    onClick={() => {
+                      onMenuClick?.(page); // rola para a seção
+                      setOpenDrawer(false); // fecha o drawer
+                    }}
+                  >
+                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  </MenuItem>
+                ))}
+
               </Box>
-              
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2, pl: 1 }}>
+                <Button color='primary' startIcon={<PermIdentityIcon />} variant='outlined' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
+                <Button variant='contained' endIcon={<ArrowRightIcon />} sx={{ width: "140px", height: "44px", fontWeight: 'bolder' }}>Assinatura</Button>
+              </Box>
+
             </Drawer>
-             <Box sx={{width:"100px",height:"auto"}}>
-                <img src='/aseets/logo-digital-educa.png' style={{width:"100%",height:"100%"}}/>                
-              </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton  sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-               </Box>
-               
+            <Box sx={{ width: "100px", height: "auto" }}>
+              <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
+            </Box>
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+
           </Box>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'},alignItems:"center",justifyContent:"space-between"}}>
-               <Box sx={{display:{xs:"none",md:"flex"},width:"80px",height:"auto"}}>
-                <img src='/aseets/logo-digital-educa.png' style={{width:"100%",height:"100%"}}/>                
-              </Box>
-             <Box sx={{display:"flex",gap:10}}>
-            {pages.map((page) => (
-             
-           
-              <Button
-                key={page}
-                sx={{ my: 2,  display: 'block',color:theme.palette.text.secondary}}
-              >
-                {page}
-              </Button>
-           
-            ))}
-                  </Box>
-             <Box sx={{display:"flex",gap:2}}>
-                 <Button color='primary' startIcon={<PermIdentityIcon/>} variant='outlined' onClick={()=>navigate("/login")} sx={{width:"105px",height:"44px",fontWeight:'bolder'}}>Entrar</Button>
-                  <Button  variant='contained' endIcon={<ArrowRightIcon/>} sx={{width:"140px",height:"44px",fontWeight:'bolder'}}>Assinatura</Button>
-              </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, alignItems: "center", justifyContent: "space-between" }}>
+            <Box sx={{ display: { xs: "none", md: "flex" }, width: "80px", height: "auto" }}>
+              <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
+            </Box>
+            <Box sx={{ display: "flex", gap: 10 }}>
+              {pages.map((page) => (
+                <Button
+                  key={page}
+                  onClick={() => onMenuClick?.(page)}
+                  sx={{ my: 2, display: 'block', color: theme.palette.text.secondary }}
+                >
+                  {page}
+                </Button>
+              ))}
+
+            </Box>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button color='primary' startIcon={<PermIdentityIcon />} variant='outlined' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
+              <Button variant='contained' endIcon={<ArrowRightIcon />} sx={{ width: "140px", height: "44px", fontWeight: 'bolder' }}>Assinatura</Button>
+            </Box>
           </Box>
         </Toolbar>
       </Container>

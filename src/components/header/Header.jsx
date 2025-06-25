@@ -17,6 +17,7 @@ const navigate=useNavigate()
         position: "relative",
         overflow: "hidden",
         py: { xs: 8, md: 12 },
+        mt:5
       }}
     >
       {/* Elementos decorativos de fundo */}
