@@ -37,7 +37,7 @@ export const Cadastro = ({ setPasso }) => {
                     <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
                 </Box>
             </Box>
-            <Box component={"form"} onSubmit={cadastrarUsuario} sx={{ display: "flex", flexDirection: "column", mt: 5 }}>
+            <Box component={"form"} onSubmit={cadastrarUsuario} sx={{ display: "flex", flexDirection: "column",mt:5 }}>
                 <Typography sx={{ fontWeight: 'bolder', fontSize: 23, mt: 2 }}>Cadastre-se gratuitamente</Typography>
                 <TextField
                     label="Nome completo"

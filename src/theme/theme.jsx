@@ -14,10 +14,10 @@ const theme = createTheme({
       default: '#0A1128', // Fundo principal bem escuro
       paper: '#121829',   // Cards, caixas
     },
-    text: {
-      primary: '#FFFFFF',
-      secondary: '#EDEDED',
-    },
+  text: {
+  primary: '#FFFFFF',
+  secondary: '#A0A0A0', // ou #B0B0B0, ou #888888
+},
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
