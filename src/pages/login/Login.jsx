@@ -5,7 +5,9 @@ import { Cadastro } from "./Cadastro"
 import api from "../../config/Api"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom"
+import { useSnackbar } from "../../context/SnackBarContext"
 export const Login = () => {
+      const { showSnackbar } = useSnackbar();
   const [passo, setPasso] = useState(0)
   const [email,setEmail]=useState()
   const [senha,setSenha]=useState()
@@ -19,10 +21,13 @@ export const Login = () => {
       senha:senha
     }).then(function(response){
       localStorage.setItem("token", response.data.access_token);
-      navigate("/painel-usuario");
+      navigate("/painel-usuario/home-usuario");
+      showSnackbar('Login realizado com sucesso!', 'success');
       console.log(response)
     }).catch(function(error){
       console.log(error)
+      
+      showSnackbar(error.response.data.message, 'error');
     })
   }
 

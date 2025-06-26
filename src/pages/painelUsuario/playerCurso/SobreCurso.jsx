@@ -1,9 +1,9 @@
 import { Avatar, Box, Button, Grid, IconButton, Typography } from "@mui/material"
-import theme from "../../theme/theme"
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SchoolIcon from '@mui/icons-material/School';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
-export const VisaoGeral = ({ curso }) => {
+import theme from "../../../theme/theme";
+export const SobreCurso = ({ curso }) => {
     return (
         <Grid container>
             <Grid size={{ xs: 12, md: 8 }} >
@@ -79,29 +79,6 @@ export const VisaoGeral = ({ curso }) => {
                 </Box>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
-                <Box
-                    sx={{
-                        mt: { xs: 10, md: 0 },
-                        height: "220px",
-                        border: 1,
-                        borderColor: "divider",
-                        p: 3,
-                        borderRadius: 5,
-
-                    }}
-                >
-                    <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 16 }}>
-                        Inicie sua jornada na programação
-                    </Typography>
-                    <Typography color="textSecondary" sx={{ fontSize: 16, mt: 2 }}>
-                        Inicie sua jornada na programação com um curso gratuito.
-                    </Typography>
-                    <Button fullWidth variant="contained" sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
-                        Começar Jornada
-                    </Button>
-                </Box>
-            </Grid>
         </Grid>
 
 

@@ -11,7 +11,7 @@ const theme = createTheme({
       main: '#1E2A46', // Azul escuro complementar
     },
     background: {
-      default: '#0A1128', // Fundo principal bem escuro
+      default: 'radial-gradient(circle at top left, #1E2A46, #0A1128)',
       paper: '#121829',   // Cards, caixas
     },
   text: {

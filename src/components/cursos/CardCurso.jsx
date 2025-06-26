@@ -28,7 +28,7 @@ export const CardCurso = ({ curso }) => {
             },
         }}>
             <Box sx={{ position: "relative" }}>
-                <CardMedia component="img" height="200" image={`http://192.168.15.12:3000/${curso.thumbnail}`} alt={curso.titulo} />
+                <CardMedia component="img" height="200" image={`http://10.10.10.59:3000/${curso.thumbnail}`} alt={curso.titulo} />
                 <Chip
                     label={curso.level}
                     size="small"
@@ -127,7 +127,7 @@ export const CardCurso = ({ curso }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <PlayArrow sx={{ fontSize: 16, color: "text.secondary" }} />
                         <Typography variant="caption" color="text.secondary">
-                        {curso.modulos.reduce((acc, modulo) => acc + modulo.videos.length, 0)} aulas
+                            {curso.modulos.reduce((acc, modulo) => acc + modulo.videos.length, 0)} aulas
                         </Typography>
                     </Box>
                 </Box>
@@ -162,7 +162,7 @@ export const CardCurso = ({ curso }) => {
                     <Button
                         variant="contained"
                         fullWidth
-
+                        onClick={() => navigate("/checkout", { state: { curso } })}
                         sx={{
                             py: 1.5,
                             fontWeight: "bold",

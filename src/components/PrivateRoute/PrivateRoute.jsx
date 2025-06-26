@@ -6,27 +6,35 @@ import { CircularProgress, Box } from '@mui/material';
 export const PrivateRoute = ({ children }) => {
   const [isAuth, setIsAuth] = useState(null);
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setIsAuth(false);
-        return;
-      }
+useEffect(() => {
+  const verifyToken = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setIsAuth(false);
+      return;
+    }
 
-      try {
-        await api.get('/auth/check', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setIsAuth(true);
-      } catch (error) {
-        setIsAuth(false);
-        localStorage.removeItem('token');
-      }
-    };
+    try {
+      const response = await api.get('/auth/check', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    verifyToken();
-  }, []);
+      const user = response.data.user;
+      console.log("meu user",user)
+      // Salvar no localStorage ou contexto global
+      localStorage.setItem('user', JSON.stringify(user));
+
+      setIsAuth(true);
+    } catch (error) {
+      setIsAuth(false);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+  };
+
+  verifyToken();
+}, []);
+
 
   if (isAuth === null)
     return (

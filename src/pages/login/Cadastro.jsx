@@ -4,11 +4,13 @@ import api from "../../config/Api"
 import { useState } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "../../context/SnackBarContext";
 export const Cadastro = ({ setPasso }) => {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmSenha, setConfirmSenha] = useState("");
+      const { showSnackbar } = useSnackbar();
     const navigate=useNavigate()
     const [showSenha, setShowSenha] = useState(false);
     const [showConfirmSenha, setShowConfirmSenha] = useState(false);
@@ -44,7 +46,7 @@ export const Cadastro = ({ setPasso }) => {
 
   } catch (error) {
     console.log(error);
-    alert("Erro ao cadastrar ou logar, tente novamente.");
+   showSnackbar(error.response.data.message, 'error');
   }
 };
 

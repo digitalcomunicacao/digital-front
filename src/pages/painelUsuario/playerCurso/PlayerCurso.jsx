@@ -1,8 +1,7 @@
 import { Box, Button, Chip, Container, Divider, IconButton, Typography } from "@mui/material"
-import ResponsiveAppBar from "../customAppBar/ResponsiveAppBar"
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import theme from "../../theme/theme";
+import theme from "../../../theme/theme";
 import { useState } from "react";
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -10,9 +9,10 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { VisaoGeral } from "./VisaoGeral";
-import { ConteudoCurso } from "./ConteudoCurso";
-export const DetalhesCurso = () => {
+import { ModulosCurso, SobreCurso } from "./SobreCurso";
+import { ModulosDoCurso, VideosCursos } from "./ModulosDoCurso";
+
+export const PlayerCurso = () => {
     const location = useLocation();
     const curso = location.state?.curso;
     const navigate = useNavigate()
@@ -24,10 +24,10 @@ export const DetalhesCurso = () => {
     if (!curso) return <div>Curso não encontrado</div>;
     return (
         <>
-            <ResponsiveAppBar />
+         
             <Box sx={{ mt: { xs: 10, md: 15 } }}>
                 <Container>
-                    <IconButton onClick={() => navigate('/')} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
+                    <IconButton onClick={() => navigate('/painel-usuario/meus-cursos')} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
                         <KeyboardBackspaceIcon sx={{ color: theme.palette.text.secondary }} />
                         <Typography color="textSecondary">Voltar</Typography>
                     </IconButton>
@@ -72,10 +72,10 @@ export const DetalhesCurso = () => {
                         </Box>
                         <Container>
                         <TabPanel value={0}>
-                            <VisaoGeral curso={curso} />
+                          <SobreCurso curso={curso}/>
                         </TabPanel>
                         <TabPanel value={1}>
-                           <ConteudoCurso curso={curso}/>
+                          <ModulosDoCurso curso={curso}/>
                         </TabPanel>
                          </Container>
                     </TabContext>
