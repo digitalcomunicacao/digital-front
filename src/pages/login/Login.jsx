@@ -1,10 +1,31 @@
-import { Box, Button, Link, TextField, Typography } from "@mui/material"
+import { Box, Button, IconButton, InputAdornment, Link, TextField, Typography } from "@mui/material"
 import theme from "../../theme/theme"
 import { useState } from "react"
 import { Cadastro } from "./Cadastro"
-
+import api from "../../config/Api"
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom"
 export const Login = () => {
   const [passo, setPasso] = useState(0)
+  const [email,setEmail]=useState()
+  const [senha,setSenha]=useState()
+  const navigate=useNavigate()
+   const [showSenha, setShowSenha] = useState(false);
+  const toggleShowSenha = () => setShowSenha((prev) => !prev);
+  const logar=(e)=>{
+    e.preventDefault()
+    api.post('auth/login',{
+      email:email,
+      senha:senha
+    }).then(function(response){
+      localStorage.setItem("token", response.data.access_token);
+      navigate("/painel-usuario");
+      console.log(response)
+    }).catch(function(error){
+      console.log(error)
+    })
+  }
+
   return (
     <Box
       sx={{
@@ -32,7 +53,7 @@ export const Login = () => {
         <Typography sx={{ mt: 2, fontWeight: 'bolder', fontSize: 30 }}>Acelere sua carreira em tecnologia</Typography>
       </Box>
       {passo === 0 ? (
-        <Box sx={{width:"50%",display:"flex",justifyContent:"center",alignItems:"center"}}>
+        <Box sx={{width:{xs:"100%",md:"50%"},display:"flex",justifyContent:"center",alignItems:"center"}}>
          
         <Box sx={{ width: "400px", p: 5 }}>
           <Box sx={{ display: "flex", justifyContent: "end" }}>
@@ -40,14 +61,36 @@ export const Login = () => {
               <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
             </Box>
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", mt: 5 }}>
+          <Box component={"form"} onSubmit={logar} sx={{ display: "flex", flexDirection: "column", mt: 5 }}>
             <Typography sx={{ fontWeight: 'bolder', fontSize: 30, mt: 2 }}>Acesse sua conta</Typography>
-            <TextField label="Email" sx={{ mt: 5 }} />
-            <TextField label="Senha" sx={{ mt: 5 }} />
+            <TextField 
+            required
+            label="Email" sx={{ mt: 5 }}
+             onChange={(e)=>setEmail(e.target.value)}
+             />
+               <TextField
+                    label="Senha"
+                    required
+                    placeholder="Deve ter no mínimo 6 caracteres"
+                    type={showSenha ? "text" : "password"}
+                    sx={{ mt: 5 }}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={toggleShowSenha} edge="end">
+                                    {showSenha ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
             <Link sx={{ textAlign: "end", mt: 2 }}>Esqueci minha senha</Link>
             <Button
               fullWidth
               variant="contained"
+              type="submit"
               sx={{
                 mt: 5,
                 py: 2,

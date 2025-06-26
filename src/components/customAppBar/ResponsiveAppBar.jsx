@@ -59,23 +59,29 @@ function ResponsiveAppBar({ onMenuClick }) {
                 ))}
 
               </Box>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2, pl: 1 }}>
-                <Button color='primary' startIcon={<PermIdentityIcon />} variant='outlined' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
-                <Button variant='contained' endIcon={<ArrowRightIcon />} sx={{ width: "140px", height: "44px", fontWeight: 'bolder' }}>Assinatura</Button>
-              </Box>
+              {!localStorage.getItem('token') && (
 
+
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2, pl: 1 }}>
+                  <Button color='primary' startIcon={<PermIdentityIcon />} variant='outlined' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
+                  <Button variant='contained' endIcon={<ArrowRightIcon />} sx={{ width: "140px", height: "44px", fontWeight: 'bolder' }}>Assinatura</Button>
+                </Box>
+              )}
             </Drawer>
             <Box sx={{ width: "100px", height: "auto" }}>
               <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
+             {localStorage.getItem('token') ? (
+    <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton sx={{ p: 0 }}>
                   <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                 </IconButton>
               </Tooltip>
             </Box>
-
+             ):(
+              <Button color='primary' startIcon={<PermIdentityIcon />} variant='contained' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
+             )}
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, alignItems: "center", justifyContent: "space-between" }}>
             <Box sx={{ display: { xs: "none", md: "flex" }, width: "80px", height: "auto" }}>
@@ -93,10 +99,12 @@ function ResponsiveAppBar({ onMenuClick }) {
               ))}
 
             </Box>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Button color='primary' startIcon={<PermIdentityIcon />} variant='outlined' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
-              <Button variant='contained' endIcon={<ArrowRightIcon />} sx={{ width: "140px", height: "44px", fontWeight: 'bolder' }}>Assinatura</Button>
-            </Box>
+            {!localStorage.getItem('token') && (
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Button color='primary' startIcon={<PermIdentityIcon />} variant='outlined' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
+                <Button variant='contained' endIcon={<ArrowRightIcon />} sx={{ width: "140px", height: "44px", fontWeight: 'bolder' }}>Assinatura</Button>
+              </Box>
+            )}
           </Box>
         </Toolbar>
       </Container>

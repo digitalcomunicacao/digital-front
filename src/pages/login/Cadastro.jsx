@@ -3,32 +3,50 @@ import theme from "../../theme/theme"
 import api from "../../config/Api"
 import { useState } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 export const Cadastro = ({ setPasso }) => {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmSenha, setConfirmSenha] = useState("");
-
+    const navigate=useNavigate()
     const [showSenha, setShowSenha] = useState(false);
     const [showConfirmSenha, setShowConfirmSenha] = useState(false);
-
     const toggleShowSenha = () => setShowSenha((prev) => !prev);
     const toggleShowConfirmSenha = () => setShowConfirmSenha((prev) => !prev);
-    const cadastrarUsuario = (e) => {
-        e.preventDefault()
-        if (senha != confirmSenha) {
-            return alert("As senhas não coincidem")
-        }
-        api.post("usuario/create", {
-            nome: nome,
-            email: email,
-            senha: senha
-        }).then(function (response) {
-            console.log(response)
-        }).catch(function (error) {
-            console.log(error)
-        })
-    }
+   const cadastrarUsuario = async (e) => {
+  e.preventDefault();
+
+  if (senha !== confirmSenha) {
+    return alert("As senhas não coincidem");
+  }
+
+  try {
+    // Primeiro cria o usuário
+    await api.post("usuario/create", {
+      nome,
+      email,
+      senha,
+    });
+
+    // Se deu certo, faz login automático
+    const response = await api.post("auth/login", {
+      email,
+      senha,
+    });
+
+    // Salva o token no localStorage
+    localStorage.setItem("token", response.data.access_token);
+
+    // Redireciona para o painel do usuário
+    // Assumindo que você tenha o hook navigate do react-router-dom
+    navigate("/painel-usuario");
+
+  } catch (error) {
+    console.log(error);
+    alert("Erro ao cadastrar ou logar, tente novamente.");
+  }
+};
 
     return (
         <Box sx={{ width: "400px", p: 5 }}>

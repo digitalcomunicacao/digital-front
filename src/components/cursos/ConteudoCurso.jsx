@@ -9,10 +9,10 @@ export const ConteudoCurso=({curso})=>{
         {curso.modulos.map((modulo,index)=>(
         <Box sx={{display:"flex",flexDirection:"column",mb:5,width: { xs: "100%", md: "90%" }}}>
          <Typography color="textSecondary">Nivel {modulo.id}</Typography>
-         <Typography color="textPrimary" sx={{fontWeight:"bolder",fontSize:20}}>Fundamentos do Angular</Typography>
+         <Typography color="textPrimary" sx={{fontWeight:"bolder",fontSize:20}}>{modulo.titulo}</Typography>
          <Box sx={{border:1,borderColor:'divider',mt:2,p:3,borderRadius:5}}>
             <Box sx={{display:"flex",gap:1,flexDirection:{xs:"column",md:"row"}}}>
-             <Typography color="textPrimary" sx={{fontWeight:"bolder",fontSize:18}}>{modulo.titulo}</Typography>
+             <Typography color="textPrimary" sx={{fontWeight:"bolder",fontSize:18,width:"50%",textAlign:"start"}}>{modulo.subtitulo}</Typography>
              <Box sx={{display:"flex",gap:2}}>
                        <Chip
                     label="Módulo"
@@ -40,7 +40,7 @@ export const ConteudoCurso=({curso})=>{
                 />
                   </Box>
             </Box>
-         <Typography color="textSecondary" sx={{mt:2}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam sunt totam iure, maiores, voluptas magnam quod voluptate magni, deserunt doloribus repellendus fugit quidem at hic nemo possimus id eum ullam earum! Ab vero facere et tenetur odio cum laborum, doloremque autem voluptatem possimus natus nostrum sint quis nesciunt pariatur quas?</Typography>
+         <Typography color="textSecondary" sx={{mt:2}}>{modulo.descricao}</Typography>
          </Box>
         </Box>
                ))}
