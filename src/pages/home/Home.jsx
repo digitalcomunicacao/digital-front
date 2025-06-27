@@ -2,6 +2,8 @@ import { useRef } from "react";
 import { Cursos } from "../../components/cursos/Cursos";
 import ResponsiveAppBar from "../../components/customAppBar/ResponsiveAppBar";
 import Header from "../../components/header/Header";
+import Sobre from "../../components/sobre/Sobre";
+import Footer from "../../components/footer/Footer";
 
 export const Home = () => {
   const sectionsRef = {
@@ -27,10 +29,10 @@ export const Home = () => {
         <Cursos />
       </div>
       <div ref={sectionsRef["Sobre"]}>
-        <div style={{ height: 400, background: "#eee" }}>
-          <h2>Sobre nós</h2>
-        </div>
+        <Sobre/>
       </div>
+        <Sobre/>
+      <Footer/>
     </>
   );
 };

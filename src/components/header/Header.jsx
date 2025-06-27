@@ -47,7 +47,7 @@ const navigate=useNavigate()
       <Container maxWidth="lg">
         <Grid container spacing={6} alignItems="center">
           {/* Conteúdo Principal */}
-          <Grid item xs={12} md={8}>
+          <Grid size={{xs:12,md:8}}>
             <Box sx={{ mb: 3 }}>
               <Chip
                 label="🚀 Novos cursos toda semana"
@@ -149,7 +149,7 @@ const navigate=useNavigate()
             {/* Estatísticas */}
             <Grid container spacing={4}>
               {stats.map((stat, index) => (
-                <Grid item xs={4} key={index}>
+                <Grid size={{xs:4}} key={index}>
                   <Box sx={{ textAlign: "center" }}>
                     <Box
                       sx={{
@@ -186,7 +186,7 @@ const navigate=useNavigate()
           </Grid>
 
           {/* Imagem/Ilustração */}
-          <Grid item xs={12} md={4}>
+          <Grid size={{xs:12,md:4}}>
             <Box
               sx={{
                 position: "relative",

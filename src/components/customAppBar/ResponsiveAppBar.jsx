@@ -72,13 +72,9 @@ function ResponsiveAppBar({ onMenuClick }) {
               <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
             </Box>
              {localStorage.getItem('token') ? (
-    <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-            </Box>
+                      <Box sx={{ display: "flex", gap: 2 }}>
+                <Button color='primary' startIcon={<PermIdentityIcon />} variant='contained' onClick={() => navigate("painel-usuario/home-usuario")} sx={{ width: "150px", height: "44px", fontWeight: 'bolder',fontSize:{xs:12,md:16}}}>Área do aluno</Button>
+              </Box>
              ):(
               <Button color='primary' startIcon={<PermIdentityIcon />} variant='contained' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
              )}
@@ -103,6 +99,11 @@ function ResponsiveAppBar({ onMenuClick }) {
               <Box sx={{ display: "flex", gap: 2 }}>
                 <Button color='primary' startIcon={<PermIdentityIcon />} variant='outlined' onClick={() => navigate("/login")} sx={{ width: "105px", height: "44px", fontWeight: 'bolder' }}>Entrar</Button>
                 <Button variant='contained' endIcon={<ArrowRightIcon />} sx={{ width: "140px", height: "44px", fontWeight: 'bolder' }}>Assinatura</Button>
+              </Box>
+            )}
+            {localStorage.getItem('token') && (
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                <Button color='primary' startIcon={<PermIdentityIcon />} variant='contained'onClick={() => navigate("painel-usuario/home-usuario")} sx={{ width: "170px", height: "44px", fontWeight: 'bolder' }}>Área do aluno</Button>
               </Box>
             )}
           </Box>

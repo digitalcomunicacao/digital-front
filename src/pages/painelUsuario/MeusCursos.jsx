@@ -64,7 +64,7 @@ const handleIrParaCurso = (curso) => {
                     zIndex: 1,
                   }}
                 >
-                  <img src={"http://192.168.15.12:3000/"+curso.thumbnail} style={{width:"100%",height:"100%"}}/>
+                  <img src={"http://10.10.10.214:3000/"+curso.thumbnail} style={{width:"100%",height:"100%"}}/>
                 </Box>
               </Box>
        

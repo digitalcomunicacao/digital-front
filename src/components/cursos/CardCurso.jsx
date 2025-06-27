@@ -28,7 +28,7 @@ export const CardCurso = ({ curso }) => {
             },
         }}>
             <Box sx={{ position: "relative" }}>
-                <CardMedia component="img" height="200" image={`http://192.168.15.12:3000/${curso.thumbnail}`} alt={curso.titulo} />
+                <CardMedia component="img" height="200" image={`http://10.10.10.214:3000/${curso.thumbnail}`} alt={curso.titulo} />
                 <Chip
                     label={curso.level}
                     size="small"
@@ -162,7 +162,7 @@ export const CardCurso = ({ curso }) => {
                     <Button
                         variant="contained"
                         fullWidth
-                        onClick={() => navigate("/checkout", { state: { curso } })}
+                        onClick={() => navigate("/login", { state: { curso } })}
                         sx={{
                             py: 1.5,
                             fontWeight: "bold",
