@@ -7,11 +7,21 @@ import { useNavigate } from "react-router-dom";
 export const ModulosDoCurso = ({ curso }) => {
   const navigate = useNavigate();
 
+
+
+
 const handleModuloClick = (modulo) => {
+  // Clona o curso e remove os módulos
+  const { modulos,instrutor, ...cursoSemModulos } = curso;
+
   navigate("/painel-usuario/curso/player", {
-    state: { curso }, // Aqui envia o curso completo
+    state: {
+      curso: cursoSemModulos,
+      modulo, // apenas o módulo clicado
+    },
   });
 };
+
 
 
   return (
@@ -26,10 +36,7 @@ const handleModuloClick = (modulo) => {
               mb: 5,
               width: { xs: "100%", md: "90%" },
               cursor: "pointer",
-              "&:hover": {
-                boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)",
-                transform: "translateY(-2px)",
-              },
+           
             }}
             onClick={() => handleModuloClick(modulo)}
           >
@@ -39,6 +46,10 @@ const handleModuloClick = (modulo) => {
             </Typography>
             <Box
               sx={{
+                   "&:hover": {
+                boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)",
+                transform: "translateY(-2px)",
+              },
                 border: 1,
                 borderColor: "divider",
                 mt: 2,
@@ -58,8 +69,8 @@ const handleModuloClick = (modulo) => {
                   color="textPrimary"
                   sx={{
                     fontWeight: "bolder",
-                    fontSize: 18,
-                    width: "50%",
+                    fontSize:{xs:14,md:18},
+                    
                     textAlign: "start",
                   }}
                 >
@@ -90,7 +101,7 @@ const handleModuloClick = (modulo) => {
                   />
                 </Box>
               </Box>
-              <Typography color="textSecondary" sx={{ mt: 2 }}>
+              <Typography color="textSecondary" sx={{ mt: 2,fontSize:{xs:12,md:14} }}>
                 {modulo.descricao}
               </Typography>
             </Box>

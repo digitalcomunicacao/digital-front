@@ -1,257 +1,246 @@
-"use client"
-
-import { useState, useRef, useEffect } from "react"
+import React, { useEffect, useState } from "react";
 import {
   Box,
+  Paper,
   Typography,
   IconButton,
-  Slider,
-  Paper,
+  Divider,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
-  Divider,
-  Breadcrumbs,
-  Link,
-} from "@mui/material"
-import {
-  PlayArrow,
-  Pause,
-  VolumeUp,
-  VolumeOff,
-  Fullscreen,
-  SkipPrevious,
-  SkipNext,
-  ArrowBack,
-  CheckCircle,
-  RadioButtonUnchecked,
-  AccessTime,
-  PanoramaFishEye,
-} from "@mui/icons-material"
-import { useLocation, useNavigate } from "react-router-dom"
-import api from "../../../config/Api"
+  Tooltip,
+  Avatar,
+  CircularProgress,
+  useMediaQuery,
+} from "@mui/material";
+import { ArrowBack, PlayArrow, MenuOpen, Menu } from "@mui/icons-material";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import ReactPlayer from "react-player";
+import { useTheme } from "@mui/material/styles";
 
-function formatDuration(seconds) {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = Math.floor(seconds % 60)
-  return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`
-}
+export const VideoPlayer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const modulo = location.state?.modulo;
+  const curso = location.state?.curso;
 
-export default function VideoPlayer() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const curso = location.state?.curso
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const firstModuleWithVideos = curso?.modulos?.find((m) => m.videos?.length > 0) || null
-  const [currentModule, setCurrentModule] = useState(firstModuleWithVideos)
-  const [currentVideo, setCurrentVideo] = useState(firstModuleWithVideos?.videos?.[0] || null)
-  const [videoUrl, setVideoUrl] = useState(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
-  const [volume, setVolume] = useState(100)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-  const [progress, setProgress] = useState(0)
-  const videoRef = useRef(null)
-
-
-
-
-useEffect(() => {
-  if (!currentVideo) return;
-
-  const token = localStorage.getItem("token");
-  const videoPath = currentVideo.url;
-
-  api
-    .get(`/files/${encodeURIComponent(videoPath)}`, {  // encode aqui
-      responseType: "blob",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => {
-      const url = URL.createObjectURL(res.data);
-      setVideoUrl(url);
-    })
-    .catch((err) => {
-      console.error("Erro ao carregar vídeo:", err);
-      setVideoUrl(null);
-    });
-}, [currentVideo]);
-
-
-
+  const [videoBlobUrl, setVideoBlobUrl] = useState(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentVideo, setCurrentVideo] = useState(modulo?.videos?.[0] || null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
+    const fetchVideo = async () => {
+      if (!currentVideo?.url) return;
 
-    const updateTime = () => setCurrentTime(video.currentTime)
-    const updateDuration = () => setDuration(video.duration)
-    const updateProgress = () => {
-      if (video.duration) {
-        setProgress((video.currentTime / video.duration) * 100)
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://192.168.15.12:3000/files/${currentVideo.url}`,
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const blobUrl = URL.createObjectURL(response.data);
+        setVideoBlobUrl(blobUrl);
+      } catch (error) {
+        console.error("Erro ao carregar vídeo:", error);
+        setVideoBlobUrl(null);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
 
-    video.addEventListener("timeupdate", updateTime)
-    video.addEventListener("timeupdate", updateProgress)
-    video.addEventListener("loadedmetadata", updateDuration)
+    fetchVideo();
 
     return () => {
-      video.removeEventListener("timeupdate", updateTime)
-      video.removeEventListener("timeupdate", updateProgress)
-      video.removeEventListener("loadedmetadata", updateDuration)
-    }
-  }, [videoUrl])
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      isPlaying ? videoRef.current.pause() : videoRef.current.play()
-      setIsPlaying(!isPlaying)
-    }
-  }
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted
-      setIsMuted(!isMuted)
-    }
-  }
-
-  const handleVolumeChange = (_, newValue) => {
-    if (videoRef.current) {
-      videoRef.current.volume = newValue / 100
-      setVolume(newValue)
-    }
-  }
-
-  const handleProgressChange = (_, newValue) => {
-    if (videoRef.current && duration) {
-      videoRef.current.currentTime = (newValue / 100) * duration
-    }
-  }
-
-  const selectVideo = (video, modulo) => {
-    setCurrentModule(modulo)
-    setCurrentVideo(video)
-    setVideoUrl(null)
-    setIsPlaying(false)
-    setCurrentTime(0)
-    setProgress(0)
-  }
-
-  const goToPreviousVideo = () => {
-    const index = currentModule.videos.findIndex((v) => v.id === currentVideo.id)
-    if (index > 0) {
-      selectVideo(currentModule.videos[index - 1], currentModule)
-    }
-  }
-
-  const goToNextVideo = () => {
-    const index = currentModule.videos.findIndex((v) => v.id === currentVideo.id)
-    if (index < currentModule.videos.length - 1) {
-      selectVideo(currentModule.videos[index + 1], currentModule)
-    }
-  }
-
-  const toggleFullscreen = () => {
-    if (videoRef.current) {
-      document.fullscreenElement
-        ? document.exitFullscreen()
-        : videoRef.current.requestFullscreen()
-    }
-  }
-
-  const getProgressIcon = (video) => {
-    if (video.progresso === 100) return <CheckCircle sx={{ color: "#4caf50" }} />
-    if (video.progresso > 0) return <PanoramaFishEye sx={{ color: "#ff9800" }} />
-    return <RadioButtonUnchecked sx={{ color: "#9e9e9e" }} />
-  }
-
-  if (!curso) return <Typography sx={{ p: 4 }}>Curso não encontrado.</Typography>
-  if (!currentModule || !currentVideo) return <Typography sx={{ p: 4 }}>Nenhum vídeo disponível.</Typography>
+      if (videoBlobUrl) {
+        URL.revokeObjectURL(videoBlobUrl);
+      }
+    };
+  }, [currentVideo]);
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default", color: "text.primary" }}>
-      <Paper elevation={0} sx={{ display: "flex", alignItems: "center", gap: 2, p: 2, borderBottom: "1px solid #374151" }}>
-        <IconButton sx={{ color: "text.primary" }} onClick={() => navigate(-1)}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", bgcolor: "background.default" }}>
+      {/* Top Bar */}
+      <Paper elevation={0} sx={{ p: 2, borderBottom: "1px solid #e0e0e0", display: "flex", alignItems: "center", gap: 2 }}>
+        <IconButton onClick={() => navigate(-1)}>
           <ArrowBack />
         </IconButton>
-        <Breadcrumbs separator="/">
-          <Link underline="hover" color="inherit">{curso.titulo}</Link>
-          <Typography color="text.secondary">{currentModule.titulo}</Typography>
-        </Breadcrumbs>
+        <Avatar
+          src={`http://192.168.15.12:3000/${curso.thumbnail}`}
+          alt="Thumbnail"
+          variant="rounded"
+          sx={{ width: 40, height: 40 }}
+        />
+        <Box sx={{ overflow: "hidden" }}>
+          <Typography variant="subtitle1" noWrap fontWeight="bold">
+            {curso.titulo}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {modulo.titulo}
+          </Typography>
+        </Box>
       </Paper>
 
-      <Box sx={{ display: "flex", height: "calc(100vh - 73px)" }}>
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", bgcolor: "#000" }}>
-          <Box sx={{ flex: 1, position: "relative" }}>
-<video
-  ref={videoRef}
-  style={{ width: "100%", height: "100%", objectFit: "contain" }}
-  src={videoUrl || null}
-  poster="/placeholder.svg"
-  controls={false}
-/>
-            <Box sx={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)", p: 2 }}>
-              <Slider value={progress} onChange={handleProgressChange} sx={{ color: "#f44336" }} />
-              <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <IconButton onClick={goToPreviousVideo} sx={{ color: "white" }}><SkipPrevious /></IconButton>
-                  <IconButton onClick={togglePlay} sx={{ color: "white" }}>
-                    {isPlaying ? <Pause sx={{ fontSize: 32 }} /> : <PlayArrow sx={{ fontSize: 32 }} />}
-                  </IconButton>
-                  <IconButton onClick={goToNextVideo} sx={{ color: "white" }}><SkipNext /></IconButton>
-                  <IconButton onClick={toggleMute} sx={{ color: "white" }}>{isMuted ? <VolumeOff /> : <VolumeUp />}</IconButton>
-                  <Slider value={volume} onChange={handleVolumeChange} sx={{ width: 100, color: "white" }} />
-                  <Typography variant="body2" sx={{ color: "white" }}>
-                    {formatDuration(currentTime)} / {formatDuration(duration)}
+      {/* Conteúdo principal */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          minHeight: 0,
+        }}
+      >
+        {/* Player */}
+        <Box sx={{ flex: 1, p: { xs: 2, md: 4 } }}>
+          <Box sx={{ maxWidth: "100%", mx: "auto" }}>
+            <Box sx={{ aspectRatio: "16/9", bgcolor: "#000", borderRadius: 2, overflow: "hidden" }}>
+              {isLoading ? (
+                <Box sx={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <CircularProgress size={40} />
+                </Box>
+              ) : videoBlobUrl ? (
+                <ReactPlayer url={videoBlobUrl} controls width="100%" height="100%" />
+              ) : (
+                <Box
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    gap: 1,
+                    p: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  <PlayArrow sx={{ fontSize: 50, opacity: 0.4 }} />
+                  <Typography variant="body1" sx={{ opacity: 0.6 }}>
+                    Vídeo não disponível
                   </Typography>
                 </Box>
-                <IconButton onClick={toggleFullscreen} sx={{ color: "white" }}><Fullscreen /></IconButton>
-              </Box>
+              )}
             </Box>
+
+            {/* Informações do vídeo */}
+            {currentVideo && (
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="h6" gutterBottom>
+                  {currentVideo.titulo}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Módulo: {modulo.titulo}
+                </Typography>
+              </Box>
+            )}
           </Box>
         </Box>
 
-        <Paper elevation={0} sx={{ width: 320, borderLeft: "1px solid #374151", bgcolor: "background.paper" }}>
-          <Box sx={{ p: 2 }}>
-            <Typography variant="h6">Conteúdo</Typography>
-            <Typography variant="body2" color="text.secondary">{currentModule.titulo}</Typography>
-          </Box>
-          <Divider />
-          <List disablePadding>
-            {curso.modulos.map((modulo) =>
-              modulo.videos.map((video, index) => (
-                <Box key={video.id}>
-                  <ListItem
-                    button
-                    onClick={() => selectVideo(video, modulo)}
-                    sx={{
-                      py: 2,
-                      bgcolor: currentVideo?.id === video.id ? "#374151" : "transparent",
-                      borderLeft: currentVideo?.id === video.id ? "4px solid #f44336" : "4px solid transparent",
-                      "&:hover": { bgcolor: "#374151" },
-                    }}
-                  >
-                    <ListItemIcon sx={{ minWidth: 32 }}>
-                      <Box sx={{ width: 24, height: 24, borderRadius: "50%", bgcolor: "#374151", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>{index + 1}</Box>
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{getProgressIcon(video)}<Typography variant="body2" sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{video.titulo}</Typography></Box>}
-                      secondary={<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}><AccessTime sx={{ fontSize: 12, color: "text.secondary" }} /><Typography variant="caption" color="text.secondary">{formatDuration(video.duracao)}</Typography>{video.progresso > 0 && video.progresso < 100 && (<Typography variant="caption" sx={{ color: "#ff9800" }}>({video.progresso}%)</Typography>)}</Box>}
-                    />
-                  </ListItem>
-                  <Divider sx={{ bgcolor: "#374151" }} />
-                </Box>
-              ))
-            )}
-          </List>
-        </Paper>
+        {/* Drawer lateral (desktop) ou bottom (mobile) */}
+        <Box
+          sx={{
+            width: isMobile ? "100%" : isCollapsed ? 60 : 300,
+            height: isMobile ? 350 : "auto",
+            borderTop: isMobile ? "1px solid #e0e0e0" : "none",
+            borderLeft: isMobile ? "none" : "1px solid #e0e0e0",
+            transition: "all 0.3s",
+            bgcolor: "background.paper",
+            display: "flex",
+            flexDirection: "column",
+           
+            p: 2,
+            overflow: "hidden",
+          }}
+        >
+          {/* Botão de colapsar lateral (apenas desktop) */}
+          {!isMobile && (
+            <Box sx={{ display: "flex", justifyContent: isCollapsed ? "center" : "flex-end" }}>
+              <IconButton onClick={() => setIsCollapsed((prev) => !prev)}>
+                {isCollapsed ? <MenuOpen /> : <Menu />}
+              </IconButton>
+            </Box>
+          )}
+
+          {/* Lista de vídeos */}
+          {!isCollapsed && (
+            <>
+              <Typography
+                variant="subtitle1"
+                fontWeight="bold"
+                gutterBottom
+                sx={{ display: isMobile ? "none" : "block" }}
+              >
+                Vídeos do Módulo
+              </Typography>
+              {!isMobile && <Divider sx={{ mb: 1 }} />}
+
+              <Box
+                sx={{
+                  overflowY: "auto",
+                  flex: 1,
+                }}
+              >
+                <List dense>
+                  {modulo?.videos?.map((video, index) => (
+                    <ListItem
+                      key={video.id}
+                      button
+                      selected={video.id === currentVideo?.id}
+                      onClick={() => setCurrentVideo(video)}
+                      sx={{
+                        borderRadius: 1,
+                        mb: 1,
+                        bgcolor: video.id === currentVideo?.id ? "action.selected" : "transparent",
+                        px: 1.5,
+                      }}
+                    >
+                      <Avatar
+                        sx={{
+                          width: 28,
+                          height: 28,
+                          fontSize: 14,
+                          bgcolor: "primary.main",
+                          color: "primary.contrastText",
+                          mr: 2,
+                        }}
+                      >
+                        {index + 1}
+                      </Avatar>
+                      <ListItemText
+                        primary={
+                          <Typography noWrap variant="body2">
+                            {video.titulo}
+                          </Typography>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </>
+          )}
+
+          {/* Tooltip colapsado (desktop apenas) */}
+          {!isMobile && isCollapsed && (
+            <Tooltip title="Expandir lista de vídeos" placement="left">
+              <Typography variant="caption" align="center" sx={{ mt: 2 }}>
+                {modulo?.videos?.length || 0} vídeos
+              </Typography>
+            </Tooltip>
+          )}
+        </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};

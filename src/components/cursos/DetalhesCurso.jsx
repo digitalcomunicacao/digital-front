@@ -27,7 +27,7 @@ export const DetalhesCurso = () => {
             <ResponsiveAppBar />
             <Box sx={{ mt: { xs: 10, md: 15 } }}>
                 <Container>
-                    <IconButton onClick={() => navigate('/')} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
+                    <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
                         <KeyboardBackspaceIcon sx={{ color: theme.palette.text.secondary }} />
                         <Typography color="textSecondary">Voltar</Typography>
                     </IconButton>
@@ -49,7 +49,7 @@ export const DetalhesCurso = () => {
                             </Box>
                         </Box>
                         <Box sx={{ display: { xs: "none", md: "block" }, width: "400px", height: "auto" }}>
-                            <img src={`http://10.10.10.59:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
+                            <img src={`http://192.168.15.12:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
                         </Box>
                     </Box>
 

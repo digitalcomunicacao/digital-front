@@ -58,14 +58,13 @@ const handleIrParaCurso = (curso) => {
                   sx={{
                     width: 64,
                     height: 64,
-                    
                     fontSize: "18px",
                     fontWeight: "bold",
                     position: "relative",
                     zIndex: 1,
                   }}
                 >
-                  <img src={"http://10.10.10.59:3000/"+curso.thumbnail} style={{width:"100%",height:"100%"}}/>
+                  <img src={"http://192.168.15.12:3000/"+curso.thumbnail} style={{width:"100%",height:"100%"}}/>
                 </Box>
               </Box>
        

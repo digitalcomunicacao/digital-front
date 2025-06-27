@@ -42,7 +42,7 @@ export const Cadastro = ({ setPasso }) => {
 
     // Redireciona para o painel do usuário
     // Assumindo que você tenha o hook navigate do react-router-dom
-    navigate("/painel-usuario");
+   navigate("/painel-usuario/home-usuario");
 
   } catch (error) {
     console.log(error);

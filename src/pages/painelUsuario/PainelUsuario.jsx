@@ -1,12 +1,13 @@
 import { Box, useMediaQuery } from "@mui/material";
 import AppBarUsuario from "../../components/appBarUsuario/AppBarUsuario";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import theme from "../../theme/theme";
 import { useEffect, useState } from "react";
 
 export const PainelUsuario = () => {
   const [miniDrawer, setMiniDrawer] = useState(false);
-
+  const location = useLocation();
+const isPlayerPage = location.pathname.includes("/painel-usuario/curso/player");
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));  // <600px
   const isMdDown = useMediaQuery(theme.breakpoints.down('lg'));  // <1200px
 
@@ -25,7 +26,7 @@ export const PainelUsuario = () => {
       <Box
         component="main"
         sx={{
-          p: 3,
+          p: isPlayerPage ? 0 : 3,
           mt: '64px',
           ml: isMobile ? 0 : `${drawerWidth}px`,
           width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,

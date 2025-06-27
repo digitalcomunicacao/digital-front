@@ -67,7 +67,7 @@ export const Checkout = () => {
           >
             <Box
               component="img"
-              src={"http://10.10.10.59:3000/" + curso.thumbnail}
+              src={"http://192.168.15.12:3000/" + curso.thumbnail}
               alt={curso.titulo}
               sx={{
                 width: 80,
