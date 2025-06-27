@@ -22,15 +22,18 @@ import { useLocation, useNavigate } from "react-router-dom"
 import axios from "axios"
 import ReactPlayer from "react-player"
 import { useTheme } from "@mui/material/styles"
+import ContadorPlayer from "./ContadorPlayer"
 
 export const VideoPlayer = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const modulo = location.state?.modulo
   const curso = location.state?.curso
-
+const [countdown, setCountdown] = useState(null)
+const [showCountdownOverlay, setShowCountdownOverlay] = useState(false)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+const [nextVideo, setNextVideo] = useState(null)
 
   const [videoBlobUrl, setVideoBlobUrl] = useState(null)
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -62,6 +65,7 @@ export const VideoPlayer = () => {
       }
     }
 
+
     fetchVideo()
 
     return () => {
@@ -71,11 +75,35 @@ export const VideoPlayer = () => {
     }
   }, [currentVideo])
 
-  const handleVideoEnd = () => {
-    if (currentVideo) {
-      setWatchedVideos((prev) => new Set([...prev, currentVideo.id]))
+const handleVideoEnd = () => {
+  if (currentVideo) {
+    setWatchedVideos((prev) => new Set([...prev, currentVideo.id]))
+
+    const currentIndex = modulo?.videos?.findIndex((video) => video.id === currentVideo.id)
+    const next = modulo?.videos?.[currentIndex + 1]
+    setNextVideo(next)
+
+    if (next) {
+      setShowCountdownOverlay(true)
+      setCountdown(5)
+
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(interval)
+            setShowCountdownOverlay(false)
+            setCurrentVideo(next)
+            setNextVideo(null)
+            return null
+          }
+          return prev - 1
+        })
+      }, 1000)
     }
   }
+}
+
+
 
   const getCurrentVideoIndex = () => {
     return modulo?.videos?.findIndex((video) => video.id === currentVideo?.id) || 0
@@ -253,6 +281,8 @@ export const VideoPlayer = () => {
                   </Typography>
                 </Box>
               ) : videoBlobUrl ? (
+                <>
+              
                 <ReactPlayer
                   url={videoBlobUrl}
                   controls
@@ -273,7 +303,10 @@ export const VideoPlayer = () => {
                     left: 0,
                   }}
                 />
-
+{showCountdownOverlay && countdown !== null && (
+     <ContadorPlayer countdown={countdown} nextVideo={nextVideo} />
+)}
+  </>
               ) : (
                 <Box
                   sx={{
@@ -407,20 +440,20 @@ export const VideoPlayer = () => {
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-         {((isMobile && isCollapsed || !isCollapsed ) || (!isMobile && !isCollapsed)) && (
-  <Box>
-    <Typography variant="subtitle1" fontWeight="bold">
-      Lista de Vídeos
-    </Typography>
-    <Typography variant="caption" sx={{ opacity: 0.9 }}>
-      {modulo?.videos?.length || 0} vídeos disponíveis
-    </Typography>
-  </Box>
-)}
+              {((isMobile && isCollapsed || !isCollapsed) || (!isMobile && !isCollapsed)) && (
+                <Box>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Lista de Vídeos
+                  </Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                    {modulo?.videos?.length || 0} vídeos disponíveis
+                  </Typography>
+                </Box>
+              )}
 
               <IconButton onClick={() => setIsCollapsed((prev) => !prev)} sx={{ color: "white", ml: "auto" }}>
-                   
-                         
+
+
                 {isCollapsed ? <MenuOpen /> : <Menu />}
               </IconButton>
             </Box>

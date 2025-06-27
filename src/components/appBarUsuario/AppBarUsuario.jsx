@@ -188,7 +188,7 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
               >
                 {(isMobile ? mobileOpen : !miniDrawer) ? <MenuOpenIcon /> : <MenuIcon />}
               </IconButton>
-              <Box sx={{ ml: 2, width: "120px", height: "50px" }}>
+              <Box onClick={()=>navigate("/painel-usuario/home-usuario")} sx={{ cursor:"pointer",ml: 2, width: "85px", height: "auto" }}>
                 <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
               </Box>
             </Box>

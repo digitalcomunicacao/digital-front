@@ -43,7 +43,7 @@ const handleIrParaCurso = (curso) => {
         <Card
         onClick={() => handleIrParaCurso(curso)}
           sx={{
-           width: { xs: "100%", md: "400px" }, height:"300px",boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+           width: { xs: "100%", md: "400px" }, height:"360",boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
             "&:hover": {
                 boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", // brilho amarelo
                 transform: "translateY(-2px)",
@@ -56,8 +56,8 @@ const handleIrParaCurso = (curso) => {
             
                 <Box
                   sx={{
-                    width: 64,
-                    height: 64,
+                    width:"100%",
+                    height:"auto",
                     fontSize: "18px",
                     fontWeight: "bold",
                     position: "relative",

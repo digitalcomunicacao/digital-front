@@ -10,7 +10,7 @@ export const SobreCurso = ({ curso }) => {
                 <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 5, width: { xs: "100%", md: "90%" }, bgcolor: theme.palette.background.paper }}>
                     <Box sx={{ p: 3 }}>
                         <Box sx={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                            <Box sx={{ width: "100px", height: "100px" }}>
+                            <Box sx={{ width: "100%", height: "auto" }}>
                                 <img src={`http://10.10.10.214:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%" }} />
                             </Box>
                         </Box>

@@ -27,7 +27,7 @@ export const DetalhesCurso = () => {
             <ResponsiveAppBar />
             <Box sx={{ mt: { xs: 10, md: 15 } }}>
              <Container>
-                    <IconButton onClick={() => navigate('/painel-usuario/meus-cursos')} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
+                    <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
                         <KeyboardBackspaceIcon sx={{ color: theme.palette.text.secondary }} />
                         <Typography color="textSecondary">Voltar</Typography>
                     </IconButton>

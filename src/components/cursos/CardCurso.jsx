@@ -19,6 +19,7 @@ export const CardCurso = ({ curso }) => {
     const handleDetalhes = () => {
         navigate("/curso/detalhe", { state: { curso } });
     };
+    const token = localStorage.getItem('token')
     return (
         <Card sx={{
             width: { xs: "100%", md: "350px" }, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
@@ -162,7 +163,7 @@ export const CardCurso = ({ curso }) => {
                     <Button
                         variant="contained"
                         fullWidth
-                        onClick={() => navigate("/login", { state: { curso } })}
+                        onClick={() => navigate(token?"/checkout":"/login", { state: { curso } })}
                         sx={{
                             py: 1.5,
                             fontWeight: "bold",
