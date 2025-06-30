@@ -27,116 +27,98 @@ import api from "../../../config/Api"
 
 export const VideoPlayer = () => {
   const navigate = useNavigate()
-  // início manual
-
   const location = useLocation()
   const [curso, setCurso] = useState(location.state?.curso || null)
   const [modulo, setModulo] = useState(location.state?.modulo || null)
-
-  const [progressoInicial, setProgressoInicial] = useState(0)
-  const [countdown, setCountdown] = useState(null)
-  const [showCountdownOverlay, setShowCountdownOverlay] = useState(false)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
-  const [nextVideo, setNextVideo] = useState(null)
-  const [videoBlobUrl, setVideoBlobUrl] = useState(null)
-  const [isCollapsed, setIsCollapsed] = useState(false)
   const [currentVideo, setCurrentVideo] = useState(modulo?.videos?.[0] || null)
+  const [videoBlobUrl, setVideoBlobUrl] = useState(null)
+  const [progressoInicial, setProgressoInicial] = useState(0)
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [loadingProgresso, setLoadingProgresso] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [nextVideo, setNextVideo] = useState(null)
+  const [showCountdownOverlay, setShowCountdownOverlay] = useState(false)
+  const [countdown, setCountdown] = useState(null)
+
+  const [progressoPronto, setProgressoPronto] = useState(false)
+  const [hasSeeked, setHasSeeked] = useState(false)
+  const [isPlayerReady, setIsPlayerReady] = useState(false)
+  const [maxProgressoSalvo, setMaxProgressoSalvo] = useState(0)
 
   const playerRef = useRef(null)
-  const [hasSeeked, setHasSeeked] = useState(false)
-  const [maxProgressoSalvo, setMaxProgressoSalvo] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
   const token = localStorage.getItem("token")
-  // Busca vídeo protegido + progresso salvo no backend
 
-  console.log(modulo)
+  useEffect(() => {
+    if (isMobile) {
+      setIsCollapsed(true)
+    } else {
+      setIsCollapsed(false)
+    }
+  }, [isMobile])
+
   const fetchCursosAtualizados = async () => {
     try {
-      const response = await api.get("/curso/meus-cursos", {
+      const response = await api.get("/curso-selecionado/cursos", {
         headers: { Authorization: `Bearer ${token}` },
       })
       const cursos = response.data
-
-      // Encontra o curso atualizado pelo id do curso atual
       const cursoAtualizado = cursos.find((c) => c.id === curso?.id)
-      if (!cursoAtualizado) {
-        // Curso não encontrado no backend, redireciona
-        navigate("/painel-usuario/meus-cursos")
-        return
-      }
+      if (!cursoAtualizado) return navigate("/painel-usuario/meus-cursos")
 
-      // Encontra o módulo atualizado pelo id do módulo atual dentro do curso
       const moduloAtualizado = cursoAtualizado.modulos.find((m) => m.id === modulo?.id)
-      if (!moduloAtualizado) {
-        // Módulo não encontrado, pode redirecionar ou tratar erro
-        navigate("/painel-usuario/meus-cursos")
-        return
-      }
+      if (!moduloAtualizado) return navigate("/painel-usuario/meus-cursos")
 
       setCurso(cursoAtualizado)
       setModulo(moduloAtualizado)
-    } catch (error) {
-      console.error("Erro ao buscar cursos atualizados:", error)
-      // Caso erro, pode redirecionar para a lista ou mostrar mensagem
+    } catch (err) {
+      console.error("Erro ao buscar cursos:", err)
       navigate("/painel-usuario/meus-cursos")
     }
   }
 
-  // useEffect que roda na montagem para garantir dados atualizados
   useEffect(() => {
-    if (!curso || !modulo) {
-      // Se não tem dados no state, redireciona direto
-      navigate("/painel-usuario/meus-cursos")
-      return
-    }
+    if (!curso || !modulo) return navigate("/painel-usuario/meus-cursos")
     fetchCursosAtualizados()
   }, [])
 
-  // Atualiza vídeo atual quando módulo for atualizado
   useEffect(() => {
     if (!modulo?.videos?.length) return
 
     const primeiroNaoConcluido = modulo.videos.find((v) => !v.progresso?.concluido)
-
-    if (primeiroNaoConcluido) {
-      setCurrentVideo(primeiroNaoConcluido)
-    } else {
-      setCurrentVideo(modulo.videos[modulo.videos.length - 1])
-    }
+    setCurrentVideo(primeiroNaoConcluido || modulo.videos[modulo.videos.length - 1])
   }, [modulo])
 
   const getProgressoVideo = async (videoId) => {
+    setLoadingProgresso(true)
+    setProgressoPronto(false)
     try {
-      const response = await api
-        .get(`/progresso-video/${videoId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      const response = await api.get(`/progresso-video/${videoId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       const segundos = response.data?.segundos || 0
       setProgressoInicial(segundos)
-    } catch (error) {
-      console.error("Erro ao pegar progresso do vídeo:", error)
+    } catch (err) {
+      console.error("Erro ao buscar progresso:", err)
       setProgressoInicial(0)
+    } finally {
+      setProgressoPronto(true)
+      setLoadingProgresso(false)
     }
   }
 
   const getVideoBlob = async (videoUrl) => {
     try {
-      const response = await api
-        .get(`/files/${videoUrl}`, {
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      const response = await api.get(`/files/${videoUrl}`, {
+        responseType: "blob",
+        headers: { Authorization: `Bearer ${token}` },
+      })
       const blobUrl = URL.createObjectURL(response.data)
       setVideoBlobUrl(blobUrl)
-    } catch (error) {
-      console.error("Erro ao carregar vídeo:", error)
+    } catch (err) {
+      console.error("Erro ao carregar vídeo:", err)
       setVideoBlobUrl(null)
     }
   }
@@ -144,46 +126,54 @@ export const VideoPlayer = () => {
   useEffect(() => {
     if (!currentVideo?.url) return
 
-    let blobUrlTemp = null
-
     setIsLoading(true)
     setHasSeeked(false)
+    setProgressoPronto(false)
+    setIsPlayerReady(false)
+    setVideoBlobUrl(null)
 
     getProgressoVideo(currentVideo.id)
       .then(() => getVideoBlob(currentVideo.url))
-      .finally(() => {
-        setIsLoading(false)
-      })
+      .finally(() => setIsLoading(false))
 
     return () => {
-      if (videoBlobUrl) {
-        URL.revokeObjectURL(videoBlobUrl)
-      }
+      if (videoBlobUrl) URL.revokeObjectURL(videoBlobUrl)
     }
   }, [currentVideo])
 
+  // ✅ Realiza o seekTo com segurança
+  useEffect(() => {
+    if (
+      isPlayerReady &&
+      progressoPronto &&
+      !hasSeeked &&
+      playerRef.current &&
+      videoBlobUrl
+    ) {
+      // Pequeno atraso para garantir montagem
+      setTimeout(() => {
+        playerRef.current.seekTo(progressoInicial, "seconds")
+        setHasSeeked(true)
+      }, 500)
+    }
+  }, [isPlayerReady, progressoPronto, hasSeeked, videoBlobUrl])
 
-  // Salvar progresso a cada 10 segundos
+  // ⏱ Salva progresso a cada 10s
   useEffect(() => {
     const interval = setInterval(() => {
       if (playerRef.current && currentVideo?.id) {
         const tempoAtual = playerRef.current.getCurrentTime()
-        const duracaoVideo = currentVideo.duracao || 0
-
-        const concluido = tempoAtual >= duracaoVideo - 2 // 2s de folga para garantir
+        const duracao = currentVideo.duracao || 0
+        const concluido = tempoAtual >= duracao - 2
 
         if (tempoAtual > maxProgressoSalvo) {
-          const token = localStorage.getItem("token")
-
           api.patch("/progresso-video", {
             videoId: currentVideo.id,
             segundos: Math.floor(tempoAtual),
             concluido,
           }, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }).catch(err => {
+            headers: { Authorization: `Bearer ${token}` },
+          }).catch((err) => {
             console.error("Erro ao salvar progresso:", err)
           })
 
@@ -195,66 +185,63 @@ export const VideoPlayer = () => {
     return () => clearInterval(interval)
   }, [currentVideo, maxProgressoSalvo])
 
+  // ▶ Ao terminar vídeo
+  const handleVideoEnd = async () => {
+    if (!currentVideo) return
 
-  // Quando vídeo terminar
-  const handleVideoEnd = () => {
-    if (currentVideo) {
+    setCurrentVideo((prev) => ({
+      ...prev,
+      progresso: { ...(prev.progresso || {}), concluido: true },
+    }))
 
-      // Atualiza o progresso local do vídeo atual para refletir "concluído: true"
-      setCurrentVideo((prevVideo) => ({
-        ...prevVideo,
-        progresso: {
-          ...(prevVideo.progresso || {}),
-          concluido: true,
-        },
-      }))
+    modulo.videos = modulo.videos.map((v) =>
+      v.id === currentVideo.id
+        ? { ...v, progresso: { ...(v.progresso || {}), concluido: true } }
+        : v
+    )
 
-      // Também atualiza o progresso dentro do array de vídeos do módulo
-      modulo.videos = modulo.videos.map((video) =>
-        video.id === currentVideo.id
-          ? {
-            ...video,
-            progresso: {
-              ...(video.progresso || {}),
-              concluido: true,
-            },
+    try {
+      await api.patch("/progresso-video", {
+        videoId: currentVideo.id,
+        segundos: currentVideo.duracao,
+        concluido: true,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    } catch (err) {
+      console.error("Erro ao concluir vídeo:", err)
+    }
+
+    const currentIndex = modulo.videos.findIndex((v) => v.id === currentVideo.id)
+    const next = modulo.videos[currentIndex + 1]
+    setNextVideo(next)
+
+    if (next) {
+      setShowCountdownOverlay(true)
+      setCountdown(5)
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(interval)
+            setShowCountdownOverlay(false)
+            setCurrentVideo(next)
+            setNextVideo(null)
+            setIsPlaying(true)
+            return null
           }
-          : video
-      )
-
-      const currentIndex = modulo?.videos?.findIndex((video) => video.id === currentVideo.id)
-      const next = modulo?.videos?.[currentIndex + 1]
-      setNextVideo(next)
-
-      if (next) {
-        setShowCountdownOverlay(true)
-        setCountdown(5)
-
-        const interval = setInterval(() => {
-          setCountdown((prev) => {
-            if (prev === 1) {
-              clearInterval(interval)
-              setShowCountdownOverlay(false)
-              setCurrentVideo(next)
-              setNextVideo(null)
-              setIsPlaying(true) // <-- autoplay no próximo vídeo
-              return null
-            }
-            return prev - 1
-          })
-        }, 1000)
-      }
+          return prev - 1
+        })
+      }, 1000)
     }
   }
 
-
-  const getCurrentVideoIndex = () => {
-    return modulo?.videos?.findIndex((video) => video.id === currentVideo?.id) || 0
-  }
+  // Helpers
+  const getCurrentVideoIndex = () =>
+    modulo?.videos?.findIndex((v) => v.id === currentVideo?.id) || 0
 
   const getProgressPercentage = () => {
     const total = modulo?.videos?.length || 1
-    const concluidos = modulo?.videos?.filter((v) => v.progresso?.concluido === true).length || 0
+    const concluidos = modulo?.videos?.filter((v) => v.progresso?.concluido).length || 0
     return (concluidos / total) * 100
   }
 
@@ -311,7 +298,7 @@ export const VideoPlayer = () => {
         </IconButton>
 
         <Avatar
-          src={`http://localhost:3000/${curso.thumbnail}`}
+          src={`http://10.10.10.216:3000/${curso.thumbnail}`}
           alt="Thumbnail"
           variant="rounded"
           sx={{
@@ -379,117 +366,120 @@ export const VideoPlayer = () => {
             flexDirection: "column",
           }}
         >
-          <Paper
-            elevation={8}
-            sx={{
-              borderRadius: { xs: 2, md: 4 },
-              overflow: "hidden",
-              background: "linear-gradient(145deg, #121829, #1E2A46)",
-              position: "relative",
-            }}
-          >
-            <Box
-              sx={{
-                aspectRatio: "16/9",
-                position: "relative",
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
-                  zIndex: videoBlobUrl ? -1 : 1,
-                  pointerEvents: "none",
-                },
-              }}
-            >
-              {isLoading ? (
-                <Box
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 2,
-                    color: "white",
-                  }}
-                >
-                  <CircularProgress
-                    size={60}
-                    thickness={4}
-                    sx={{
-                      color: "#FFB800",
-                      "& .MuiCircularProgress-circle": {
-                        strokeLinecap: "round",
-                      },
-                    }}
-                  />
-                  <Typography variant="body1" sx={{ opacity: 0.8 }}>
-                    Carregando vídeo...
-                  </Typography>
-                </Box>
-              ) : videoBlobUrl ? (
-                <>
-                  <ReactPlayer
-                    ref={playerRef}
-                    url={videoBlobUrl}
-                    controls
-                    playing={isPlaying}
-                    onEnded={handleVideoEnd}
-                    width="100%"
-                    height="100%"
-                    onReady={() => {
-                      if (!hasSeeked && playerRef.current) {
-                        playerRef.current.seekTo(progressoInicial, "seconds")
-                        setHasSeeked(true)
-                      }
-                    }}
-                    config={{
-                      file: {
-                        attributes: {
-                          controlsList: "nodownload",
-                        },
-                      },
-                    }}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                    }}
-                  />
+       <Paper
+  elevation={8}
+  sx={{
+    borderRadius: { xs: 2, md: 4 },
+    overflow: "hidden",
+    background: "linear-gradient(145deg, #121829, #1E2A46)",
+    position: "relative",
+  }}
+>
+  <Box
+    sx={{
+      aspectRatio: "16/9",
+      position: "relative",
+      "&::before": {
+        content: '""',
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background:
+          "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
+        zIndex: videoBlobUrl ? -1 : 1,
+        pointerEvents: "none",
+      },
+    }}
+  >
+    {(isLoading || loadingProgresso) ? (
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+          color: "white",
+        }}
+      >
+        <CircularProgress
+          size={60}
+          thickness={4}
+          sx={{
+            color: "#FFB800",
+            "& .MuiCircularProgress-circle": {
+              strokeLinecap: "round",
+            },
+          }}
+        />
+        <Typography variant="body1" sx={{ opacity: 0.8 }}>
+          Carregando vídeo...
+        </Typography>
+      </Box>
+    ) : videoBlobUrl ? (
+      <>
+        <ReactPlayer
+          ref={playerRef}
+          url={videoBlobUrl}
+          controls
+         playing={isPlaying && hasSeeked}
+          onEnded={handleVideoEnd}
+          width="100%"
+          height="100%"
+onReady={() => {
+  setIsPlayerReady(true)
+}}
 
-                  {showCountdownOverlay && countdown !== null && (
-                    <ContadorPlayer countdown={countdown} nextVideo={nextVideo} />
-                  )}
-                </>
-              ) : (
-                <Box
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#fff",
-                    gap: 2,
-                    p: 4,
-                    textAlign: "center",
-                  }}
-                >
-                  <PlayCircleOutline sx={{ fontSize: 80, opacity: 0.6, color: "#FFB800" }} />
-                  <Typography variant="h6" sx={{ opacity: 0.8 }}>
-                    Vídeo não disponível
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.6 }}>
-                    Tente novamente mais tarde
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          </Paper>
+
+          config={{
+            file: {
+              attributes: {
+                controlsList: "nodownload",
+              },
+            },
+          }}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+        />
+
+        {showCountdownOverlay && countdown !== null && (
+          <ContadorPlayer countdown={countdown} nextVideo={nextVideo} />
+        )}
+      </>
+    ) : (
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#fff",
+          gap: 2,
+          p: 4,
+          textAlign: "center",
+        }}
+      >
+        <PlayCircleOutline
+          sx={{ fontSize: 80, opacity: 0.6, color: "#FFB800" }}
+        />
+        <Typography variant="h6" sx={{ opacity: 0.8 }}>
+          Vídeo não disponível
+        </Typography>
+        <Typography variant="body2" sx={{ opacity: 0.6 }}>
+          Tente novamente mais tarde
+        </Typography>
+      </Box>
+    )}
+  </Box>
+</Paper>
+
 
           {/* Video Info */}
           {currentVideo && (

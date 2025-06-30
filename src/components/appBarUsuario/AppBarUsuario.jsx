@@ -36,6 +36,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useNavigate, useLocation } from 'react-router-dom';
 import theme from '../../theme/theme';
+import { Subscription } from '../subscription/Subscripition';
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const NAVIGATION = [
   { segment: 'home-usuario', title: 'Home', icon: <HomeIcon sx={{ color: theme.palette.primary.main }} /> },
@@ -223,6 +224,7 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
+                <Subscription/>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar>

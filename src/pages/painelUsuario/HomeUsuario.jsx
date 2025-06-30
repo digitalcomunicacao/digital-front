@@ -127,7 +127,7 @@ export default function HomeUsuario() {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await api.get("/curso/meus-cursos", {
+        const response = await api.get("/curso-selecionado/cursos", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -236,7 +236,7 @@ export default function HomeUsuario() {
                   >
                     {cursoContinua.thumbnail ? (
                       <img
-                        src={"http://localhost:3000/" + cursoContinua.thumbnail}
+                        src={"http://10.10.10.216:3000/" + cursoContinua.thumbnail}
                         alt={cursoContinua.titulo}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />

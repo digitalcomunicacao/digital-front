@@ -51,6 +51,9 @@ export const Cadastro = ({ setPasso }) => {
 };
 
     return (
+             <Box sx={{width:{xs:"100%",md:"50%"},display:"flex",justifyContent:"center",alignItems:"center"}}>
+
+            
         <Box sx={{ width: "400px", p: 5 }}>
             <Box sx={{ display: "flex", justifyContent: "end" }}>
                 <Box sx={{ width: "100px", height: "auto" }}>
@@ -168,7 +171,7 @@ export const Cadastro = ({ setPasso }) => {
                     </span>
                 </Typography>
             </Box>
-
+ </Box>
         </Box>
     )
 }

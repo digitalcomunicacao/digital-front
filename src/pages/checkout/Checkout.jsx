@@ -1,312 +1,251 @@
-
-import { Avatar, Box, Button, CardContent, Chip, Container, Divider, Grid, InputAdornment, TextField, Typography } from "@mui/material"
-import { useState } from "react"
 import {
-  ArrowBack,
-  CreditCard,
-  Security,
-  AccessTime,
-  PlayArrow,
-  Person,
-  Email,
-  Home,
-  Payment,
-  Visibility,
-  VisibilityOff,
-  LocalOffer,
-  Verified,
-  Shield,
-  Support,
-} from "@mui/icons-material"
-import theme from "../../theme/theme"
-import { useLocation, useNavigate } from "react-router-dom"
-import api from "../../config/Api"
+  Badge, Box, Button, Card, CardActions, CardContent, CardHeader, Container,
+  Divider, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import StarIcon from '@mui/icons-material/Star';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import PeopleIcon from '@mui/icons-material/People';
+import { useNavigate } from "react-router-dom";
+import api from "../../config/Api";
+import { Shield } from "@mui/icons-material";
+import theme from "../../theme/theme";
+
 export const Checkout = () => {
-  const location = useLocation()
-  const curso = location.state?.curso
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
+  const [planos, setPlanos] = useState([]);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("pix");
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
- const handleSubmit = (event) => {
-  event.preventDefault();
+  useEffect(() => {
+    api.get('/planos')
+      .then((res) => {
+        setPlanos(res.data);
+        if (res.data.length > 0) {
+          setSelectedPlanId(res.data[0].id);
+          setSelectedPlan(res.data[0]);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar planos:", err);
+      });
+  }, []);
 
-  const token = localStorage.getItem('token');
+  useEffect(() => {
+    const plano = planos.find(p => p.id === selectedPlanId);
+    setSelectedPlan(plano || null);
+  }, [selectedPlanId, planos]);
 
-  api.post(
-    'assinatura',
-    {
-      metodoPagamento: 'pix', // ou 'cartao', 'paypal', etc.
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const token = localStorage.getItem('token');
+
+    if (!selectedPlanId) {
+      alert("Selecione um plano");
+      return;
+    }
+
+    api.post(
+      'assinatura',
+      {
+        metodoPagamento: paymentMethod,
+        planoId: selectedPlanId,
       },
-    }
-  )
-    .then((response) => {
-      console.log(response);
-      navigate("/painel-usuario/meus-cursos");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then(() => {
+        navigate("/painel-usuario/catalago");
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Erro ao criar assinatura.");
+      });
+  };
 
-  const [couponCode, setCouponCode] = useState("")
-  const [appliedCoupon, setAppliedCoupon] = useState(null)
-
-  const applyCoupon = () => {
-    if (couponCode === "DESCONTO10") {
-      setAppliedCoupon({ code: "DESCONTO10", discount: 10, value: curso.preco * 0.1 })
-    } else if (couponCode === "PRIMEIRACOMPRA") {
-      setAppliedCoupon({ code: "PRIMEIRACOMPRA", discount: 15, value: curso.preco * 0.15 })
-    }
-  }
-  
+  const benefits = [
+    { icon: MenuBookIcon, title: 'Acesso a todos os cursos', desc: 'Mais de 150 cursos disponíveis' },
+    { icon: AccessTimeIcon, title: 'Conteúdo sempre atualizado', desc: 'Novos cursos adicionados mensalmente' },
+    { icon: WorkspacePremiumIcon, title: 'Certificados de conclusão', desc: 'Certificados reconhecidos pelo mercado' },
+    { icon: PeopleIcon, title: 'Comunidade exclusiva', desc: 'Acesso ao grupo VIP no Discord' },
+  ];
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "100vh" }}>
-      <CardContent sx={{ p: 3, width: "600px", backgroundColor: theme.palette.background.paper, borderRadius: 5 }}>
-        {/* Curso */}
-        <Box sx={{ mb: 3 }}>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              p: 2,
-              backgroundColor: theme.palette.background.paper,
-              borderRadius: 2,
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-            }}
-          >
-            <Box
-              component="img"
-              src={"http://localhost:3000/" + curso.thumbnail}
-              alt={curso.titulo}
-              sx={{
-                width: 80,
-                height: 60,
-                borderRadius: 2,
-                objectFit: "cover",
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  mb: 1,
-                  lineHeight: 1.3,
-                }}
-              >
-                {curso.titulo}
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                <Avatar src={"giovanne"} sx={{ width: 20, height: 20 }} />
-                <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                  {curso.instrutor.nome}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", gap: 2 }}>
+    <Box component="form" onSubmit={handleSubmit}>
+      <Box sx={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center", mt: 5 }}>
+        <Typography sx={{ fontWeight: "bolder", fontSize: 36, textAlign: "center" }}>
+          Assine agora e tenha acesso completo
+        </Typography>
+        <Typography color="textSecondary" sx={{ fontSize: 18 }}>
+          Mais de 150 cursos para acelerar sua carreira
+        </Typography>
+      </Box>
+      <Container>
+        <Grid container spacing={2} sx={{ mt: 5 }}>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardHeader
+                avatar={<StarIcon color="warning" />}
+                title="Escolha seu plano"
+                subheader="Selecione a opção que melhor se adequa às suas necessidades"
+              />
+              <CardContent>
+                <RadioGroup
+                  value={selectedPlanId}
+                  onChange={(e) => setSelectedPlanId(Number(e.target.value))}
+                >
+                  {planos.map((plano) => (
+                    <Box key={plano.id} mb={2} sx={{ border: 1, borderColor: 'divider' }} p={2}>
+                      <FormControlLabel
+                        value={plano.id}
+                        control={<Radio />}
+                        label={
+                          <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                            <Box>
+                              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                                <Typography fontWeight="bold">{plano.nome}</Typography>
+                                {plano.duracaoDias >= 365 && (
+                                  <Box sx={{ borderRadius: 10, bgcolor: theme.palette.primary.main, px: 1 }}>
+                                    <Typography color="secondary" sx={{ fontWeight: "bolder", fontSize: 12 }}>
+                                      Melhor Oferta
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Box>
+                              <Typography variant="body2" sx={{ width: "300px" }} color="text.secondary">
+                                {plano.descricao}
+                              </Typography>
+                            </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <PlayArrow sx={{ fontSize: 12, color: "rgba(255, 255, 255, 0.6)" }} />
-                  <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
-                    {curso.modulos.reduce((acc, modulo) => acc + modulo.videos.length, 0)} aulas
-                  </Typography>
+                            <Box sx={{ justifyContent: "end", display: "flex", flexDirection: "column", textAlign: "end" }}>
+                              <Typography sx={{ textAlign: "right" }}>
+                                R$ {plano.preco.toFixed(2)}
+                              </Typography>
+                              <Typography variant="caption" color="warning.main">
+                                {plano.duracaoDias} dias
+                              </Typography>
+
+                              {plano.duracaoDias >= 365 && (
+                                <Typography variant="caption" color="success.main">
+                                  R$ {(plano.preco / 12).toFixed(2)} / mês
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+
+                        }
+                      />
+                    </Box>
+                  ))}
+                </RadioGroup>
+              </CardContent>
+            </Card>
+
+            <Box my={4}>
+              <Card>
+                <CardHeader title="O que está incluído" />
+                <CardContent>
+                  {benefits.map((b, i) => (
+                    <Box key={i} display="flex" alignItems="center" mb={1}>
+                      <b.icon color="warning" sx={{ mr: 2 }} />
+                      <Box>
+                        <Typography fontWeight="medium">{b.title}</Typography>
+                        <Typography variant="body2" color="text.secondary">{b.desc}</Typography>
+                      </Box>
+                    </Box>
+                  ))}
+                </CardContent>
+              </Card>
+            </Box>
+
+            <Card sx={{ border: 1, borderColor: 'divider' }}>
+              <CardContent>
+                <Box display="flex" alignItems="center">
+                  <Shield color="success" sx={{ mr: 1 }} />
+                  <Box>
+                    <Typography fontWeight="bold" color="green.800">Garantia de 7 dias</Typography>
+                    <Typography variant="body2" color="green.700">
+                      Se não ficar satisfeito, devolvemos 100% do seu dinheiro
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Cupom de Desconto */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2" sx={{ color: "white", mb: 2, fontWeight: "bold" }}>
-            Cupom de Desconto
-          </Typography>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <TextField
-              size="small"
-              placeholder="Digite seu cupom"
-              value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value)}
-              sx={{
-                flex: 1,
-                "& .MuiOutlinedInput-root": {
-                  color: "white",
-                  backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                },
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LocalOffer sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: 18 }} />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button
-              variant="outlined"
-              onClick={applyCoupon}
-              sx={{
-                borderColor: "#90caf9",
-                color: "#90caf9",
-                "&:hover": { borderColor: "#64b5f6", backgroundColor: "rgba(144, 202, 249, 0.1)" },
-              }}
-            >
-              Aplicar
-            </Button>
-          </Box>
-          {appliedCoupon && (
-            <Chip
-              label={`${appliedCoupon.code} - ${appliedCoupon.discount}% OFF`}
-              color="success"
-              size="small"
-              sx={{ mt: 1 }}
-            />
-          )}
-        </Box>
-
-        <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.1)", mb: 3 }} />
-
-        {/* Cálculos */}
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
-              Subtotal:
-            </Typography>
-            <Typography variant="body2" sx={{ color: "white", fontWeight: "bold" }}>
-              R$ {curso.preco}
-            </Typography>
-          </Box>
-          {appliedCoupon && (
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-              <Typography variant="body2" sx={{ color: "#4caf50" }}>
-                Desconto ({appliedCoupon.discount}%):
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#4caf50", fontWeight: "bold" }}>
-                -R$ {appliedCoupon.value.toFixed(2).replace(".", ",")}
-              </Typography>
-            </Box>
-          )}
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
-              Taxas:
-            </Typography>
-            <Typography variant="body2" sx={{ color: "white", fontWeight: "bold" }}>
-              R$ 0,00
-            </Typography>
-          </Box>
-        </Box>
-
-        <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.1)", mb: 3 }} />
-
-        {/* Total */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mb: 4,
-            p: 2,
-            backgroundColor: "rgba(144, 202, 249, 0.1)",
-            borderRadius: 2,
-            border: "1px solid rgba(144, 202, 249, 0.3)",
-          }}
-        >
-          <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
-            Total:
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: "#90caf9",
-              fontWeight: "bold",
-              fontSize: "1.5rem",
-            }}
-          >
-            R$ {(curso.preco - (appliedCoupon?.value || 0)).toFixed(2).replace(".", ",")}
-          </Typography>
-        </Box>
-
-        {/* Botão Finalizar */}
-        <Button
-          fullWidth
-          variant="contained"
-          size="large"
-          onClick={handleSubmit}
-          sx={{
-            py: 2,
-            fontSize: "1.1rem",
-            fontWeight: "bold",
-            textTransform: "none",
-            borderRadius: 3,
-            background: "linear-gradient(45deg, #90caf9, #64b5f6)",
-            boxShadow: "0 8px 32px rgba(144, 202, 249, 0.3)",
-            "&:hover": {
-              background: "linear-gradient(45deg, #64b5f6, #42a5f5)",
-              transform: "translateY(-2px)",
-              boxShadow: "0 12px 40px rgba(144, 202, 249, 0.4)",
-            },
-            transition: "all 0.3s ease",
-            mb: 3,
-          }}
-          startIcon={<Security />}
-        >
-          Finalizar Compra
-        </Button>
-
-        {/* Garantias */}
-        <Box sx={{ textAlign: "center" }}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  p: 2,
-                  backgroundColor: "rgba(76, 175, 80, 0.1)",
-                  borderRadius: 2,
-                  border: "1px solid rgba(76, 175, 80, 0.2)",
-                }}
-              >
-                <Verified sx={{ fontSize: 24, color: "#4caf50", mb: 1 }} />
-                <Typography
-                  variant="caption"
-                  sx={{ color: "#4caf50", fontWeight: "bold", textAlign: "center" }}
-                >
-                  Garantia 30 dias
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  p: 2,
-                  backgroundColor: "rgba(144, 202, 249, 0.1)",
-                  borderRadius: 2,
-                  border: "1px solid rgba(144, 202, 249, 0.2)",
-                }}
-              >
-                <Support sx={{ fontSize: 24, color: "#90caf9", mb: 1 }} />
-                <Typography
-                  variant="caption"
-                  sx={{ color: "#90caf9", fontWeight: "bold", textAlign: "center" }}
-                >
-                  Suporte 24/7
-                </Typography>
-              </Box>
-            </Grid>
+              </CardContent>
+            </Card>
           </Grid>
-        </Box>
-      </CardContent>
 
+          <Grid item xs={12} md={6}>
+            <Box mb={4}>
+              <Card>
+                <CardHeader title="Resumo do pedido" />
+                <CardContent>
+                  {selectedPlan && (
+                    <>
+                      <Box display="flex" justifyContent="space-between">
+                        <Typography>Plano: {selectedPlan.nome}</Typography>
+                        <Typography fontWeight="medium">R$ {selectedPlan.preco.toFixed(2)}</Typography>
+                      </Box>
+                      <Divider sx={{ my: 2 }} />
+                      <Box display="flex" justifyContent="space-between" fontWeight="bold">
+                        <Typography>Total</Typography>
+                        <Typography>R$ {selectedPlan.preco.toFixed(2)}</Typography>
+                      </Box>
+                      <Typography variant="body2" color="text.secondary">
+                        Duração: {selectedPlan.duracaoDias} dias • Cancele quando quiser
+                      </Typography>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </Box>
+
+            <Card>
+              <CardHeader title="Informações de pagamento" />
+              <CardContent>
+                <Box mb={2}>
+                  <Typography fontWeight="medium">Método de pagamento</Typography>
+                  <RadioGroup
+                    row
+                    value={paymentMethod}
+                    onChange={e => setPaymentMethod(e.target.value)}
+                  >
+                    <FormControlLabel value="card" control={<Radio />} label="Cartão de crédito" />
+                    <FormControlLabel value="pix" control={<Radio />} label="PIX" />
+                  </RadioGroup>
+                </Box>
+                {/* Você pode expandir com mais inputs se for processar cartão real */}
+              </CardContent>
+              <CardActions>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  fullWidth
+                  size="large"
+                  type="submit"
+                >
+                  {paymentMethod === 'pix' ? 'Gerar PIX' : 'Finalizar assinatura'}
+                </Button>
+              </CardActions>
+            </Card>
+
+            <Box textAlign="center" mt={2} color="text.secondary">
+              <Box display="flex" justifyContent="center" alignItems="center" mb={1}>
+                <Shield fontSize="small" />
+                <Typography component="span" ml={0.5}>Pagamento 100% seguro</Typography>
+              </Box>
+              <Typography>
+                Seus dados estão protegidos com criptografia SSL de 256 bits
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
     </Box>
-  )
-}
+  );
+};

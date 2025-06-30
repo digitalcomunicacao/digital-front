@@ -105,7 +105,7 @@ export const MeusCursos = () => {
                     }}
                   >
                     <img
-                      src={"http://localhost:3000/" + curso.thumbnail}
+                      src={"http://10.10.10.216:3000/" + curso.thumbnail}
                       alt={curso.titulo}
                       style={{ width: "100%", height: "100%" }}
                     />
