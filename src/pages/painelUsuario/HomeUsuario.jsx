@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   Container,
@@ -13,8 +13,11 @@ import {
   Stack,
   Avatar,
   IconButton,
+  CircularProgress,
 } from "@mui/material"
 import { CalendarToday, PlayArrow, BookmarkBorder, FilterList, ChevronRight } from "@mui/icons-material"
+import { useNavigate } from "react-router-dom"
+import api from "../../config/Api"
 
 
 const mockCourses = [
@@ -118,7 +121,70 @@ const getLevelColor = (level) => {
 
 export default function HomeUsuario() {
   const [selectedFilter, setSelectedFilter] = useState("TODOS OS LEMBRETES")
+  const [cursoContinua, setCursoContinua] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        const response = await api.get("/curso/meus-cursos", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
 
+        const cursos = response.data
+    
+      for (const curso of cursos) {
+  for (const modulo of curso.modulos) {
+    for (const video of modulo.videos) {
+      if (!video.progresso?.concluido) {
+        const todosVideos = curso.modulos.flatMap((m) => m.videos)
+        const segundosTotais = todosVideos.reduce((acc, v) => acc + (v.duracao || 0), 0)
+        const segundosAssistidos = todosVideos.reduce(
+          (acc, v) => acc + (v.progresso?.segundos || 0),
+          0
+        )
+        const progressoPercentual = Math.floor((segundosAssistidos / Math.max(segundosTotais, 1)) * 100)
+
+        setCursoContinua({
+          titulo: curso.titulo,
+          progresso: progressoPercentual,
+          thumbnail: curso.thumbnail,
+          modulo,
+          curso: {
+            ...curso,
+            modulos: undefined,
+          },
+        })
+
+        return
+      }
+    }
+  }
+}
+
+
+      } catch (err) {
+        console.error("Erro ao carregar cursos:", err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchCursos()
+  }, [])
+
+  const handleContinuarCurso = () => {
+    if (cursoContinua) {
+      navigate("/painel-usuario/curso/player", {
+        state: {
+          curso: cursoContinua.curso,
+          modulo: cursoContinua.modulo,
+        },
+      })
+    }
+  }
   const continueCourse = {
     title: "Angular - Curso Introdutório",
     progress: 65,
@@ -126,7 +192,7 @@ export default function HomeUsuario() {
   }
 
   return (
-   <>
+    <>
       <Box
         sx={{
           minHeight: "100vh",
@@ -140,63 +206,83 @@ export default function HomeUsuario() {
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
               Continue de onde parou
             </Typography>
-            <Card
-              sx={{
-                background: "linear-gradient(135deg, #121829 0%, #1E2A46 100%)",
-                border: "1px solid rgba(255, 184, 0, 0.2)",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 8px 25px rgba(255, 184, 0, 0.15)",
-                },
-              }}
-            >
-              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Avatar
-                  sx={{
-                    bgcolor: "#DD0031",
-                    width: 56,
-                    height: 56,
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  A
-                </Avatar>
-                <Box flex={1}>
-                  <Typography variant="caption" color="text.secondary" sx={{ textTransform: "uppercase" }}>
-                    CURSO
-                  </Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {continueCourse.title}
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                    <Box
-                      sx={{
-                        width: 100,
-                        height: 4,
-                        bgcolor: "rgba(255, 184, 0, 0.2)",
-                        borderRadius: 2,
-                        overflow: "hidden",
-                      }}
-                    >
+
+            {isLoading ? (
+              <CircularProgress color="primary" />
+            ) : cursoContinua ? (
+              <Card
+                onClick={handleContinuarCurso}
+                sx={{
+                  background: "linear-gradient(135deg, #121829 0%, #1E2A46 100%)",
+                  border: "1px solid rgba(255, 184, 0, 0.2)",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 8px 25px rgba(255, 184, 0, 0.15)",
+                  },
+                }}
+              >
+                <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Avatar
+                    sx={{
+                      bgcolor: "#DD0031",
+                      width: 56,
+                      height: 56,
+                      fontSize: "1.5rem",
+                      fontWeight: "bold",
+                      overflow: "hidden", // <-- garante que a imagem fique dentro do círculo
+                    }}
+                  >
+                    {cursoContinua.thumbnail ? (
+                      <img
+                        src={"http://localhost:3000/" + cursoContinua.thumbnail}
+                        alt={cursoContinua.titulo}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      cursoContinua.titulo[0]
+                    )}
+                  </Avatar>
+
+                  <Box flex={1}>
+                    <Typography variant="caption" color="text.secondary" sx={{ textTransform: "uppercase" }}>
+                      CURSO
+                    </Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      {cursoContinua.titulo}
+                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
                       <Box
                         sx={{
-                          width: `${continueCourse.progress}%`,
-                          height: "100%",
-                          bgcolor: "primary.main",
+                          width: 100,
+                          height: 4,
+                          bgcolor: "rgba(255, 184, 0, 0.2)",
+                          borderRadius: 2,
+                          overflow: "hidden",
                         }}
-                      />
+                      >
+                        <Box
+                          sx={{
+                            width: `${cursoContinua.progresso}%`,
+                            height: "100%",
+                            bgcolor: "primary.main",
+                          }}
+                        />
+                      </Box>
+                      <Typography variant="caption" color="text.secondary">
+                        {cursoContinua.progresso}%
+                      </Typography>
                     </Box>
-                    <Typography variant="caption" color="text.secondary">
-                      {continueCourse.progress}%
-                    </Typography>
                   </Box>
-                </Box>
-                <ChevronRight sx={{ color: "text.secondary" }} />
-              </CardContent>
-            </Card>
+                  <ChevronRight sx={{ color: "text.secondary" }} />
+                </CardContent>
+              </Card>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                Nenhum curso em andamento.
+              </Typography>
+            )}
           </Box>
 
           {/* Veja o que vem aí */}
@@ -212,7 +298,7 @@ export default function HomeUsuario() {
 
             {/* Filtros */}
             <Box mb={4}>
-              <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: {xs:"nowrap",md:"wrap"},overflowX:{xs:"auto",md:"unset"},gap: 1 }}>
+              <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: { xs: "nowrap", md: "wrap" }, overflowX: { xs: "auto", md: "unset" }, gap: 1 }}>
                 {filterOptions.map((filter) => (
                   <Chip
                     key={filter}
@@ -395,6 +481,6 @@ export default function HomeUsuario() {
           </Box>
         </Container>
       </Box>
-   </>
+    </>
   )
 }

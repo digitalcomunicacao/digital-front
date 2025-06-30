@@ -25,19 +25,33 @@ export const Checkout = () => {
   const location = useLocation()
   const curso = location.state?.curso
   const navigate=useNavigate()
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    const token = localStorage.getItem('token');
-    api.post('pagamento/'+curso.id,{},{
-     headers: { Authorization: `Bearer ${token}` },
-    }).then(function(response){
-      console.log(response)
-   navigate("/painel-usuario/meus-cursos")
 
-    }).catch(function(error){
-      console.log(error)
+
+ const handleSubmit = (event) => {
+  event.preventDefault();
+
+  const token = localStorage.getItem('token');
+
+  api.post(
+    'assinatura',
+    {
+      metodoPagamento: 'pix', // ou 'cartao', 'paypal', etc.
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+    .then((response) => {
+      console.log(response);
+      navigate("/painel-usuario/meus-cursos");
     })
-  }
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
   const [couponCode, setCouponCode] = useState("")
   const [appliedCoupon, setAppliedCoupon] = useState(null)
 
@@ -67,7 +81,7 @@ export const Checkout = () => {
           >
             <Box
               component="img"
-              src={"http://10.10.10.214:3000/" + curso.thumbnail}
+              src={"http://localhost:3000/" + curso.thumbnail}
               alt={curso.titulo}
               sx={{
                 width: 80,

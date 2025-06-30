@@ -11,7 +11,7 @@ export const VisaoGeral = ({ curso }) => {
                     <Box sx={{ p: 3 }}>
                         <Box sx={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center", gap: 1 }}>
                             <Box sx={{ width: "100px", height: "100px" }}>
-                                <img src={`http://10.10.10.214:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%" }} />
+                                <img src={`http://localhost:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%" }} />
                             </Box>
                         </Box>
 

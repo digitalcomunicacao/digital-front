@@ -14,11 +14,28 @@ import {
 
 } from "@mui/material"
 import { useNavigate } from "react-router-dom";
+import api from "../../config/Api";
 export const CardCurso = ({ curso }) => {
     const navigate = useNavigate();
     const handleDetalhes = () => {
         navigate("/curso/detalhe", { state: { curso } });
     };
+const handleSelecionarCurso = (cursoId) => {
+  const token = localStorage.getItem('token');
+
+  api.post('/curso-selecionado', { cursoId }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(response => {
+    console.log('Curso selecionado:', response.data);
+  })
+  .catch(error => {
+    console.error('Erro ao selecionar curso:', error);
+  });
+};
+
     const token = localStorage.getItem('token')
     return (
         <Card sx={{
@@ -29,7 +46,7 @@ export const CardCurso = ({ curso }) => {
             },
         }}>
             <Box sx={{ position: "relative" }}>
-                <CardMedia component="img" height="200" image={`http://10.10.10.214:3000/${curso.thumbnail}`} alt={curso.titulo} />
+                <CardMedia component="img" height="200" image={`http://localhost:3000/${curso.thumbnail}`} alt={curso.titulo} />
                 <Chip
                     label={curso.level}
                     size="small"
@@ -160,10 +177,17 @@ export const CardCurso = ({ curso }) => {
 
                 {/* Botões de ação */}
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button
-                        variant="contained"
-                        fullWidth
-                        onClick={() => navigate(token?"/checkout":"/login", { state: { curso } })}
+              <Button
+  variant="contained"
+  fullWidth
+  onClick={() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user.assinante) {
+      handleSelecionarCurso(curso.id);
+    } else {
+      navigate(token ? "/checkout" : "/login", { state: { curso } });
+    }
+  }}
                         sx={{
                             py: 1.5,
                             fontWeight: "bold",
@@ -171,8 +195,9 @@ export const CardCurso = ({ curso }) => {
                             borderRadius: 2,
                         }}
                     >
-                        Inscrever-se
+                        Começar Agora
                     </Button>
+                    
                     <Button
                         onClick={handleDetalhes}
                         variant="outlined"

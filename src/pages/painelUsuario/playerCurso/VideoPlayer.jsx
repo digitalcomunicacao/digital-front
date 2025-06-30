@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   Box,
   Paper,
@@ -23,50 +23,137 @@ import axios from "axios"
 import ReactPlayer from "react-player"
 import { useTheme } from "@mui/material/styles"
 import ContadorPlayer from "./ContadorPlayer"
+import api from "../../../config/Api"
 
 export const VideoPlayer = () => {
   const navigate = useNavigate()
+  // início manual
+
   const location = useLocation()
-  const modulo = location.state?.modulo
-  const curso = location.state?.curso
-const [countdown, setCountdown] = useState(null)
-const [showCountdownOverlay, setShowCountdownOverlay] = useState(false)
+  const [curso, setCurso] = useState(location.state?.curso || null)
+  const [modulo, setModulo] = useState(location.state?.modulo || null)
+
+  const [progressoInicial, setProgressoInicial] = useState(0)
+  const [countdown, setCountdown] = useState(null)
+  const [showCountdownOverlay, setShowCountdownOverlay] = useState(false)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
-const [nextVideo, setNextVideo] = useState(null)
-
+  const [nextVideo, setNextVideo] = useState(null)
   const [videoBlobUrl, setVideoBlobUrl] = useState(null)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [currentVideo, setCurrentVideo] = useState(modulo?.videos?.[0] || null)
   const [isLoading, setIsLoading] = useState(false)
-  const [watchedVideos, setWatchedVideos] = useState(new Set())
 
+  const playerRef = useRef(null)
+  const [hasSeeked, setHasSeeked] = useState(false)
+  const [maxProgressoSalvo, setMaxProgressoSalvo] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+
+  const token = localStorage.getItem("token")
+  // Busca vídeo protegido + progresso salvo no backend
+
+  console.log(modulo)
+  const fetchCursosAtualizados = async () => {
+    try {
+      const response = await api.get("/curso/meus-cursos", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const cursos = response.data
+
+      // Encontra o curso atualizado pelo id do curso atual
+      const cursoAtualizado = cursos.find((c) => c.id === curso?.id)
+      if (!cursoAtualizado) {
+        // Curso não encontrado no backend, redireciona
+        navigate("/painel-usuario/meus-cursos")
+        return
+      }
+
+      // Encontra o módulo atualizado pelo id do módulo atual dentro do curso
+      const moduloAtualizado = cursoAtualizado.modulos.find((m) => m.id === modulo?.id)
+      if (!moduloAtualizado) {
+        // Módulo não encontrado, pode redirecionar ou tratar erro
+        navigate("/painel-usuario/meus-cursos")
+        return
+      }
+
+      setCurso(cursoAtualizado)
+      setModulo(moduloAtualizado)
+    } catch (error) {
+      console.error("Erro ao buscar cursos atualizados:", error)
+      // Caso erro, pode redirecionar para a lista ou mostrar mensagem
+      navigate("/painel-usuario/meus-cursos")
+    }
+  }
+
+  // useEffect que roda na montagem para garantir dados atualizados
   useEffect(() => {
-    const fetchVideo = async () => {
-      if (!currentVideo?.url) return
+    if (!curso || !modulo) {
+      // Se não tem dados no state, redireciona direto
+      navigate("/painel-usuario/meus-cursos")
+      return
+    }
+    fetchCursosAtualizados()
+  }, [])
 
-      setIsLoading(true)
-      try {
-        const token = localStorage.getItem("token")
-        const response = await axios.get(`http://10.10.10.214:3000/files/${currentVideo.url}`, {
+  // Atualiza vídeo atual quando módulo for atualizado
+  useEffect(() => {
+    if (!modulo?.videos?.length) return
+
+    const primeiroNaoConcluido = modulo.videos.find((v) => !v.progresso?.concluido)
+
+    if (primeiroNaoConcluido) {
+      setCurrentVideo(primeiroNaoConcluido)
+    } else {
+      setCurrentVideo(modulo.videos[modulo.videos.length - 1])
+    }
+  }, [modulo])
+
+  const getProgressoVideo = async (videoId) => {
+    try {
+      const response = await api
+        .get(`/progresso-video/${videoId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      const segundos = response.data?.segundos || 0
+      setProgressoInicial(segundos)
+    } catch (error) {
+      console.error("Erro ao pegar progresso do vídeo:", error)
+      setProgressoInicial(0)
+    }
+  }
+
+  const getVideoBlob = async (videoUrl) => {
+    try {
+      const response = await api
+        .get(`/files/${videoUrl}`, {
           responseType: "blob",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
-
-        const blobUrl = URL.createObjectURL(response.data)
-        setVideoBlobUrl(blobUrl)
-      } catch (error) {
-        console.error("Erro ao carregar vídeo:", error)
-        setVideoBlobUrl(null)
-      } finally {
-        setIsLoading(false)
-      }
+      const blobUrl = URL.createObjectURL(response.data)
+      setVideoBlobUrl(blobUrl)
+    } catch (error) {
+      console.error("Erro ao carregar vídeo:", error)
+      setVideoBlobUrl(null)
     }
+  }
 
+  useEffect(() => {
+    if (!currentVideo?.url) return
 
-    fetchVideo()
+    let blobUrlTemp = null
+
+    setIsLoading(true)
+    setHasSeeked(false)
+
+    getProgressoVideo(currentVideo.id)
+      .then(() => getVideoBlob(currentVideo.url))
+      .finally(() => {
+        setIsLoading(false)
+      })
 
     return () => {
       if (videoBlobUrl) {
@@ -75,34 +162,90 @@ const [nextVideo, setNextVideo] = useState(null)
     }
   }, [currentVideo])
 
-const handleVideoEnd = () => {
-  if (currentVideo) {
-    setWatchedVideos((prev) => new Set([...prev, currentVideo.id]))
 
-    const currentIndex = modulo?.videos?.findIndex((video) => video.id === currentVideo.id)
-    const next = modulo?.videos?.[currentIndex + 1]
-    setNextVideo(next)
+  // Salvar progresso a cada 10 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (playerRef.current && currentVideo?.id) {
+        const tempoAtual = playerRef.current.getCurrentTime()
+        const duracaoVideo = currentVideo.duracao || 0
 
-    if (next) {
-      setShowCountdownOverlay(true)
-      setCountdown(5)
+        const concluido = tempoAtual >= duracaoVideo - 2 // 2s de folga para garantir
 
-      const interval = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev === 1) {
-            clearInterval(interval)
-            setShowCountdownOverlay(false)
-            setCurrentVideo(next)
-            setNextVideo(null)
-            return null
+        if (tempoAtual > maxProgressoSalvo) {
+          const token = localStorage.getItem("token")
+
+          api.patch("/progresso-video", {
+            videoId: currentVideo.id,
+            segundos: Math.floor(tempoAtual),
+            concluido,
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }).catch(err => {
+            console.error("Erro ao salvar progresso:", err)
+          })
+
+          setMaxProgressoSalvo(tempoAtual)
+        }
+      }
+    }, 10000)
+
+    return () => clearInterval(interval)
+  }, [currentVideo, maxProgressoSalvo])
+
+
+  // Quando vídeo terminar
+  const handleVideoEnd = () => {
+    if (currentVideo) {
+
+      // Atualiza o progresso local do vídeo atual para refletir "concluído: true"
+      setCurrentVideo((prevVideo) => ({
+        ...prevVideo,
+        progresso: {
+          ...(prevVideo.progresso || {}),
+          concluido: true,
+        },
+      }))
+
+      // Também atualiza o progresso dentro do array de vídeos do módulo
+      modulo.videos = modulo.videos.map((video) =>
+        video.id === currentVideo.id
+          ? {
+            ...video,
+            progresso: {
+              ...(video.progresso || {}),
+              concluido: true,
+            },
           }
-          return prev - 1
-        })
-      }, 1000)
+          : video
+      )
+
+      const currentIndex = modulo?.videos?.findIndex((video) => video.id === currentVideo.id)
+      const next = modulo?.videos?.[currentIndex + 1]
+      setNextVideo(next)
+
+      if (next) {
+        setShowCountdownOverlay(true)
+        setCountdown(5)
+
+        const interval = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev === 1) {
+              clearInterval(interval)
+              setShowCountdownOverlay(false)
+              setCurrentVideo(next)
+              setNextVideo(null)
+              setIsPlaying(true) // <-- autoplay no próximo vídeo
+              return null
+            }
+            return prev - 1
+          })
+        }, 1000)
+      }
     }
   }
-}
-
 
 
   const getCurrentVideoIndex = () => {
@@ -110,9 +253,12 @@ const handleVideoEnd = () => {
   }
 
   const getProgressPercentage = () => {
-    if (!modulo?.videos?.length) return 0
-    return (watchedVideos.size / modulo.videos.length) * 100
+    const total = modulo?.videos?.length || 1
+    const concluidos = modulo?.videos?.filter((v) => v.progresso?.concluido === true).length || 0
+    return (concluidos / total) * 100
   }
+
+
   useEffect(() => {
     if (isMobile) {
       setIsCollapsed(true)
@@ -120,6 +266,11 @@ const handleVideoEnd = () => {
       setIsCollapsed(false)
     }
   }, [isMobile])
+  const videosConcluidos = modulo?.videos?.filter(
+    (v) => v.progresso?.concluido === true
+  ).length || 0
+
+  const totalVideos = modulo?.videos?.length || 0
 
   return (
     <Box
@@ -131,14 +282,14 @@ const handleVideoEnd = () => {
         backgroundAttachment: "fixed",
       }}
     >
-      {/* Top Bar Enhanced */}
+      {/* Top Bar */}
       <Paper
         elevation={0}
         sx={{
           p: { xs: 2, md: 3 },
-          background: "rgba(18, 24, 41, 0.95)", // Usando background.paper com transparência
+          background: "rgba(18, 24, 41, 0.95)",
           backdropFilter: "blur(10px)",
-          borderBottom: "1px solid rgba(255, 184, 0, 0.2)", // Primary color border
+          borderBottom: "1px solid rgba(255, 184, 0, 0.2)",
           display: "flex",
           alignItems: "center",
           gap: 2,
@@ -150,9 +301,9 @@ const handleVideoEnd = () => {
         <IconButton
           onClick={() => navigate(-1)}
           sx={{
-            bgcolor: "#FFB800", // primary.main
-            color: "#0A1128", // Texto escuro no amarelo
-            "&:hover": { bgcolor: "#dba600" }, // Hover do tema
+            bgcolor: "#FFB800",
+            color: "#0A1128",
+            "&:hover": { bgcolor: "#dba600" },
             boxShadow: 2,
           }}
         >
@@ -160,7 +311,7 @@ const handleVideoEnd = () => {
         </IconButton>
 
         <Avatar
-          src={`http://10.10.10.214:3000/${curso.thumbnail}`}
+          src={`http://localhost:3000/${curso.thumbnail}`}
           alt="Thumbnail"
           variant="rounded"
           sx={{
@@ -186,10 +337,9 @@ const handleVideoEnd = () => {
           </Typography>
         </Box>
 
-        {/* Progress indicator */}
         <Box sx={{ display: { xs: "none", md: "block" }, minWidth: 120 }}>
           <Typography variant="caption" color="text.secondary" align="center" display="block">
-            Progresso: {watchedVideos.size}/{modulo?.videos?.length || 0}
+            Progresso: {videosConcluidos}/{totalVideos}
           </Typography>
           <LinearProgress
             variant="determinate"
@@ -198,13 +348,14 @@ const handleVideoEnd = () => {
               mt: 0.5,
               height: 6,
               borderRadius: 3,
-              bgcolor: "rgba(160, 160, 160, 0.2)", // text.secondary com transparência
+              bgcolor: "rgba(160, 160, 160, 0.2)",
               "& .MuiLinearProgress-bar": {
                 borderRadius: 3,
-                background: "linear-gradient(45deg, #FFB800 30%, #dba600 90%)", // Gradiente amarelo
+                background: "linear-gradient(45deg, #FFB800 30%, #dba600 90%)",
               },
             }}
           />
+
         </Box>
       </Paper>
 
@@ -219,7 +370,7 @@ const handleVideoEnd = () => {
           p: { xs: 0, md: 3 },
         }}
       >
-        {/* Enhanced Player */}
+        {/* Player */}
         <Box
           sx={{
             flex: 1,
@@ -233,7 +384,7 @@ const handleVideoEnd = () => {
             sx={{
               borderRadius: { xs: 2, md: 4 },
               overflow: "hidden",
-              background: "linear-gradient(145deg, #121829, #1E2A46)", // Usando as cores do tema
+              background: "linear-gradient(145deg, #121829, #1E2A46)",
               position: "relative",
             }}
           >
@@ -248,7 +399,7 @@ const handleVideoEnd = () => {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  background: "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))", // Primary e secondary
+                  background: "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
                   zIndex: videoBlobUrl ? -1 : 1,
                   pointerEvents: "none",
                 },
@@ -270,7 +421,7 @@ const handleVideoEnd = () => {
                     size={60}
                     thickness={4}
                     sx={{
-                      color: "#FFB800", // primary.main
+                      color: "#FFB800",
                       "& .MuiCircularProgress-circle": {
                         strokeLinecap: "round",
                       },
@@ -282,31 +433,38 @@ const handleVideoEnd = () => {
                 </Box>
               ) : videoBlobUrl ? (
                 <>
-              
-                <ReactPlayer
-                  url={videoBlobUrl}
-                  controls
-                  playing
-                  onEnded={handleVideoEnd}
-                  width="100%"
-                  height="100%"
-                  config={{
-                    file: {
-                      attributes: {
-                        controlsList: "nodownload",
+                  <ReactPlayer
+                    ref={playerRef}
+                    url={videoBlobUrl}
+                    controls
+                    playing={isPlaying}
+                    onEnded={handleVideoEnd}
+                    width="100%"
+                    height="100%"
+                    onReady={() => {
+                      if (!hasSeeked && playerRef.current) {
+                        playerRef.current.seekTo(progressoInicial, "seconds")
+                        setHasSeeked(true)
+                      }
+                    }}
+                    config={{
+                      file: {
+                        attributes: {
+                          controlsList: "nodownload",
+                        },
                       },
-                    },
-                  }}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                  }}
-                />
-{showCountdownOverlay && countdown !== null && (
-     <ContadorPlayer countdown={countdown} nextVideo={nextVideo} />
-)}
-  </>
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                    }}
+                  />
+
+                  {showCountdownOverlay && countdown !== null && (
+                    <ContadorPlayer countdown={countdown} nextVideo={nextVideo} />
+                  )}
+                </>
               ) : (
                 <Box
                   sx={{
@@ -333,18 +491,17 @@ const handleVideoEnd = () => {
             </Box>
           </Paper>
 
-          {/* Enhanced Video Info */}
+          {/* Video Info */}
           {currentVideo && (
             <Paper
               elevation={2}
               sx={{
                 mt: 3,
                 p: 3,
-
                 borderRadius: 3,
-                background: "rgba(18, 24, 41, 0.9)", // background.paper com transparência
+                background: "rgba(18, 24, 41, 0.9)",
                 backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255, 184, 0, 0.1)", // Borda sutil amarela
+                border: "1px solid rgba(255, 184, 0, 0.1)",
               }}
             >
               <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
@@ -352,8 +509,8 @@ const handleVideoEnd = () => {
                   sx={{
                     width: 40,
                     height: 40,
-                    bgcolor: "#FFB800", // primary.main
-                    color: "#0A1128", // Texto escuro
+                    bgcolor: "#FFB800",
+                    color: "#0A1128",
                     fontWeight: "bold",
                   }}
                 >
@@ -364,7 +521,7 @@ const handleVideoEnd = () => {
                     gutterBottom
                     sx={{
                       fontWeight: 600,
-                      fontSize: { xs: 13, sm: 14 }, // responsivo
+                      fontSize: { xs: 13, sm: 14 },
                       whiteSpace: "pre-line",
                       wordBreak: "break-word",
                     }}
@@ -390,7 +547,7 @@ const handleVideoEnd = () => {
                         fontSize: { xs: 10, sm: 12 },
                       }}
                     />
-                    {watchedVideos.has(currentVideo.id) && (
+                    {currentVideo?.progresso?.concluido && (
                       <Chip
                         icon={<CheckCircle fontSize="small" />}
                         label="Assistido"
@@ -405,18 +562,17 @@ const handleVideoEnd = () => {
                     )}
                   </Box>
                 </Box>
-
               </Box>
             </Paper>
           )}
         </Box>
 
-        {/* Enhanced Sidebar */}
+        {/* Sidebar */}
         <Paper
           elevation={4}
           sx={{
             width: isMobile ? "100%" : isCollapsed ? 80 : 350,
-            height: isMobile ? (isCollapsed ? 80 : 400) : "fit-content", // Altura menor quando colapsada no mobile
+            height: isMobile ? (isCollapsed ? 80 : 400) : "fit-content",
             maxHeight: isMobile ? (isCollapsed ? 80 : 400) : "calc(100vh - 200px)",
             borderRadius: { xs: "16px 16px 0 0", md: 3 },
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -430,17 +586,17 @@ const handleVideoEnd = () => {
             bottom: isMobile ? 0 : "auto",
           }}
         >
-          {/* Enhanced Header */}
+          {/* Header */}
           <Box
             sx={{
               p: 2,
               borderBottom: "1px solid rgba(255, 184, 0, 0.2)",
-              background: "linear-gradient(135deg, #1E2A46 0%, #0A1128 100%)", // Gradiente do tema
-              color: "#FFFFFF", // text.primary
+              background: "linear-gradient(135deg, #1E2A46 0%, #0A1128 100%)",
+              color: "#FFFFFF",
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              {((isMobile && isCollapsed || !isCollapsed) || (!isMobile && !isCollapsed)) && (
+              {((isMobile && isCollapsed) || !isCollapsed) && (
                 <Box>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Lista de Vídeos
@@ -452,96 +608,13 @@ const handleVideoEnd = () => {
               )}
 
               <IconButton onClick={() => setIsCollapsed((prev) => !prev)} sx={{ color: "white", ml: "auto" }}>
-
-
                 {isCollapsed ? <MenuOpen /> : <Menu />}
               </IconButton>
             </Box>
           </Box>
 
-          {/* Enhanced Video List */}
-          {!isCollapsed && (
-            <Box sx={{ overflowY: "auto", flex: 1, p: 1 }}>
-              <List dense>
-                {modulo?.videos?.map((video, index) => (
-                  <ListItem key={video.id} disablePadding sx={{ mb: 1 }}>
-                    <ListItemButton
-                      selected={video.id === currentVideo?.id}
-                      onClick={() => {
-                        setCurrentVideo(video);
-                        if (isMobile) {
-                          setIsCollapsed(true); // colapsar após selecionar no mobile
-                        }
-                      }}
-                      sx={{
-                        borderRadius: 2,
-                        px: 2,
-                        py: 1.5,
-                        transition: "all 0.2s",
-                        "&.Mui-selected": {
-                          background: "linear-gradient(135deg, #FFB800 0%, #dba600 100%)", // Gradiente amarelo
-                          color: "#0A1128", // Texto escuro no amarelo
-                          transform: "translateX(4px)",
-                          boxShadow: "0 4px 12px rgba(255, 184, 0, 0.25)",
-                        },
-                        "&.Mui-selected:hover": {
-                          background: "linear-gradient(135deg, #dba600 0%, #c49600 100%)", // Hover mais escuro
-                        },
-                        "&:hover": {
-                          bgcolor: "rgba(30, 42, 70, 0.3)", // secondary com transparência
-                          transform: "translateX(2px)",
-                        },
-                      }}
-                    >
-                      <Avatar
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          fontSize: 14,
-                          bgcolor: video.id === currentVideo?.id ? "rgba(10, 17, 40, 0.3)" : "#FFB800",
-                          color: video.id === currentVideo?.id ? "#0A1128" : "#0A1128",
-                          mr: 2,
-                          fontWeight: "bold",
-                          border: watchedVideos.has(video.id) ? "2px solid #FFB800" : "none",
-                        }}
-                      >
-                        {watchedVideos.has(video.id) ? <CheckCircle fontSize="small" /> : index + 1}
-                      </Avatar>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: video.id === currentVideo?.id ? 600 : 400,
-                              lineHeight: 1.3,
-                            }}
-                          >
-                            {video.titulo}
-                          </Typography>
-                        }
-                        secondary={
-                          watchedVideos.has(video.id) && (
-                            <Typography
-                              variant="caption"
-                              sx={{
-                                color: video.id === currentVideo?.id ? "rgba(255,255,255,0.8)" : "success.main",
-                                fontWeight: 500,
-                              }}
-                            >
-                              ✓ Concluído
-                            </Typography>
-                          )
-                        }
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          )}
-
-          {/* Collapsed State - agora funciona para mobile e desktop */}
-          {isCollapsed && (
+          {isCollapsed ? (
+            // Modo colapsado (ícone + tooltip + info atual)
             <Box
               sx={{
                 p: 2,
@@ -553,17 +626,54 @@ const handleVideoEnd = () => {
                 gap: isMobile ? 2 : 1,
               }}
             >
-              <Tooltip title="Expandir lista de vídeos" placement={isMobile ? "top" : "left"}>
+              <Tooltip
+                title={
+                  <Box sx={{ p: 1 }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      Expandir lista de vídeos
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: "gray" }}>
+                      {modulo?.videos?.length || 0} vídeos
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: "gray" }}>
+                      Assistindo: {getCurrentVideoIndex() + 1}/{modulo?.videos?.length || 0}
+                    </Typography>
+                    {currentVideo?.progresso?.concluido && (
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "success.main",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 0.5,
+                          mt: 0.5,
+                        }}
+                      >
+                        <CheckCircle fontSize="inherit" /> Concluído
+                      </Typography>
+                    )}
+                  </Box>
+                }
+                placement={isMobile ? "top" : "left"}
+                arrow
+              >
                 <Box
                   sx={{
                     display: "flex",
                     flexDirection: isMobile ? "row" : "column",
                     alignItems: "center",
                     gap: isMobile ? 1 : 0,
+                    cursor: "pointer",
                   }}
                 >
                   <VideoLibrary sx={{ fontSize: isMobile ? 24 : 32, color: "#FFB800" }} />
-                  <Box sx={{ display: "flex", flexDirection: isMobile ? "row" : "column", gap: isMobile ? 1 : 0 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: isMobile ? "row" : "column",
+                      gap: isMobile ? 1 : 0,
+                    }}
+                  >
                     <Typography variant="caption" sx={{ color: "#A0A0A0" }}>
                       {modulo?.videos?.length || 0} vídeos
                     </Typography>
@@ -576,7 +686,6 @@ const handleVideoEnd = () => {
                 </Box>
               </Tooltip>
 
-              {/* Mostrar vídeo atual no mobile quando colapsado */}
               {isMobile && currentVideo && (
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, minWidth: 0 }}>
                   <Avatar
@@ -606,7 +715,90 @@ const handleVideoEnd = () => {
                 </Box>
               )}
             </Box>
+          ) : (
+            // Modo expandido (lista de vídeos)
+            <Box sx={{ overflowY: "auto", flex: 1, p: 1 }}>
+              <List dense>
+                {modulo?.videos?.map((video, index) => (
+                  <ListItem key={video.id} disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      selected={video.id === currentVideo?.id}
+                      onClick={() => {
+                        setCurrentVideo(video)
+                        if (isMobile) setIsCollapsed(true)
+                      }}
+                      sx={{
+                        borderRadius: 2,
+                        px: 2,
+                        py: 1.5,
+                        transition: "all 0.2s",
+                        "&.Mui-selected": {
+                          background: "linear-gradient(135deg, #FFB800 0%, #dba600 100%)",
+                          color: "#0A1128",
+                          transform: "translateX(4px)",
+                          boxShadow: "0 4px 12px rgba(255, 184, 0, 0.25)",
+                        },
+                        "&.Mui-selected:hover": {
+                          background: "linear-gradient(135deg, #dba600 0%, #c49600 100%)",
+                        },
+                        "&:hover": {
+                          bgcolor: "rgba(30, 42, 70, 0.3)",
+                          transform: "translateX(2px)",
+                        },
+                      }}
+                    >
+                      <Avatar
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          fontSize: 14,
+                          fontWeight: "bold",
+                          mr: 2,
+                          bgcolor: video.id === currentVideo?.id ? "rgba(10, 17, 40, 0.3)" : "#FFB800",
+                          color: "#0A1128",
+                          border: video.progresso?.concluido ? "2px solid #FFB800" : "none",
+                        }}
+                      >
+                        {video.progresso?.concluido ? <CheckCircle fontSize="small" /> : index + 1}
+                      </Avatar>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: video.id === currentVideo?.id ? 600 : 400,
+                              lineHeight: 1.3,
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {video.titulo}
+                          </Typography>
+                        }
+                        secondary={
+                          video.progresso?.concluido && (
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: video.id === currentVideo?.id ? "rgba(255,255,255,0.8)" : "success.main",
+                                fontWeight: 500,
+                              }}
+                            >
+                              ✓ Concluído
+                            </Typography>
+                          )
+                        }
+                      />
+
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
           )}
+
+
         </Paper>
       </Box>
     </Box>

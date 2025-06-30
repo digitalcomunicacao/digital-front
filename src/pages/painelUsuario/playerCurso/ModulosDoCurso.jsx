@@ -6,10 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 export const ModulosDoCurso = ({ curso }) => {
   const navigate = useNavigate();
-
-
-
-
 const handleModuloClick = (modulo) => {
   // Clona o curso e remove os módulos
   const { modulos,instrutor, ...cursoSemModulos } = curso;
