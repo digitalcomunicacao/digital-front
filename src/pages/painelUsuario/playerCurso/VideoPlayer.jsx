@@ -298,7 +298,7 @@ export const VideoPlayer = () => {
         </IconButton>
 
         <Avatar
-          src={`http://10.10.10.216:3000/${curso.thumbnail}`}
+          src={`http://localhost:3000/${curso.thumbnail}`}
           alt="Thumbnail"
           variant="rounded"
           sx={{

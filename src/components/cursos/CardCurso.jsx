@@ -51,7 +51,7 @@ export const CardCurso = ({ curso }) => {
             },
         }}>
             <Box sx={{ position: "relative" }}>
-                <CardMedia component="img" height="200" image={`http://10.10.10.216:3000/${curso.thumbnail}`} alt={curso.titulo} />
+                <CardMedia component="img" height="200" image={`http://localhost:3000/${curso.thumbnail}`} alt={curso.titulo} />
                 <Chip
                     label={curso.level}
                     size="small"

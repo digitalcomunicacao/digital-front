@@ -20,7 +20,7 @@ useEffect(() => {
       });
 
       const user = response.data.user;
-      console.log("meu user",user)
+   
       // Salvar no localStorage ou contexto global
       localStorage.setItem('user', JSON.stringify(user));
 
