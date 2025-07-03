@@ -14,19 +14,40 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 import api from "../../config/Api";
-import PaymentForm from "./paymentform";
 
-const stripePromise = loadStripe("pk_test_51RgWBvGbLRuNST5uoIBM0sO8W7tWdtKtQJut92Df6gREEac7rVLVphhslgWK3xVdrz1RN7Q4jGauul188L8UCKL400B66SnW8C");
+import { Elements } from "@stripe/react-stripe-js";
+import PaymentForm from "./PaymentForm";
+
+const stripePromise = loadStripe(
+  "pk_test_51RgnbF8WAldxxURzEMoDtrWjVmJugLkhSnlyxMmJQk0TpRvBMcAu8iuZtZmyc71l8fdGjYr7cwp0vKV3RmvVWK4C00wRVNPXVA"
+);
 
 export const Checkout = () => {
   const [planos, setPlanos] = useState([]);
   const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [clientSecret, setClientSecret] = useState(null);
 
   useEffect(() => {
-    api.get("/planos")
+    const fetchClientSecret = async () => {
+      const token = localStorage.getItem("token");
+      const res = await api.post(
+        "/assinatura/setup-intent",
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setClientSecret(res.data.clientSecret);
+    };
+
+    fetchClientSecret();
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("/planos")
       .then((res) => {
         setPlanos(res.data);
         if (res.data.length > 0) {
@@ -42,8 +63,26 @@ export const Checkout = () => {
     setSelectedPlan(found || null);
   }, [selectedPlanId, planos]);
 
+  const appearance = {
+  theme: 'night', // ou 'flat', 'night', 'none'
+
+};
+
+  const options = {
+    clientSecret,
+    appearance,
+  };
+
+  if (!clientSecret) {
+    return (
+      <Container maxWidth="md" sx={{ py: 5, textAlign: "center" }}>
+        <Typography variant="h6">Carregando informações de pagamento...</Typography>
+      </Container>
+    );
+  }
+
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={stripePromise} options={options}>
       <Container maxWidth="md" sx={{ py: 5 }}>
         <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
           Escolha seu plano
@@ -69,30 +108,6 @@ export const Checkout = () => {
                 </RadioGroup>
               </CardContent>
             </Card>
-
-            <Box mt={4}>
-              <Card>
-                <CardHeader title="Resumo do pedido" />
-                <CardContent>
-                  {selectedPlan && (
-                    <>
-                      <Box display="flex" justifyContent="space-between">
-                        <Typography>Plano</Typography>
-                        <Typography>{selectedPlan.nome}</Typography>
-                      </Box>
-                      <Box display="flex" justifyContent="space-between">
-                        <Typography>Preço</Typography>
-                        <Typography>R$ {selectedPlan.preco.toFixed(2)}</Typography>
-                      </Box>
-                      <Divider sx={{ my: 2 }} />
-                      <Typography variant="body2" color="text.secondary">
-                        Acesso por {selectedPlan.duracaoDias} dias. Renovação automática.
-                      </Typography>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>

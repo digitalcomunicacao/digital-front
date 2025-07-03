@@ -1,36 +1,10 @@
-// components/PaymentForm.jsx
 import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  CircularProgress,
-  Typography,
-  Alert,
+  Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Typography, Alert
 } from "@mui/material";
-import { CreditCard } from "@mui/icons-material";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/Api";
-
-const cardStyle = {
-  style: {
-    base: {
-      fontSize: "16px",
-      color: "#424770",
-      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-      "::placeholder": {
-        color: "#aab7c4",
-      },
-    },
-    invalid: {
-      color: "#9e2146",
-    },
-  },
-};
 
 const PaymentForm = ({ selectedPlanId, selectedPlan }) => {
   const stripe = useStripe();
@@ -39,6 +13,20 @@ const PaymentForm = ({ selectedPlanId, selectedPlan }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [clientSecret, setClientSecret] = useState(null);
+  const [couponCode, setCouponCode] = useState("");
+
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      const token = localStorage.getItem("token");
+      const res = await api.post("/assinatura/setup-intent", {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setClientSecret(res.data.clientSecret);
+    };
+
+    fetchClientSecret();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,10 +35,12 @@ const PaymentForm = ({ selectedPlanId, selectedPlan }) => {
 
     if (!stripe || !elements) return;
 
-    const cardElement = elements.getElement(CardElement);
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: cardElement,
+    const { error, setupIntent } = await stripe.confirmSetup({
+      elements,
+      confirmParams: {
+        return_url: window.location.origin + "/painel-usuario/catalago", // ou sua rota
+      },
+      redirect: 'if_required',
     });
 
     if (error) {
@@ -59,21 +49,20 @@ const PaymentForm = ({ selectedPlanId, selectedPlan }) => {
       return;
     }
 
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
-
       await api.post(
         "/assinatura",
         {
           metodoPagamento: "CARTAO",
           planoId: selectedPlanId,
-          paymentMethodId: paymentMethod.id,
+          paymentMethodId: setupIntent.payment_method,
+          couponCode: couponCode.trim() || null,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       navigate("/painel-usuario/catalago");
     } catch (err) {
       setError("Erro ao criar assinatura.");
@@ -88,9 +77,24 @@ const PaymentForm = ({ selectedPlanId, selectedPlan }) => {
       <CardHeader title="Informações de pagamento" />
       <CardContent>
         <form onSubmit={handleSubmit}>
-          <Box sx={{ border: "1px solid #ccc", borderRadius: 2, p: 2, mb: 2 }}>
-            <CardElement options={cardStyle} />
+          <Box sx={{ mb: 2 }}>
+            <PaymentElement />
           </Box>
+
+          <input
+            type="text"
+            placeholder="Cupom de desconto"
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+              marginBottom: "16px",
+              fontSize: "14px",
+            }}
+          />
 
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -105,9 +109,10 @@ const PaymentForm = ({ selectedPlanId, selectedPlan }) => {
               color="warning"
               fullWidth
               disabled={!stripe || loading}
-              startIcon={<CreditCard />}
             >
-              {loading ? <CircularProgress size={20} color="inherit" /> : `Finalizar - R$ ${selectedPlan?.preco.toFixed(2)}`}
+              {loading
+                ? <CircularProgress size={20} color="inherit" />
+                : `Finalizar - R$ ${selectedPlan?.preco.toFixed(2)}`}
             </Button>
           </CardActions>
         </form>
