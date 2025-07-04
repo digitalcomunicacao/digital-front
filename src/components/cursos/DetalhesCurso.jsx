@@ -12,19 +12,28 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { VisaoGeral } from "./VisaoGeral";
 import { ConteudoCurso } from "./ConteudoCurso";
+import AppBarUsuario from "../appBarUsuario/AppBarUsuario";
 export const DetalhesCurso = () => {
     const location = useLocation();
     const curso = location.state?.curso;
     const navigate = useNavigate()
+     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
     if (!curso) return <div>Curso não encontrado</div>;
     return (
         <>
-            <ResponsiveAppBar />
+            
+            {user ? (
+                <AppBarUsuario/>
+            ):(
+    <ResponsiveAppBar />
+            )}
+        
             <Box sx={{ mt: { xs: 10, md: 15 } }}>
              <Container>
                     <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>

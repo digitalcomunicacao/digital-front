@@ -166,19 +166,8 @@ export const CardCurso = ({ curso }) => {
                     </Typography>
                 </Box>
 
-                {/* Preço */}
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            fontWeight: "bold",
-                            color: "primary.main",
-                        }}
-                    >
-                        R$ {curso.preco.toFixed(2).replace(".", ",")}
-                    </Typography>
-
-                </Box>
+             
+   
 
                 {/* Botões de ação */}
                 <Box sx={{ display: "flex", gap: 1 }}>
