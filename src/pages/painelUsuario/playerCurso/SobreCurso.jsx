@@ -11,7 +11,7 @@ export const SobreCurso = ({ curso }) => {
                     <Box sx={{ p: 3 }}>
                         <Box sx={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center", gap: 1 }}>
                             <Box sx={{ width: "100%", height: "auto" }}>
-                                <img src={`http://localhost:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%" }} />
+                                <img src={`https://api.de.gdelivery.app.br/${curso.thumbnail}`} style={{ width: "100%", height: "100%" }} />
                             </Box>
                         </Box>
 
