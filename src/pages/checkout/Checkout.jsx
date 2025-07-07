@@ -15,7 +15,6 @@ import {
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import api from "../../config/Api";
-
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "./PaymentForm";
 
