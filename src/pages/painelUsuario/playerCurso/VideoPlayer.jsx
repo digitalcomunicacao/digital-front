@@ -421,6 +421,26 @@ export const VideoPlayer = () => {
       </Box>
     ) : videoBlobUrl ? (
       <>
+      <Box
+  onContextMenu={(e) => e.preventDefault()} // ← aqui
+  sx={{
+    aspectRatio: "16/9",
+    position: "relative",
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background:
+        "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
+      zIndex: videoBlobUrl ? -1 : 1,
+      pointerEvents: "none",
+    },
+  }}>
+
+
         <ReactPlayer
           ref={playerRef}
           url={videoBlobUrl}
@@ -451,6 +471,7 @@ onReady={() => {
         {showCountdownOverlay && countdown !== null && (
           <ContadorPlayer countdown={countdown} nextVideo={nextVideo} />
         )}
+          </Box>
       </>
     ) : (
       <Box
