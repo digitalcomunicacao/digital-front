@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api.de.gdelivery.app.br/', 
+  baseURL: 'https://api.digitaleduca.com.vc/', 
   headers: {
     'Content-Type': 'application/json',
 

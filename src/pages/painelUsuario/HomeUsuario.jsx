@@ -236,7 +236,7 @@ export default function HomeUsuario() {
                   >
                     {cursoContinua.thumbnail ? (
                       <img
-                        src={"https://api.de.gdelivery.app.br/" + cursoContinua.thumbnail}
+                        src={"https://api.digitaleduca.com.vc/" + cursoContinua.thumbnail}
                         alt={cursoContinua.titulo}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
