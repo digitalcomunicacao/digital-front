@@ -117,7 +117,6 @@ export const Cadastro = ({ setPasso }) => {
                         ),
                     }}
                 />
-                <Link sx={{ textAlign: "end", mt: 2 }}>Esqueci minha senha</Link>
                 <Button
                 type="submit"
                     fullWidth

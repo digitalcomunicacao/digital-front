@@ -1,13 +1,13 @@
 import { Box, Button, IconButton, InputAdornment, Link, TextField, Typography } from "@mui/material"
-import theme from "../../theme/theme"
 import { useState } from "react"
 import { Cadastro } from "./Cadastro"
 import api from "../../config/Api"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom"
 import { useSnackbar } from "../../context/SnackBarContext"
+import { RecuperarSenha } from "./RecuperarSenha"
 export const Login = () => {
-      const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
   const [passo, setPasso] = useState(0)
   const [email,setEmail]=useState()
   const [senha,setSenha]=useState()
@@ -57,7 +57,9 @@ export const Login = () => {
         </Box>
         <Typography sx={{ mt: 2, fontWeight: 'bolder', fontSize: 30 }}>Acelere sua carreira em tecnologia</Typography>
       </Box>
-      {passo === 0 ? (
+        {passo ===0 && (
+
+    
         <Box sx={{width:{xs:"100%",md:"50%"},display:"flex",justifyContent:"center",alignItems:"center"}}>
          
         <Box sx={{ width: "400px", p: 5 }}>
@@ -91,7 +93,10 @@ export const Login = () => {
                         ),
                     }}
                 />
-            <Link sx={{ textAlign: "end", mt: 2 }}>Esqueci minha senha</Link>
+            <Button  onClick={()=>setPasso(2)} variant="text" sx={{ textAlign: "end", mt: 2, "&:hover": {
+      backgroundColor: "transparent",
+     
+    },}}>Esqueci minha senha</Button>
             <Button
               fullWidth
               variant="contained"
@@ -149,12 +154,14 @@ export const Login = () => {
           </Box>
  </Box>
         </Box>
-      ) : (
-        <Cadastro setPasso={setPasso} />
+    )}
+      {passo ===1 && (
+          <Cadastro setPasso={setPasso} />
+      )}
+        {passo ===2 && (
+          <RecuperarSenha setPasso={setPasso} />
       )}
 
-      
-
     </Box>
-  )
+          )
 }

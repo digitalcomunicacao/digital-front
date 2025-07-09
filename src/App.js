@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Home } from "./pages/home/Home";
 import { Login } from "./pages/login/Login";
@@ -14,6 +13,7 @@ import { Eventos } from "./pages/painelUsuario/Eventos";
 import { PlayerCurso } from "./pages/painelUsuario/playerCurso/PlayerCurso";
 import { VideoPlayer } from "./pages/painelUsuario/playerCurso/VideoPlayer";
 import { Checkout } from "./pages/checkout/Checkout";
+import {NovaSenha} from "./pages/login/NovaSenha"
 
 
 
@@ -29,6 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+         <Route path="resetar-senha" element={<NovaSenha/>}/>
           <Route
             path="/painel-usuario"
             element={
