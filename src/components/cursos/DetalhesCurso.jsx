@@ -58,7 +58,7 @@ export const DetalhesCurso = () => {
                             </Box>
                         </Box>
                         <Box sx={{ display: { xs: "none", md: "block" }, width: "400px", height: "auto" }}>
-                            <img src={`http://localhost:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
+                            <img src={`https://api.digitaleduca.com.vc/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
                         </Box>
                     </Box>
                 </Container>
