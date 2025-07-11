@@ -5,11 +5,13 @@ import { useState } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../context/SnackBarContext";
+import InputMask from 'react-input-mask';
 export const Cadastro = ({ setPasso }) => {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmSenha, setConfirmSenha] = useState("");
+    const [celular,setCelular]=useState("")
       const { showSnackbar } = useSnackbar();
     const navigate=useNavigate()
     const [showSenha, setShowSenha] = useState(false);
@@ -29,6 +31,7 @@ export const Cadastro = ({ setPasso }) => {
       nome,
       email,
       senha,
+      celular
     });
 
     // Se deu certo, faz login automático
@@ -79,7 +82,23 @@ export const Cadastro = ({ setPasso }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-
+                 <InputMask
+      mask="(99) 99999-9999"
+      value={celular}
+      onChange={(e)=>setCelular(e.target.value)}
+    >
+      {(inputProps) => (
+        <TextField
+          {...inputProps}
+          label="Celular"
+          variant="outlined"
+          required
+     
+          sx={{mt:5}}
+          fullWidth
+        />
+      )}
+    </InputMask>
                 <TextField
                     label="Senha"
                     required
