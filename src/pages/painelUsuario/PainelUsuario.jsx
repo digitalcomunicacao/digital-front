@@ -26,7 +26,7 @@ const isPlayerPage = location.pathname.includes("/painel-usuario/curso/player");
       <Box
         component="main"
         sx={{
-          p: isPlayerPage ? 0 : 3,
+          p: isPlayerPage ? 0 : 0,
           mt: '64px',
           ml: isMobile ? 0 : `${drawerWidth}px`,
           width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,

@@ -14,6 +14,7 @@ import { PlayerCurso } from "./pages/painelUsuario/playerCurso/PlayerCurso";
 import { VideoPlayer } from "./pages/painelUsuario/playerCurso/VideoPlayer";
 import { Checkout } from "./pages/checkout/Checkout";
 import {NovaSenha} from "./pages/login/NovaSenha"
+import { Configuracoes } from "./pages/painelUsuario/configuracoes/Configuracoes";
 
 
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="eventos" element={<Eventos />} />
             <Route path="curso" element={<PlayerCurso />} />
             <Route path="/painel-usuario/curso/player" element={<VideoPlayer />} />
+            <Route path="configuracoes" element={<Configuracoes />} />
           </Route>
 
           <Route path="/curso/detalhe" element={<DetalhesCurso />} />

@@ -20,6 +20,7 @@ import {
   MenuItem,
   Avatar,
   Menu,
+  Button,
 } from '@mui/material';
 import {
   Facebook,
@@ -37,7 +38,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useNavigate, useLocation } from 'react-router-dom';
 import theme from '../../theme/theme';
 import { Subscription } from '../subscription/Subscripition';
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = [{segment:"configuracoes",title:'minha conta'},{segment:"configuracoes",title:'Sair'}];
 const NAVIGATION = [
   { segment: 'home-usuario', title: 'Home', icon: <HomeIcon sx={{ color: theme.palette.primary.main }} /> },
   { kind: 'header', title: 'Progresso' },
@@ -225,7 +226,7 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
                 </Badge>
               </IconButton>
                 <Subscription/>
-              <Tooltip title="Open settings">
+              <Tooltip title="Meu perfil">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar>
 
@@ -249,8 +250,8 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={() => handleUserMenuClick(setting)}>
-                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                  <MenuItem  key={setting}  onClick={() => handleNavigate(setting.segment)}>
+                      <Typography sx={{textAlign:"center",fontWeight:"bolder"}}>{setting.title}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
