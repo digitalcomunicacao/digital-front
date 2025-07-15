@@ -101,7 +101,7 @@ export const Checkout = () => {
                       key={plano.id}
                       value={plano.id}
                       control={<Radio />}
-                      label={`${plano.nome} - R$ ${plano.preco.toFixed(2)} por ${plano.duracaoDias} dias`}
+                      label={`${plano.nome} - R$ ${plano.preco.toFixed(2)}`}
                     />
                   ))}
                 </RadioGroup>
