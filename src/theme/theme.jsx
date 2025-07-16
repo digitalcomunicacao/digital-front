@@ -8,17 +8,18 @@ const theme = createTheme({
       main: '#FFB800', // Amarelo destaque (da logo)
     },
     secondary: {
-      main: '#1E2A46', // Azul escuro complementar
+      main: '#141E30', // Azul escuro complementar
     },
     background: {
-      default: 'radial-gradient(circle at top left, #1E2A46, #0A1128)',
-      paper: '#121829',   // Cards, caixas
+      default: '#141E30',
+      paper: '#22345F',   // Cards, caixas
     },
-  text: {
-  primary: '#FFFFFF',
-  secondary: '#A0A0A0', // ou #B0B0B0, ou #888888
-},
-
+    text: {
+      primary: '#FFFFFF',
+      secondary: '#0D68F9', // ou #B0B0B0, ou #888888
+      tertiary:"#CBDAFB"
+    },
+divider: '#40619D',
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -56,7 +57,7 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundColor: '#121829',
+          backgroundColor: '#22345F',
         },
       },
     },

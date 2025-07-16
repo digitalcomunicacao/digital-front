@@ -219,13 +219,13 @@ export const Configuracoes = () => {
                                 <Divider variant="fullWidth" sx={{ my: 2 }} />
 
                                 <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mt: 2 }}>
-                                    <Button
+                                    {/* <Button
                                         variant="outlined"
                                         sx={{ fontWeight: "bolder" }}
                                         onClick={() => setOpenModalPlano(true)} // <- AQUI!
                                     >
                                         Alterar Plano
-                                    </Button>
+                                    </Button> */}
 
 
                                     <Button variant="outlined" sx={{ fontWeight: "bolder" }} onClick={handleOpenModal}>
@@ -262,13 +262,13 @@ export const Configuracoes = () => {
                                 </Box>
                             </Box>
                         )}
-                  <ModalSelecionarPlano
+                  {/* <ModalSelecionarPlano
   open={openModalPlano}
   onClose={() => setOpenModalPlano(false)}
   planos={planos}
   planoAtualId={usuario.assinatura.planoID}
   onConfirm={trocarPlano}
-/>
+/> */}
 
 
                     </Box>

@@ -168,16 +168,16 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
   return (
     <>
       <AppBar
+      elevation={0}
         position="fixed"
         sx={{
-          borderBottomLeftRadius: 5,
-          borderBottomRightRadius: 5,
-          py: 0.5,
+          borderBottom:1,
+          borderColor:"divider",
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
 
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{bgcolor:theme.palette.secondary.main}}>
           <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between", mx: { xs: 2, md: 5 } }}>
             <Box sx={{ display: "flex", gap: 2 }}>
               <IconButton

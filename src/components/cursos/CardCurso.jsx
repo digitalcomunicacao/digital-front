@@ -1,6 +1,6 @@
 
 
-import { AccessTime, PlayArrow, BookmarkBorder } from "@mui/icons-material"
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import {
     Card,
     CardContent,
@@ -16,6 +16,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import api from "../../config/Api";
 import { useSnackbar } from "../../context/SnackBarContext";
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import theme from '../../theme/theme';
 export const CardCurso = ({ curso }) => {
     const { showSnackbar } = useSnackbar();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -44,14 +47,16 @@ export const CardCurso = ({ curso }) => {
     const token = localStorage.getItem('token')
     return (
         <Card sx={{
-            width: { xs: "100%", md: "350px" }, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+            width: { xs: "100%", md: "380px" },height:"285px",border:2,borderColor:"divider",borderRadius:5,
             "&:hover": {
-                boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", // brilho amarelo
-                transform: "translateY(-2px)",
+                border:3,
+                borderColor:"#0D68F9",
+                height:"385px",
+                transition:"0.2s",
             },
         }}>
-            <Box sx={{ position: "relative" }}>
-                <CardMedia component="img" height="200" image={`https://api.digitaleduca.com.vc/${curso.thumbnail}`} alt={curso.titulo} />
+            <Box sx={{ position: "relative"}}>
+                <CardMedia component="img" height="160px" image={`http://localhost:3000/${curso.thumbnail}`} alt={curso.titulo} />
                 <Chip
                     label={curso.level}
                     size="small"
@@ -64,113 +69,22 @@ export const CardCurso = ({ curso }) => {
                         fontWeight: "bold",
                     }}
                 />
-
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 12,
-                        right: 12,
-                        backgroundColor: "rgba(0,0,0,0.6)",
-                        borderRadius: "50%",
-                        p: 1,
-                        cursor: "pointer",
-                        "&:hover": {
-                            backgroundColor: "rgba(0,0,0,0.8)",
-                        },
-                    }}
-                >
-                    <BookmarkBorder sx={{ color: "white", fontSize: 20 }} />
-                </Box>
             </Box>
-            <CardContent sx={{ p: 3 }}>
-                {/* Categoria */}
-                <Typography
-                    variant="caption"
-                    sx={{
-                        color: "primary.main",
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        letterSpacing: 1,
-                    }}
-                >
-
-                </Typography>
+            <CardContent sx={{ p: 2 }}>
+            
 
                 {/* Título */}
                 <Typography
-                    variant="h6"
-                    component="h2"
-                    sx={{
-                        fontWeight: "bold",
-                        mb: 1,
-                        lineHeight: 1.3,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                    }}
+                   sx={{fontSize:19,fontWeight:"bold"}}
                 >
                     {curso.titulo}
                 </Typography>
-
-                {/* Descrição */}
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{
-                        mb: 2,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        lineHeight: 1.5,
-                    }}
-                >
-                    {curso.descricao}
-                </Typography>
-
-                {/* Instrutor */}
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Avatar src={curso.instrutor.nome} sx={{ width: 32, height: 32, mr: 1 }} />
-                    <Box>
-                        <Typography variant="body2" sx={{ fontWeight: "medium" }}>
-                            {curso.instrutor.nome}
-                        </Typography>
-                    </Box>
-                </Box>
-
-                {/* Informações do curso */}
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                        <AccessTime sx={{ fontSize: 16, color: "text.secondary" }} />
-                        <Typography variant="caption" color="text.secondary">
-                            duracao
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                        <PlayArrow sx={{ fontSize: 16, color: "text.secondary" }} />
-                        <Typography variant="caption" color="text.secondary">
-                            {curso.modulos.reduce((acc, modulo) => acc + modulo.videos.length, 0)} aulas
-                        </Typography>
-                    </Box>
-                </Box>
-
-                {/* Rating */}
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                    <Rating precision={0.1} size="small" readOnly />
-                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-
-                    </Typography>
-                </Box>
-
-             
+                    
+        
    
 
                 {/* Botões de ação */}
-                <Box sx={{ display: "flex", gap: 1 }}>
+                {/* <Box sx={{ display: "flex", gap: 1 }}>
                     <Button
                         variant="contained"
                         fullWidth
@@ -209,8 +123,25 @@ export const CardCurso = ({ curso }) => {
                         Detalhes
                         <PlayArrow />
                     </Button>
-                </Box>
+                </Box> */}
             </CardContent>
+                    <Box sx={{borderTop:1,borderBottom:1,borderColor:"divider",display:"flex",justifyContent:"space-between",p:1}}>
+                    <Box sx={{display:"flex",alignItems:"center",gap:0.5}}>
+                        <SignalCellularAltIcon/>
+                          <Typography color="textSecondary" sx={{fontSize:12,fontWeight:"bold"}}>{curso.level}</Typography>
+                    </Box>
+                        <Box sx={{display:"flex",alignItems:"center",gap:0.5}}>
+                        <PlayCircleIcon/>
+                          <Typography color="textSecondary" sx={{fontSize:12,fontWeight:"bold"}}>+120H DE AULAS</Typography>
+                    </Box>
+                        <Box sx={{display:"flex",alignItems:"center",gap:0.5}}>
+                        <WorkspacePremiumIcon/>
+                          <Typography color="textSecondary" sx={{fontSize:12,fontWeight:"bold"}}>CERTIFICADO</Typography>
+                    </Box>
+                </Box>
+                 <Box sx={{display:"flex",justifyContent:"center",mt:5}}>
+                        <Button variant='outlined'  sx={{borderRadius:5,width:"145px",height:"50px",fontWeight:"bold",fontSize:17,color:theme.palette.text.primary}}>ACESSAR</Button>
+                    </Box>
         </Card>
     )
 }
