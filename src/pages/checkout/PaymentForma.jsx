@@ -6,7 +6,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../../config/Api"
 
-const PaymentForm = ({ selectedPlanId, selectedPlan, handleCloseModal }) => {
+const PaymentForma = ({ selectedPlanId, selectedPlan, handleCloseModal }) => {
   const stripe = useStripe()
   const elements = useElements()
   const navigate = useNavigate()
