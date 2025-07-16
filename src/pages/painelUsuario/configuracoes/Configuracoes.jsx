@@ -12,6 +12,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { AssinaturaCancelada } from "./AssinaturaCancelada";
 import { DialogCancelar } from "./DialogCancelar";
+import { ModalSelecionarPlano } from "./ModalSelecionarPlano";
 
 dayjs.locale('pt-br')
 
@@ -25,7 +26,7 @@ export const Configuracoes = () => {
     const [loading, setLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false);
     const [clientSecret, setClientSecret] = useState(null);
-    const [planos,setPlanos]=useState(null)
+    const [planos, setPlanos] = useState(null)
     const handleOpenCancelDialog = () => {
         setConfirmCancelOpen(true);
     };
@@ -33,7 +34,7 @@ export const Configuracoes = () => {
     const handleCloseCancelDialog = () => {
         setConfirmCancelOpen(false);
     };
-const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+    const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
 
     // Ao abrir modal para alterar forma pagamento
     const handleOpenModal = async () => {
@@ -93,30 +94,30 @@ const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
             setLoading(false);
         }
     };
-const [openModalPlano, setOpenModalPlano] = useState(false);
+    const [openModalPlano, setOpenModalPlano] = useState(false);
 
 
-  const getPlanos = () => {
-    api.get("/planos")
-      .then((res) => setPlanos(res.data))
-      .catch(console.error)
-  }
+    const getPlanos = () => {
+        api.get("/planos")
+            .then((res) => setPlanos(res.data))
+            .catch(console.error)
+    }
 
-  useEffect(() => {
-    getPlanos()
-  }, [])
+    useEffect(() => {
+        getPlanos()
+    }, [])
 
-const trocarPlano = async (novoPlanoId) => {
-  try {
-    await api.patch("/assinatura/trocar-plano", { planoId: novoPlanoId }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    getUsuario(); // atualiza os dados na tela
-    setOpenModalPlano(false);
-  } catch (err) {
-    console.error("Erro ao trocar plano:", err);
-  }
-};
+    const trocarPlano = async (novoPlanoId) => {
+        try {
+            await api.patch("/assinatura/trocar-plano", { planoId: novoPlanoId }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            getUsuario(); // atualiza os dados na tela
+            setOpenModalPlano(false);
+        } catch (err) {
+            console.error("Erro ao trocar plano:", err);
+        }
+    };
 
     return (
         <Container>
@@ -157,7 +158,7 @@ const trocarPlano = async (novoPlanoId) => {
                         </Box>
                         <Typography sx={{ fontSize: 18, color: theme.palette.text.secondary, mt: 2 }}>Informações sobre seu plano atual e opções de cancelamento</Typography>
 
-                        {usuario.assinatura.cancelAtPeriodEnd  ? (
+                        {usuario.assinatura.cancelAtPeriodEnd ? (
                             <AssinaturaCancelada usuario={usuario} planos={planos} />
                         ) : (
                             <Box>
@@ -218,9 +219,14 @@ const trocarPlano = async (novoPlanoId) => {
                                 <Divider variant="fullWidth" sx={{ my: 2 }} />
 
                                 <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mt: 2 }}>
-                                    <Button variant="outlined" sx={{ fontWeight: "bolder" }}>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ fontWeight: "bolder" }}
+                                        onClick={() => setOpenModalPlano(true)} // <- AQUI!
+                                    >
                                         Alterar Plano
                                     </Button>
+
 
                                     <Button variant="outlined" sx={{ fontWeight: "bolder" }} onClick={handleOpenModal}>
                                         Alterar Pagamento
@@ -252,10 +258,19 @@ const trocarPlano = async (novoPlanoId) => {
                                     >
                                         Cancelar Assinatura
                                     </Button>
-                                    <DialogCancelar usuario={usuario} confirmCancelOpen={confirmCancelOpen} handleCancelarAssinatura={handleCancelarAssinatura} handleCloseCancelDialog={handleCloseCancelDialog}/>
+                                    <DialogCancelar usuario={usuario} confirmCancelOpen={confirmCancelOpen} handleCancelarAssinatura={handleCancelarAssinatura} handleCloseCancelDialog={handleCloseCancelDialog} />
                                 </Box>
                             </Box>
                         )}
+                  <ModalSelecionarPlano
+  open={openModalPlano}
+  onClose={() => setOpenModalPlano(false)}
+  planos={planos}
+  planoAtualId={usuario.assinatura.planoID}
+  onConfirm={trocarPlano}
+/>
+
+
                     </Box>
                 </Box>
             )}
