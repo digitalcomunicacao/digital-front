@@ -1,5 +1,5 @@
 import { Modal, Backdrop, Fade, Box, Typography } from "@mui/material"
-import PaymentForm from "../../checkout/PaymentForma"
+import PaymentForma from "../../checkout/PaymentForma"
 
 export const ModalMetodoPagamento = ({ openModal, handleCloseModal, planoSelecionado }) => {
   return (
@@ -30,7 +30,7 @@ export const ModalMetodoPagamento = ({ openModal, handleCloseModal, planoSelecio
           </Typography>
 
           {planoSelecionado && (
-            <PaymentForm
+            <PaymentForma
               selectedPlanId={planoSelecionado.id}
               selectedPlan={planoSelecionado}
               handleCloseModal={handleCloseModal}

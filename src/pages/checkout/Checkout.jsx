@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import api from "../../config/Api";
 import { Elements } from "@stripe/react-stripe-js";
-import PaymentForm from "./PaymentForma";
+import PaymentForma from "./PaymentForma";
 
 const stripePromise = loadStripe(
   "pk_test_51Rkqnl4UJY192FzeyHoJGjBYq3ZI6iJFhkk1F5ZFCbEDxUQAbjD2aRU4E8jggtzaXGr71uxBQVNe7bugB0t7pTfu00CM9glODz"
@@ -110,7 +110,7 @@ export const Checkout = () => {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <PaymentForm selectedPlanId={selectedPlanId} selectedPlan={selectedPlan} />
+            <PaymentForma selectedPlanId={selectedPlanId} selectedPlan={selectedPlan} />
           </Grid>
         </Grid>
       </Container>

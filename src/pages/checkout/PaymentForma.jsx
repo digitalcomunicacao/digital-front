@@ -129,4 +129,4 @@ const PaymentForma = ({ selectedPlanId, selectedPlan, handleCloseModal }) => {
   )
 }
 
-export default PaymentForm
+export default PaymentForma
