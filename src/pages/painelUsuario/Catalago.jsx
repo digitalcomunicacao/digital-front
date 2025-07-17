@@ -1,14 +1,15 @@
-import { Box, Divider, Typography, Tabs, Tab } from "@mui/material";
+import { Box, Divider, Typography, Tabs, Tab, Grid, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { CardCurso } from "../../components/cursos/CardCurso";
 import api from "../../config/Api";
-import theme from "../../theme/theme";
+import { Subscription } from "../../components/subscription/Subscripition";
+import { Ads } from "../../components/ads/Ads";
 
 export const Catalago = () => {
   const [cursos, setCursos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [tabAtiva, setTabAtiva] = useState(0);
-
+const theme = useTheme();
   useEffect(() => {
     getCursos();
     getCategorias();
@@ -31,7 +32,10 @@ export const Catalago = () => {
   };
 
   return (
-    <Box sx={{ p: 5 }}>
+    <Grid sx={{ p: 5}} container spacing={2}>
+       <Grid size={10}>
+         
+
       <Box sx={{ textAlign: 'start', mt: 5 }}>
         <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
           Catálogo
@@ -49,21 +53,91 @@ export const Catalago = () => {
         onChange={handleTabChange}
         variant="scrollable"
         scrollButtons="auto"
-        sx={{ mb: 4}}
+        sx={{
+          mb: 4,
+          '& .MuiTabs-indicator': {
+            display: 'none',
+          },
+        }}
       >
-        {categorias.map((categoria, index) => (
-          <Tab key={categoria.id} label={categoria.nome} sx={{border:1,borderRadius:5,ml:2,bgcolor:theme.palette.background.paper}} />
+        <Tab
+          label="Todos"
+          sx={{
+            width: "125px",
+            height: "15px",
+            border: 1,
+            borderRadius: 5,
+            ml: 2,
+            bgcolor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+          }}
+        />
+        {categorias.map((categoria) => (
+          <Tab
+            key={categoria.id}
+            label={categoria.nome}
+            sx={{
+              width: "150px",
+              height: "15px",
+              border: 1,
+              borderRadius: 5,
+              ml: 2,
+              bgcolor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+            }}
+          />
         ))}
       </Tabs>
 
-      {/* Cursos da categoria selecionada */}
-      <Box sx={{ display: "flex", gap: 5, flexWrap: "wrap", flexDirection: { xs: "column", md: "row" } }}>
-        {cursos
-          .filter(curso => curso.categoria?.id === categorias[tabAtiva]?.id)
-          .map((curso, index) => (
-            <CardCurso key={index} curso={curso} />
-          ))}
-      </Box>
-    </Box>
+      {/* Conteúdo de cursos */}
+      {tabAtiva === 0 ? (
+        // Mostrar todas as categorias com seus cursos agrupados
+        categorias.map((categoria) => {
+          const cursosDaCategoria = cursos.filter(
+            (curso) => curso.categoria?.id === categoria.id
+          );
+
+          if (cursosDaCategoria.length === 0) return null;
+
+          return (
+            <Box key={categoria.id} sx={{ mb: 6 }}>
+              <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: theme.palette.text.primary, mb: 2 }}>
+                {categoria.nome}
+              </Typography>
+              <Divider sx={{mb:2}}/>
+              <Box sx={{ display: 'flex', gap: 10,height:350, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+                {cursosDaCategoria.map((curso, index) => (
+                  <CardCurso key={index} curso={curso} />
+                ))}
+              </Box>
+            </Box>
+          );
+        })
+      ) : (
+        // Mostrar apenas a categoria selecionada
+        <>
+          <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: theme.palette.text.primary, mb: 2 }}>
+            {categorias[tabAtiva - 1]?.nome}
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 10, height:400,flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+            {cursos
+              .filter((curso) => curso.categoria?.id === categorias[tabAtiva - 1]?.id)
+              .map((curso, index) => (
+                <CardCurso key={index} curso={curso} />
+              ))}
+          </Box>
+        </>
+      )}
+              </Grid>
+              <Grid size={2}>
+                <Box sx={{mt:15}}>
+                      <Subscription/>
+                      <Box sx={{mt:5}}>
+                        <Ads/>
+                      </Box>
+                  </Box>
+          
+              </Grid>
+    </Grid>
   );
 };

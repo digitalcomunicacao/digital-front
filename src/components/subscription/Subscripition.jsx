@@ -1,42 +1,102 @@
-import { Badge, Box, Typography } from "@mui/material";
+import { Avatar, Box, CircularProgress, Typography } from "@mui/material";
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import theme from "../../theme/theme";
 
 export const Subscription = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  const formatExpirationDate = (dateString) => {
-    if (!dateString) return 'sem data';
-    const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+  if (!user.assinante || !user.dataFim || !user.dataInicio) return null;
 
+  const now = new Date();
+  const dataInicio = new Date(user.dataInicio);
+  const dataFim = new Date(user.dataFim);
+
+  const duracaoTotal = dataFim.getTime() - dataInicio.getTime();
+  const tempoPassado = now.getTime() - dataInicio.getTime();
+
+  let progresso = (tempoPassado / duracaoTotal) * 100;
+  if (progresso < 0) progresso = 0;
+  if (progresso > 100) progresso = 100;
+
+  const diffTime = dataFim.getTime() - now.getTime();
+  const diasRestantes = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+ 
   return (
-    <>
+    <Box sx={{display:"flex",flexDirection:"column",gap:5,width: 350,height: 320,bgcolor: theme.palette.background.paper, 
+        p:5,   
+        border: 1,
+        borderColor: "divider",
+        borderRadius: 5,}}>
+      <Box sx={{textAlign:"center"}}>
+      <Box sx={{display:"flex",justifyContent:"center"}}>
+      <Avatar sx={{bgcolor:theme.palette.background.paperAzul,color:theme.palette.text.tertiary}}>{user.nome?.charAt(0)?.toUpperCase()}</Avatar>
+    </Box>
+      <Typography sx={{mt:1,fontSize:16,fontWeight:"bolder"}}>{user.nome}</Typography>
+     <Typography color="textTertiary" sx={{mt:1,fontSize:14}}>{user.email}</Typography>
+      </Box>
 
-    {user.assinante && (
-        
+    <Box sx={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
     <Box
       sx={{
-        display: { xs: 'none', sm: 'flex' }, // ❌ esconde em telas pequenas
-        alignItems: "center",
-        gap: 1,
-        bgcolor: theme.palette.primary.main,
-        borderRadius: 2,
-        p: 1
+        display: { xs: 'none', sm: 'flex' },
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <EmojiEventsIcon fontSize="small" color="secondary" />
-      <Typography color="secondary" sx={{ fontSize: 14, fontWeight: "bolder" }}>
-        {user.plano} - Expira {formatExpirationDate(user.dataFim)}
-      </Typography>
-    </Box>
-       )}
-           </>
-  );
+<Box sx={{ position: 'relative', display: 'inline-flex' }}>
+  {/* Círculo de fundo branco */}
+  <CircularProgress
+    variant="determinate"
+    value={100}
+    size={100}
+    thickness={5}
+    sx={{ color: '#fff' }} // branco para fundo
+  />
   
+  {/* Círculo de progresso azul */}
+  <CircularProgress
+    variant="determinate"
+    value={progresso}
+    size={100}
+    thickness={5}
+    sx={{
+      color: '#0D68F9', // azul
+      position: 'absolute',
+      left: 0,
+      top: 0,
+    }}
+  />
+
+  {/* Conteúdo dentro do círculo */}
+  <Box
+    sx={{
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      position: 'absolute',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+    }}
+  >
+    <Typography sx={{ fontWeight: "bold", fontSize: 10 }}>Restam</Typography>
+    <Typography sx={{ fontWeight: "bold", fontSize: 24 }}>{diasRestantes}</Typography>
+    <Typography sx={{ fontSize: 10 }}>Dias</Typography>
+  </Box>
+</Box>
+    </Box>
+
+    <Box sx={{textAlign:"center"}}>
+      <Box sx={{border:1,p:1,borderRadius:5,textAlign:"center",borderColor:"success.main"}}> 
+           <Typography sx={{fontSize:14,fontWeight:"bolder"}}>Assinatura Ativa</Typography>
+        </Box>
+      <Typography sx={{fontSize:12}}>Sua assinatura expira</Typography>
+      <Typography sx={{fontSize:14,fontWeight:"bold"}}>13/07/2026</Typography>
+    </Box>
+        </Box>
+          </Box>
+  );
 };

@@ -8,13 +8,13 @@ import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
 import { MeusConteudos } from "./pages/painelUsuario/MeusConteudos";
 import { Catalago } from "./pages/painelUsuario/Catalago";
 import { SnackbarProvider } from "./context/SnackBarContext";
-import HomeUsuario from "./pages/painelUsuario/HomeUsuario";
 import { Eventos } from "./pages/painelUsuario/Eventos";
 import { PlayerCurso } from "./pages/painelUsuario/playerCurso/PlayerCurso";
 import { VideoPlayer } from "./pages/painelUsuario/playerCurso/VideoPlayer";
 import { Checkout } from "./pages/checkout/Checkout";
 import {NovaSenha} from "./pages/login/NovaSenha"
 import { Configuracoes } from "./pages/painelUsuario/configuracoes/Configuracoes";
+import { HomeUsuario } from "./pages/painelUsuario/HomeUsuario";
 
 
 

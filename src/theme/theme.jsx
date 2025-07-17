@@ -5,18 +5,20 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#FFB800', // Amarelo destaque (da logo)
+      main: '#FFB800',
     },
     secondary: {
-      main: '#141E30', // Azul escuro complementar
+      main: '#141E30', 
     },
     background: {
       default: '#141E30',
-      paper: '#22345F',   // Cards, caixas
+      paper: '#0D68F914', 
+      paperSolid: '#0D68F9',  
+      paperAzul:"#0D68F9"
     },
     text: {
       primary: '#FFFFFF',
-      secondary: '#0D68F9', // ou #B0B0B0, ou #888888
+      secondary: '#0D68F9', 
       tertiary:"#CBDAFB"
     },
 divider: '#40619D',
@@ -54,13 +56,7 @@ divider: '#40619D',
         },
       },
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#22345F',
-        },
-      },
-    },
+
   },
 });
 

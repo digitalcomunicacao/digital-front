@@ -1,21 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { CssBaseline, GlobalStyles, ThemeProvider } from '@mui/material';
-import theme from './theme/theme';
+import { CssBaseline, ThemeProvider, GlobalStyles } from '@mui/material';
+import themeDark from './theme/theme';
+import themeLight from './theme/themeLight';
+import { ThemeProviderCustom, useThemeMode } from './context/ThemeContext';
 
+const ThemeWrapper = () => {
+  const { darkMode } = useThemeMode();
+  const currentTheme = darkMode ? themeDark : themeLight;
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
- <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* Reseta estilos globais com base no tema */}
+  return (
+    <ThemeProvider theme={currentTheme}>
+      <CssBaseline />
       <GlobalStyles
         styles={{
           body: {
             margin: 0,
             padding: 0,
-            background: theme.palette.background.default,
+            background: currentTheme.palette.background.default,
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
             minHeight: '100vh',
@@ -24,6 +27,14 @@ root.render(
       />
       <App />
     </ThemeProvider>
-  </React.StrictMode>
+  );
+};
+
+const Root = () => (
+  <ThemeProviderCustom>
+    <ThemeWrapper />
+  </ThemeProviderCustom>
 );
 
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Root />);
