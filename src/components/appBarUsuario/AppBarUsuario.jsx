@@ -171,14 +171,14 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
   return (
     <>
       <AppBar elevation={0} position="fixed" sx={{ borderBottom: 1, borderColor: "divider", zIndex: theme.zIndex.drawer + 1 }}>
-        <Toolbar disableGutters >
+        <Toolbar disableGutters sx={{bgcolor:theme.palette.background.default}} >
           <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between", mx: { xs: 2, md: 5 } }}>
             <Box sx={{ display: "flex", gap: 2 }}>
-              <IconButton size="large" edge="start" color="inherit" onClick={handleToggleDrawer}>
+              <IconButton size="large" edge="start"  onClick={handleToggleDrawer}>
                 {(isMobile ? mobileOpen : !miniDrawer) ? <MenuOpenIcon /> : <MenuIcon />}
               </IconButton>
               <Box onClick={() => navigate("/painel-usuario/home-usuario")} sx={{ cursor: "pointer", ml: 2, width: "94px", height: "52px" }}>
-                <img src="/aseets/logo-digital-educa.png" style={{ width: "100%", height: "100%" }} />
+                <img src={!darkMode ? "/aseets/logo-dark.png":"/aseets/logo-digital-educa.png"} style={{ width: "100%", height: "100%" }} />
               </Box>
             </Box>
 
@@ -220,8 +220,8 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
                 PaperProps={{
                   elevation: 0,
                   sx: {
-                    width: "400px",
-                    p: 3,
+                    width: {xs:"100%",md:"400px"},
+                    p:{md:3},
                     backgroundColor: theme.palette.background.paper,
                     backdropFilter: "blur(15px)",
                     color: theme.palette.text.primary,

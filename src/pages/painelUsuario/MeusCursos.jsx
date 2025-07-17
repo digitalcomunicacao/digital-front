@@ -105,7 +105,7 @@ export const MeusCursos = () => {
                     }}
                   >
                     <img
-                      src={"https://api.digitaleduca.com.vc/" + curso.thumbnail}
+                      src={"http://localhost:3000/" + curso.thumbnail}
                       alt={curso.titulo}
                       style={{ width: "100%", height: "100%" }}
                     />

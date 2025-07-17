@@ -23,7 +23,7 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 export const CardCurso = ({ curso }) => {
     const { showSnackbar } = useSnackbar();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const theme=useTheme()
+    const theme = useTheme()
     const navigate = useNavigate();
     const handleDetalhes = () => {
         navigate("/curso/detalhe", { state: { curso } });
@@ -47,24 +47,87 @@ export const CardCurso = ({ curso }) => {
     };
     console.log(curso)
     const token = localStorage.getItem('token')
+    const calcularDuracaoTotal = () => {
+        const totalSegundos = curso.modulos.reduce((soma, modulo) => {
+            const segundosModulo = modulo.videos?.reduce((acc, video) => acc + (video.duracao || 0), 0) || 0;
+            return soma + segundosModulo;
+        }, 0);
+
+        const totalMinutos = Math.floor(totalSegundos / 60);
+        const horas = Math.floor(totalMinutos / 60);
+
+        if (horas >= 1) {
+            return `${horas}H`;
+        } else {
+            return `${totalMinutos}min`;
+        }
+    };
+
+
     return (
         <Box>
 
-            <Box>
-
-            </Box>
-            <Card elevation={0} sx={{
-                width: { xs: "100%", md: "380px" }, height: "285px", border: 2, borderColor: "divider", borderRadius: 5, backgroundColor: theme.palette.background.paper,
-                "&:hover": {
-                    border: 3,
-                    borderColor: theme.palette.background.paperAzul,
-                    height: "385px",
-                    transition: "0.6s",
-
-                },
-            }}>
+ <Card
+  elevation={0}
+  sx={{
+    mb: 5,
+    height: "285px",
+    position: "relative", // necessário para overlay funcionar
+    border: 2,
+    borderColor: "divider",
+    borderRadius: 5,
+    backgroundColor: theme.palette.background.paper,
+    overflow: "hidden",
+    "&:hover": {
+      border: 3,
+      borderColor: theme.palette.background.paperAzul,
+    },
+    "&:hover .card-overlay": {
+      opacity: 1,
+      pointerEvents: "auto",
+    },
+  }}
+>
+                 <Box
+    className="card-overlay"
+    sx={{
+      position: "absolute",
+  
+      bottom:0,
+      left: 0,
+      width: "100%",
+      height: "50%",
+      bgcolor: "rgba(13, 104, 249, 0.9)",
+      color: "#fff",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      opacity: 0,
+      pointerEvents: "none",
+      transition: "opacity 0.4s ease",
+      zIndex: 1,
+      p: 2,
+      textAlign: "center",
+    }}
+  >
+    <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+      Informações do Curso
+    </Typography>
+    <Typography variant="body2">
+      {curso.descricao?.substring(0, 100) + "..."}
+    </Typography>
+    <Button
+      variant="contained"
+      size="small"
+      sx={{ mt: 2 }}
+      onClick={handleDetalhes}
+    >
+      Ver mais
+    </Button>
+  </Box>
                 <Box sx={{ position: "relative" }}>
-                    <CardMedia component="img" height="160px" image={`https://api.digitaleduca.com.vc/${curso.thumbnail}`} alt={curso.titulo} />
+                    <CardMedia component="img" height="160px" image={`http://localhost:3000/${curso.thumbnail}`} alt={curso.titulo} />
                     <Chip
                         label={curso.level}
                         size="small"
@@ -136,15 +199,17 @@ export const CardCurso = ({ curso }) => {
                 <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: "divider", display: "flex", justifyContent: "space-between", p: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <SignalCellularAltIcon />
-                        <Typography color="textSecondary" sx={{ fontSize: 12, fontWeight: "bold" }}>{curso.level}</Typography>
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold",textTransform: "uppercase"}}>{curso.level}</Typography>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <PlayCircleOutlineIcon />
-                        <Typography color="textSecondary" sx={{ fontSize: 12, fontWeight: "bold" }}>+120H DE AULAS</Typography>
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>
+                            + {calcularDuracaoTotal()} DE AULAS
+                        </Typography>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <WorkspacePremiumIcon />
-                        <Typography color="textSecondary" sx={{ fontSize: 12, fontWeight: "bold" }}>CERTIFICADO</Typography>
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>CERTIFICADO</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>

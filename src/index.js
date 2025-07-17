@@ -5,6 +5,7 @@ import { CssBaseline, ThemeProvider, GlobalStyles } from '@mui/material';
 import themeDark from './theme/theme';
 import themeLight from './theme/themeLight';
 import { ThemeProviderCustom, useThemeMode } from './context/ThemeContext';
+import { DrawerProvider } from './context/DrawerContext'; // ✅ Importa o contexto
 
 const ThemeWrapper = () => {
   const { darkMode } = useThemeMode();
@@ -32,7 +33,9 @@ const ThemeWrapper = () => {
 
 const Root = () => (
   <ThemeProviderCustom>
-    <ThemeWrapper />
+    <DrawerProvider>
+      <ThemeWrapper />
+    </DrawerProvider>
   </ThemeProviderCustom>
 );
 
