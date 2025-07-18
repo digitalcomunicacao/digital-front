@@ -2,27 +2,27 @@ import { Box, useMediaQuery } from "@mui/material";
 import AppBarUsuario from "../../components/appBarUsuario/AppBarUsuario";
 import { Outlet, useLocation } from "react-router-dom";
 import theme from "../../theme/theme";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useMiniDrawer } from "../../context/DrawerContext";
 
 export const PainelUsuario = () => {
-  const [miniDrawer, setMiniDrawer] = useState(false);
+  const { miniDrawer, setMiniDrawer } = useMiniDrawer();
   const location = useLocation();
-const isPlayerPage = location.pathname.includes("/painel-usuario/curso/player");
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));  // <600px
-  const isMdDown = useMediaQuery(theme.breakpoints.down('lg'));  // <1200px
+  const isPlayerPage = location.pathname.includes("/painel-usuario/curso/player");
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMdDown = useMediaQuery(theme.breakpoints.down('lg'));
 
   useEffect(() => {
     if (!isMobile) {
-      setMiniDrawer(isMdDown); // ativa miniDrawer automaticamente entre sm e lg
+      setMiniDrawer(isMdDown);
     }
-  }, [isMdDown, isMobile]);
+  }, [isMdDown, isMobile, setMiniDrawer]);
 
   const drawerWidth = miniDrawer ? 72 : 320;
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBarUsuario miniDrawer={miniDrawer} setMiniDrawer={setMiniDrawer} />
-
+      <AppBarUsuario />
       <Box
         component="main"
         sx={{

@@ -44,8 +44,10 @@ import {
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeMode } from '../../context/ThemeContext';
+import { useMiniDrawer } from '../../context/DrawerContext';
 
-function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
+function AppBarUsuario() {
+    const { miniDrawer, toggleMiniDrawer } = useMiniDrawer();
   const theme = useTheme(); // 🛠️ Corrigido: definir antes do uso
   const { darkMode, toggleTheme } = useThemeMode();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -68,9 +70,13 @@ function AppBarUsuario({ miniDrawer, setMiniDrawer }) {
     handleCloseUserMenu();
   };
 
-  const handleToggleDrawer = () => {
-    isMobile ? setMobileOpen(!mobileOpen) : setMiniDrawer(!miniDrawer);
-  };
+const handleToggleDrawer = () => {
+  if (isMobile) {
+    setMobileOpen(!mobileOpen);
+  } else {
+    toggleMiniDrawer();
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem('token');

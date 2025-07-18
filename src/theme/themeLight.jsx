@@ -12,7 +12,7 @@ const themeLight = createTheme({
     },
     background: {
       default: '#F5F7FA',
-      paper: '#FFFFFF', // fundo branco para cards, modais etc.
+      paper: '#F5F7FA80', // fundo branco para cards, modais etc.
       paperAzul: '#0D68F9'
     },
     text: {
@@ -37,14 +37,7 @@ const themeLight = createTheme({
           fontWeight: 500,
           padding: '8px 16px',
         },
-        containedPrimary: {
-          backgroundColor: '#0D68F9',
-          color: '#FFFFFF',
-          '&:hover': {
-            backgroundColor: '#0954cc',
-            boxShadow: '0 4px 12px rgba(13, 104, 249, 0.2)',
-          },
-        },
+     
         outlinedPrimary: {
           borderColor: '#0D68F9',
           color: '#0D68F9',

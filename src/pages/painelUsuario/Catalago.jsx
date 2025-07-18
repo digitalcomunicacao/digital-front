@@ -10,12 +10,15 @@ export const Catalago = () => {
   const [cursos, setCursos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [tabAtiva, setTabAtiva] = useState(0);
-  const { drawerAberto } = useMiniDrawer(); // true ou false
+  const { miniDrawer } = useMiniDrawer(); // true ou false
   const theme = useTheme();
   useEffect(() => {
     getCursos();
     getCategorias();
   }, []);
+    useEffect(()=>{
+      console.log("DJASOPDKASPODSKAPODASD",miniDrawer)
+    },[miniDrawer])
 
   const getCursos = () => {
     api.get("curso/cursos")
@@ -35,7 +38,7 @@ export const Catalago = () => {
 
   return (
     <Grid sx={{ p: 5 }} container spacing={2}>
-      <Grid size={{ xs: 12, md:drawerAberto ? 12:10}}>
+      <Grid size={{ xs: 12, md:miniDrawer ? 10:10}}>
 
 
         <Box sx={{ textAlign: 'start', mt: 5 }}>
@@ -107,7 +110,7 @@ export const Catalago = () => {
                   {categoria.nome}
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
-                <Box sx={{ display: 'flex', gap: "1%", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+                <Box sx={{ display: 'flex', justifyContent:"space-between", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
                   {cursosDaCategoria.map((curso, index) => (
                     <CardCurso key={index} curso={curso} />
                   ))}
@@ -131,7 +134,7 @@ export const Catalago = () => {
           </>
         )}
       </Grid>
-      <Grid size={{ xs: 12, md: drawerAberto? 2:4 }}>
+      <Grid size={{ xs: 12, md: miniDrawer? 1:2 }}>
         <Box sx={{ mt: 15 }}>
           <Subscription />
           <Box sx={{ mt: 5 }}>

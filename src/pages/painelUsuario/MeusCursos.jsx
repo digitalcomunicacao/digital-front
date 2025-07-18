@@ -8,12 +8,19 @@ import {
   Box,
   Avatar,
   LinearProgress,
+  Button,
+  useTheme,
+  CardMedia,
+  Link,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 export const MeusCursos = () => {
   const [curso, setCurso] = useState([])
-
+  const theme=useTheme()
   const getMeusCursos = () => {
     api
       .get("/curso-selecionado/cursos", {
@@ -39,7 +46,21 @@ export const MeusCursos = () => {
   useEffect(() => {
     getMeusCursos()
   }, [])
+// const calcularDuracaoTotal = () => {
+//         const totalSegundos = curso.modulos.reduce((soma, modulo) => {
+//             const segundosModulo = modulo.videos?.reduce((acc, video) => acc + (video.duracao || 0), 0) || 0;
+//             return soma + segundosModulo;
+//         }, 0);
 
+//         const totalMinutos = Math.floor(totalSegundos / 60);
+//         const horas = Math.floor(totalMinutos / 60);
+
+//         if (horas >= 1) {
+//             return `${horas}H`;
+//         } else {
+//             return `${totalMinutos}min`;
+//         }
+//     };
   return (
     <Box
       sx={{
@@ -77,183 +98,102 @@ export const MeusCursos = () => {
             }}
           >
             <Card
-              onClick={() => handleIrParaCurso(curso)}
-              sx={{
-                width: { xs: "100%", md: "400px" },
-                height: 450,
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-                "&:hover": {
-                  boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", // brilho amarelo
-                  transform: "translateY(-2px)",
-                },
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
+                elevation={0}
+                component={"form"}
+             
+                sx={{
+                    mb: 5,
+                    height: "285px",
+                    position: "relative", // necessário para overlay funcionar
+                    border: 2,
+                    borderColor: "divider",
+                    cursor:"pointer",
+                    borderRadius: 5,
+                    backgroundColor: theme.palette.background.paper,
+                    overflow: "hidden",
+                    "&:hover": {
+                        border: 3,
+                        borderColor: theme.palette.background.paperAzul,
+                    },
+                    "&:hover .card-overlay": {
+                        opacity: 1,
+                        pointerEvents: "auto",
+                    },
+                }}
             >
-              <CardContent sx={{ padding: 3 }}>
-                {/* Thumbnail */}
-                <Box sx={{ marginBottom: 3 }}>
-                  <Box
-                    sx={{
-                      width: "100%",
-                      height: "auto",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      position: "relative",
-                      zIndex: 1,
-                    }}
-                  >
-                    <img
-                      src={"http://localhost:3000/" + curso.thumbnail}
-                      alt={curso.titulo}
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </Box>
-                </Box>
-
-                {/* Informações do Curso */}
-                <Box sx={{ marginBottom: 3 }}>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: "#9ca3af",
-                      textTransform: "uppercase",
-                      letterSpacing: 1,
-                      marginBottom: 1,
-                      display: "block",
-                    }}
-                  >
-                    Aulas • {totalVideos}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "#ffffff",
-                      fontWeight: 600,
-                      fontSize: { xs: 14, md: 20 },
-                    }}
-                  >
-                    {curso.titulo}
-                  </Typography>
-                </Box>
-
-                {/* Progresso */}
-                <Box sx={{ mb: 2 }}>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 0.5 }}
-                  >
-                    Progresso: {videosConcluidos} / {totalVideos} vídeos
-                    concluídos
-                  </Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={progressoPercentual}
-                    sx={{
-                      height: 8,
-                      borderRadius: 5,
-                      backgroundColor: "#374151",
-                      "& .MuiLinearProgress-bar": {
-                        backgroundColor: "#FFB800",
-                      },
-                    }}
-                  />
-                </Box>
-
-                {/* Tags/Badges */}
                 <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: { xs: "unset", md: "wrap" },
-                    overflowX: { xs: "auto", md: "unset" },
-                    gap: 1.5,
-                  }}
+                    className="card-overlay"
+                    sx={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "20%",
+                        bgcolor: theme.palette.background.paper, backdropFilter: "blur(2px)",
+                        border: 1,
+                        color: "#fff",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        opacity: 0,
+                        pointerEvents: "none",
+                        transition: "opacity 0.4s ease",
+                        zIndex: 1,
+                        borderBottomLeftRadius: 3,
+                        textAlign: "center",
+                    }}
                 >
-                  <Chip
-                    label="INICIANTE"
-                    icon={
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          backgroundColor: "#10b981",
-                          borderRadius: "50%",
-                          marginLeft: "8px !important",
-                        }}
-                      />
-                    }
-                    sx={{
-                      backgroundColor: "#374151",
-                      color: "#d1d5db",
-                      "& .MuiChip-label": {
-                        fontSize: "0.75rem",
-                        fontWeight: 500,
-                      },
-                      "&:hover": {
-                        backgroundColor: "#4b5563",
-                      },
-                    }}
-                  />
+                    <Box sx={{ position: "absolute", right: 5, color: theme.palette.primary.main }}>
+                        <OpenInNewIcon />
+                    </Box>
+                    <Link sx={{ textDecoration: "none", fontWeight: "bolder" }}>Acessar</Link>
 
-                  <Chip
-                    label="ANGULAR"
-                    icon={
-                      <Avatar
-                        sx={{
-                          width: "16px !important",
-                          height: "16px !important",
-                          backgroundColor: "#ef4444",
-                          fontSize: "10px",
-                          fontWeight: "bold",
-                          marginLeft: "8px !important",
-                        }}
-                      >
-                        A
-                      </Avatar>
-                    }
-                    sx={{
-                      backgroundColor: "#374151",
-                      color: "#d1d5db",
-                      "& .MuiChip-label": {
-                        fontSize: "0.75rem",
-                        fontWeight: 500,
-                      },
-                      "&:hover": {
-                        backgroundColor: "#4b5563",
-                      },
-                    }}
-                  />
-
-                  <Chip
-                    label="JAVASCRIPT"
-                    icon={
-                      <Box
-                        component="span"
-                        sx={{
-                          color: "#fbbf24",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                          marginLeft: "8px !important",
-                        }}
-                      >
-                        JS
-                      </Box>
-                    }
-                    sx={{
-                      backgroundColor: "#374151",
-                      color: "#d1d5db",
-                      "& .MuiChip-label": {
-                        fontSize: "0.75rem",
-                        fontWeight: 500,
-                      },
-                      "&:hover": {
-                        backgroundColor: "#4b5563",
-                      },
-                    }}
-                  />
                 </Box>
-              </CardContent>
+                <Box sx={{ position: "relative" }}>
+                    <CardMedia component="img" height="160px" image={`http://localhost:3000/${curso.thumbnail}`} alt={curso.titulo} />
+                    <Chip
+                        label={curso.level}
+                        size="small"
+                        sx={{
+                            position: "absolute",
+                            top: 12,
+                            right: 12,
+                            backgroundColor: "primary.main",
+                            color: "primary.contrastText",
+                            fontWeight: "bold",
+                        }}
+                    />
+                </Box>
+                <CardContent sx={{ p: 2 }}>
+
+
+                    {/* Título */}
+                    <Typography
+                        sx={{ fontSize: 19, fontWeight: "bold" }}
+                    >
+                        {curso.titulo}
+                    </Typography>
+                </CardContent>
+                <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: "divider", display: "flex", justifyContent: "space-between", p: 1 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <SignalCellularAltIcon />
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold", textTransform: "uppercase" }}>{curso.level}</Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <PlayCircleOutlineIcon />
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>
+                            {/* + {calcularDuracaoTotal()} DE AULAS */}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <WorkspacePremiumIcon />
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>CERTIFICADO</Typography>
+                    </Box>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+                    <Button variant='outlined' sx={{ borderRadius: 5, width: "145px", height: "50px", fontWeight: "bold", fontSize: 17, color: theme.palette.text.primary }}>ACESSAR</Button>
+                </Box>
             </Card>
           </Box>
         )
