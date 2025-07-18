@@ -3,7 +3,9 @@ import theme from "../../theme/theme"
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SchoolIcon from '@mui/icons-material/School';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import { useNavigate } from "react-router-dom";
 export const VisaoGeral = ({ curso }) => {
+    const navigate=useNavigate()
     return (
      <Grid container>
             <Grid size={{ xs: 12, md: 8 }} >
@@ -11,7 +13,7 @@ export const VisaoGeral = ({ curso }) => {
                     <Box sx={{ p: 3 }}>
                         <Box sx={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center", gap: 1 }}>
                             <Box sx={{ width: "100px", height: "100px" }}>
-                                <img src={`https://api.digitaleduca.com.vc/${curso.thumbnail}`} style={{ width: "100%", height: "100%" }} />
+                                <img src={`http://localhost:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%" }} />
                             </Box>
                         </Box>
 
@@ -98,7 +100,7 @@ export const VisaoGeral = ({ curso }) => {
                     <Typography color="textSecondary" sx={{ fontSize: 16, mt: 2 }}>
                         Inicie sua jornada na programação com um curso gratuito.
                     </Typography>
-                    <Button fullWidth variant="contained" sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
+                    <Button fullWidth variant="contained" onClick={()=>navigate("/checkout")} sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
                         Começar Jornada
                     </Button>
                 </Box>

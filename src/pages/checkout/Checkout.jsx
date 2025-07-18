@@ -1,121 +1,143 @@
-// pages/Checkout.jsx
+import React from 'react';
 import {
   Box,
-  Card,
-  CardContent,
-  CardHeader,
+  Stepper,
+  Step,
+  StepButton,
+  Button,
   Container,
-  Divider,
-  FormControlLabel,
-  Grid,
-  Radio,
-  RadioGroup,
+  useTheme,
   Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import api from "../../config/Api";
-import { Elements } from "@stripe/react-stripe-js";
-import PaymentForma from "./PaymentForma";
+} from '@mui/material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { Planos } from './Planos';
+import { PlanoSelecionado } from './PlanoSelecionado';
 
-const stripePromise = loadStripe(
-  "pk_test_51Rkqnl4UJY192FzeyHoJGjBYq3ZI6iJFhkk1F5ZFCbEDxUQAbjD2aRU4E8jggtzaXGr71uxBQVNe7bugB0t7pTfu00CM9glODz"
-);
+const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 
 export const Checkout = () => {
-  const [planos, setPlanos] = useState([]);
-  const [selectedPlanId, setSelectedPlanId] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [clientSecret, setClientSecret] = useState(null);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [completed, setCompleted] = React.useState({});
+  const [selectedPlano, setSelectedPlano] = React.useState(null); // <-- aqui
+  const theme = useTheme();
 
-  useEffect(() => {
-    const fetchClientSecret = async () => {
-      const token = localStorage.getItem("token");
-      const res = await api.post(
-        "/assinatura/setup-intent",
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setClientSecret(res.data.clientSecret);
-    };
+  const totalSteps = steps.length;
 
-    fetchClientSecret();
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("/planos")
-      .then((res) => {
-        setPlanos(res.data);
-        if (res.data.length > 0) {
-          setSelectedPlanId(res.data[0].id);
-          setSelectedPlan(res.data[0]);
-        }
-      })
-      .catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    const found = planos.find((p) => p.id === selectedPlanId);
-    setSelectedPlan(found || null);
-  }, [selectedPlanId, planos]);
-
-  const appearance = {
-  theme: 'night', // ou 'flat', 'night', 'none'
-
-};
-
-  const options = {
-    clientSecret,
-    appearance,
+  const handleStep = (step) => () => {
+    setActiveStep(step);
   };
 
-  if (!clientSecret) {
-    return (
-      <Container maxWidth="md" sx={{ py: 5, textAlign: "center" }}>
-        <Typography variant="h6">Carregando informações de pagamento...</Typography>
-      </Container>
-    );
-  }
+  const handleComplete = () => {
+    setCompleted((prev) => ({ ...prev, [activeStep]: true }));
+    if (activeStep < totalSteps - 1) {
+      setActiveStep((prev) => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (activeStep > 0) {
+      setCompleted((prev) => {
+        const newCompleted = { ...prev };
+        delete newCompleted[activeStep - 1];
+        return newCompleted;
+      });
+      setActiveStep((prev) => prev - 1);
+    }
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+    setCompleted({});
+    setSelectedPlano(null);
+  };
+
+  const allStepsCompleted = () =>
+    Object.keys(completed).length === totalSteps;
+
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return <Planos selectedPlano={selectedPlano} setSelectedPlano={setSelectedPlano} />;
+      case 1:
+        return (
+          <PlanoSelecionado plano={selectedPlano}/>
+        );
+      case 2:
+        return <Typography variant="h6">Conteúdo da Etapa 3: Criar o anúncio</Typography>;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <Elements stripe={stripePromise} options={options}>
-      <Container maxWidth="md" sx={{ py: 5 }}>
-        <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
-          Escolha seu plano
-        </Typography>
+    <Container>
+      {/* Stepper */}
+      <Box sx={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        mt: 10,
+        border: 1,
+        borderColor: "divider",
+        borderRadius: '15px',
+        bgcolor: theme.palette.background.paper,
+        p: 3,
+      }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <SettingsOutlinedIcon sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />
+          <Box>
+            <Typography sx={{ fontSize: 29, fontWeight: "bolder" }}>Meu plano</Typography>
+            <Typography color='textTertiary'>Escolha o melhor plano para você</Typography>
+          </Box>
+        </Box>
+        <Box sx={{ width: '20%' }}>
+          <Stepper nonLinear activeStep={activeStep} sx={{
+            '& .MuiStepConnector-line': {
+              borderTopWidth: 3,
+            },
+            '& .MuiStepIcon-root': {
+              color: theme.palette.background.paperAzul,
+            },
+            '& .MuiStepIcon-root.Mui-completed': {
+              color: theme.palette.primary.main,
+            },
+            '& .MuiStepIcon-text': {
+              display: 'none',
+            },
+          }}>
+            {steps.map((label, index) => (
+              <Step key={label} completed={completed[index]}>
+                <StepButton onClick={handleStep(index)} />
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
+      </Box>
 
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardHeader title="Planos disponíveis" />
-              <CardContent>
-                <RadioGroup
-                  value={selectedPlanId}
-                  onChange={(e) => setSelectedPlanId(Number(e.target.value))}
-                >
-                  {planos.map((plano) => (
-                    <FormControlLabel
-                      key={plano.id}
-                      value={plano.id}
-                      control={<Radio />}
-                      label={`${plano.nome} - R$ ${plano.preco.toFixed(2)}`}
-                    />
-                  ))}
-                </RadioGroup>
-              </CardContent>
-            </Card>
-          </Grid>
+      <Box sx={{ mt: 10 }}>{getStepContent(activeStep)}</Box>
 
-          <Grid item xs={12} md={6}>
-            <PaymentForma selectedPlanId={selectedPlanId} selectedPlan={selectedPlan} />
-          </Grid>
-        </Grid>
-      </Container>
-    </Elements>
+      {/* Botões */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+        {activeStep > 0 && (
+          <Button onClick={handleBack} variant="outlined">
+            Voltar
+          </Button>
+        )}
+
+        <Box sx={{ flex: '1 1 auto' }} />
+
+        {allStepsCompleted() ? (
+          <Button onClick={handleReset} variant="contained">
+            Resetar
+          </Button>
+        ) : (
+          <Button
+            onClick={handleComplete}
+            variant="contained"
+            disabled={activeStep === 0 && !selectedPlano} // não avança sem plano
+          >
+            {activeStep === totalSteps - 1 ? 'Finalizar' : 'Avançar'}
+          </Button>
+        )}
+      </Box>
+    </Container>
   );
 };
-
-export default Checkout;

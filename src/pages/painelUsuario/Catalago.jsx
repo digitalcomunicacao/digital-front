@@ -39,8 +39,6 @@ export const Catalago = () => {
   return (
     <Grid sx={{ p: 5 }} container spacing={2}>
       <Grid size={{ xs: 12, md:miniDrawer ? 10:10}}>
-
-
         <Box sx={{ textAlign: 'start', mt: 5 }}>
           <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
             Catálogo
@@ -110,7 +108,7 @@ export const Catalago = () => {
                   {categoria.nome}
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
-                <Box sx={{ display: 'flex', justifyContent:"space-between", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+                <Box sx={{ display: 'flex', gap:"2%", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
                   {cursosDaCategoria.map((curso, index) => (
                     <CardCurso key={index} curso={curso} />
                   ))}
@@ -124,7 +122,7 @@ export const Catalago = () => {
             <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: theme.palette.text.primary, mb: 2 }}>
               {categorias[tabAtiva - 1]?.nome}
             </Typography>
-            <Box sx={{ display: 'flex', justifyContent: "space-between", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+            <Box sx={{ display: 'flex', gap:"2%", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
               {cursos
                 .filter((curso) => curso.categoria?.id === categorias[tabAtiva - 1]?.id)
                 .map((curso, index) => (
@@ -135,7 +133,7 @@ export const Catalago = () => {
         )}
       </Grid>
       <Grid size={{ xs: 12, md: miniDrawer? 1:2 }}>
-        <Box sx={{ mt: 15 }}>
+        <Box sx={{ position: 'sticky', top: '80px' }}>
           <Subscription />
           <Box sx={{ mt: 5 }}>
             <Ads />

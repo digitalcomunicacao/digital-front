@@ -26,9 +26,9 @@ export const CardCurso = ({ curso }) => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const theme = useTheme()
     const navigate = useNavigate();
-    const handleDetalhes = () => {
-        navigate("/curso/detalhe", { state: { curso } });
-    };
+const handleDetalhes = () => {
+  navigate("/curso/detalhe", { state: { curso, tab: 1 } });
+};
     const handleSelecionarCurso = (cursoId) => {
         const token = localStorage.getItem('token');
 
@@ -70,7 +70,7 @@ export const CardCurso = ({ curso }) => {
             <Card
                 elevation={0}
                 component={"form"}
-                onClick={()=>handleSelecionarCurso(curso.id)}
+               onClick={()=>handleDetalhes(curso.id)}
                 sx={{
                     mb: 5,
                     height: "285px",
@@ -91,7 +91,7 @@ export const CardCurso = ({ curso }) => {
                     },
                 }}
             >
-                {/* <Box
+                <Box
                     className="card-overlay"
                     sx={{
                         position: "absolute",
@@ -119,9 +119,9 @@ export const CardCurso = ({ curso }) => {
                     </Box>
                     <Link sx={{ textDecoration: "none", fontWeight: "bolder" }}>Acessar</Link>
 
-                </Box> */}
+                </Box>
                 <Box sx={{ position: "relative" }}>
-                    <CardMedia component="img" height="160px" image={`https://api.digitaleduca.com.vc/${curso.thumbnail}`} alt={curso.titulo} />
+                    <CardMedia component="img" height="160px" image={`http://localhost:3000/${curso.thumbnail}`} alt={curso.titulo} />
                     <Chip
                         label={curso.level}
                         size="small"
@@ -149,7 +149,7 @@ export const CardCurso = ({ curso }) => {
 
 
                     {/* Botões de ação */}
-                    <Box sx={{ display: "flex", gap: 1 }}>
+                    {/* <Box sx={{ display: "flex", gap: 1 }}>
                     <Button
                         variant="contained"
                         fullWidth
@@ -186,9 +186,9 @@ export const CardCurso = ({ curso }) => {
                         }}
                     >
                         Detalhes
-                       
+                        <PlayArrow />
                     </Button>
-                </Box>
+                </Box> */}
                 </CardContent>
                 <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: "divider", display: "flex", justifyContent: "space-between", p: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>

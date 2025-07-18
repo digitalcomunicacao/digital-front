@@ -17,8 +17,9 @@ export const DetalhesCurso = () => {
     const location = useLocation();
     const curso = location.state?.curso;
     const navigate = useNavigate()
-     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const [value, setValue] = useState(0);
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+   const tab = location.state?.tab;
+    const [value, setValue] = useState(tab ?? 0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -27,23 +28,23 @@ export const DetalhesCurso = () => {
     if (!curso) return <div>Curso não encontrado</div>;
     return (
         <>
-            
+
             {user ? (
-                <AppBarUsuario/>
-            ):(
-    <ResponsiveAppBar />
+                <AppBarUsuario />
+            ) : (
+                <ResponsiveAppBar />
             )}
-        
+
             <Box sx={{ mt: { xs: 10, md: 15 } }}>
-             <Container>
+                <Container>
                     <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
                         <KeyboardBackspaceIcon sx={{ color: theme.palette.text.secondary }} />
                         <Typography color="textSecondary">Voltar</Typography>
                     </IconButton>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Box sx={{ display: "flex", flexDirection: "column" }}>
-                            <Typography color="textPrimary" sx={{ fontWeight:"bolder",fontSize: {xs:20,md:30} }}>{curso.titulo}</Typography>
-                            <Typography color="textSecondary" sx={{ fontSize:{xs:16,md:18}, width: { xs: "100%", md: "60%" } }}>{curso.descricao}</Typography>
+                            <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: { xs: 20, md: 30 } }}>{curso.titulo}</Typography>
+                            <Typography color="textSecondary" sx={{ fontSize: { xs: 16, md: 18 }, width: { xs: "100%", md: "60%" } }}>{curso.descricao}</Typography>
                             <Box>
                                 <Chip
                                     label={curso.level}
@@ -58,7 +59,7 @@ export const DetalhesCurso = () => {
                             </Box>
                         </Box>
                         <Box sx={{ display: { xs: "none", md: "block" }, width: "400px", height: "auto" }}>
-                            <img src={`https://api.digitaleduca.com.vc/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
+                            <img src={`http://localhost:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
                         </Box>
                     </Box>
                 </Container>
@@ -78,13 +79,13 @@ export const DetalhesCurso = () => {
                             <Divider />
                         </Box>
                         <Container>
-                        <TabPanel value={0}>
-                            <VisaoGeral curso={curso} />
-                        </TabPanel>
-                        <TabPanel value={1}>
-                           <ConteudoCurso curso={curso}/>
-                        </TabPanel>
-                         </Container>
+                            <TabPanel value={0}>
+                                <VisaoGeral curso={curso} />
+                            </TabPanel>
+                            <TabPanel value={1}>
+                                <ConteudoCurso curso={curso} />
+                            </TabPanel>
+                        </Container>
                     </TabContext>
 
                 </Box>

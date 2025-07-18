@@ -1,8 +1,9 @@
 import { Box, Button, Chip, Grid, Typography } from "@mui/material"
 import theme from "../../theme/theme"
+import { useNavigate } from "react-router-dom"
 
 export const ConteudoCurso=({curso})=>{
-    console.log(curso)
+   const navigate=useNavigate()
     return(
         <>
         <Grid container>
@@ -106,7 +107,7 @@ export const ConteudoCurso=({curso})=>{
                     <Typography color="textSecondary" sx={{ fontSize: 16, mt: 2 }}>
                         Inicie sua jornada na programação com um curso gratuito.
                     </Typography>
-                    <Button fullWidth variant="contained" sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
+                    <Button fullWidth variant="contained" onClick={()=>navigate("/checkout")} sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
                         Começar Jornada
                     </Button>
                 </Box>
