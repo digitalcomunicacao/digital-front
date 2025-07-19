@@ -91,7 +91,7 @@ const getPlanos = () => {
                     {plano.nome}
                   </Typography>
                 </Box>
-                <Typography sx={{ fontSize: 42, fontWeight: "bolder", mt: 2 }}>
+                <Typography sx={{ fontSize: 38, fontWeight: "bolder", mt: 2 }}>
                   R$ {plano.preco.toFixed(2)}
                 </Typography>
               </Box>
