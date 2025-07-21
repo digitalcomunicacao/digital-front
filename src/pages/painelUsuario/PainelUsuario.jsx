@@ -18,7 +18,7 @@ export const PainelUsuario = () => {
     }
   }, [isMdDown, isMobile, setMiniDrawer]);
 
-  const drawerWidth = miniDrawer ? 72 : 320;
+  const drawerWidth = miniDrawer ? 72 : 250;
 
   return (
     <Box sx={{ display: 'flex' }}>

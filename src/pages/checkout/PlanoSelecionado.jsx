@@ -8,7 +8,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-
+import InputMask from 'react-input-mask';
 export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmSenha, setShowConfirmSenha] = useState(false);
@@ -99,6 +99,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
 
       {/* Bloco de cadastro */}
       <Box
+ 
         sx={{
           display: "flex",
           justifyContent: "end",
@@ -107,7 +108,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
           p: 5,
           bgcolor: theme.palette.background.paper,
           borderColor: theme.palette.background.paperAzul,
-      width: {xs:"100%",md:"55%"},
+       width: {xs:"100%",md:"55%"},
         }}
       >
         <Box sx={{ width: "100%" }}>
@@ -115,20 +116,32 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
 
           <TextField
             fullWidth
+            required
             label="Nome Completo"
             value={usuarioData.nome}
             onChange={handleChange("nome")}
           />
 
           <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5, mt: 2 }}>
-            <TextField
-              label="Telefone"
-              sx={{ width: "50%" }}
-              value={usuarioData.celular}
-              onChange={handleChange("celular")}
-            />
+                       <InputMask
+            mask="(99) 99999-9999"
+            value={usuarioData.celular}
+            onChange={handleChange("celular")}
+          >
+            {(inputProps) => (
+              <TextField
+                {...inputProps}
+                label="Celular"
+                variant="outlined"
+                required
+              
+             sx={{ width: "50%" }}
+              />
+            )}
+          </InputMask>
             <TextField
               label="Email"
+                 required
               sx={{ width: "50%" }}
               value={usuarioData.email}
               onChange={handleChange("email")}

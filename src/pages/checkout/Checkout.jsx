@@ -41,9 +41,35 @@ export const Checkout = () => {
   const { showSnackbar } = useSnackbar();
   const totalSteps = steps.length;
 
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
+const handleStep = (step) => () => {
+  if (activeStep === totalSteps - 1 && step < activeStep) {
+    showSnackbar("Você já concluiu o cadastro. Não é possível voltar.", "warning");
+    return;
+  }
+
+  setActiveStep(step);
+};
+
+const validarCamposUsuario = () => {
+  const { nome, email, senha, confirmSenha, celular } = usuarioData;
+
+  if (!nome || !email || !senha || !confirmSenha || !celular) {
+    showSnackbar("Preencha todos os campos obrigatórios", "error");
+    return false;
+  }
+
+  if (senha.length < 6) {
+    showSnackbar("A senha deve ter no mínimo 6 caracteres", "error");
+    return false;
+  }
+
+  if (senha !== confirmSenha) {
+    showSnackbar("As senhas não coincidem", "error");
+    return false;
+  }
+
+  return true;
+};
 
 
   useEffect(() => {
@@ -68,6 +94,7 @@ export const Checkout = () => {
   }, [token]);
 
   const cadastrarUsuario = async () => {
+   
     if (usuarioData.senha !== usuarioData.confirmSenha) {
       showSnackbar("As senhas não coincidem", "error");
       return false;
@@ -96,19 +123,22 @@ export const Checkout = () => {
   };
 
 
-  const handleComplete = async () => {
-    // Quando estiver na etapa de cadastro (step 1)
-    if (activeStep === 1) {
-      const sucesso = await cadastrarUsuario();
-      if (!sucesso) return; // não avança se falhar
-    }
+const handleComplete = async () => {
+  if (activeStep === 1) {
+    const valido = validarCamposUsuario();
+    if (!valido) return;
 
-    setCompleted((prev) => ({ ...prev, [activeStep]: true }));
+    const sucesso = await cadastrarUsuario();
+    if (!sucesso) return;
+  }
 
-    if (activeStep < totalSteps - 1) {
-      setActiveStep((prev) => prev + 1);
-    }
-  };
+  setCompleted((prev) => ({ ...prev, [activeStep]: true }));
+
+  if (activeStep < totalSteps - 1) {
+    setActiveStep((prev) => prev + 1);
+  }
+};
+
 
 
   const handleBack = () => {

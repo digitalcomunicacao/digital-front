@@ -16,9 +16,7 @@ export const Catalago = () => {
     getCursos();
     getCategorias();
   }, []);
-    useEffect(()=>{
-      console.log("DJASOPDKASPODSKAPODASD",miniDrawer)
-    },[miniDrawer])
+
 
   const getCursos = () => {
     api.get("curso/cursos")
@@ -38,7 +36,7 @@ export const Catalago = () => {
 
   return (
     <Grid sx={{ p: 5 }} container spacing={2}>
-      <Grid size={{ xs: 12, md:miniDrawer ? 10:10}}>
+    <Grid size={{ xs: 12,md:8, lg: miniDrawer ? 10 : 10 }}>
         <Box sx={{ textAlign: 'start', mt: 5 }}>
           <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
             Catálogo
@@ -132,7 +130,7 @@ export const Catalago = () => {
           </>
         )}
       </Grid>
-      <Grid size={{ xs: 12, md: miniDrawer? 1:2 }}>
+       <Grid size={{ xs: 12,md:4, lg: miniDrawer ? 2 : 2 }} >
         <Box sx={{ position: 'sticky', top: '80px' }}>
           <Subscription />
           <Box sx={{ mt: 5 }}>

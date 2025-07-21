@@ -60,7 +60,7 @@ function AppBarUsuario() {
   const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
   const handleCloseUserMenu = () => setAnchorElUser(null);
 
-  const drawerWidth = miniDrawer ? 72 : 320;
+  const drawerWidth = miniDrawer ? 72 : 250;
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
