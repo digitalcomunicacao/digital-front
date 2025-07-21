@@ -11,6 +11,7 @@ export const MeusConteudos = () => {
     const [categorias, setCategorias] = useState([]);
     const [tabAtiva, setTabAtiva] = useState(0);
     const { miniDrawer } = useMiniDrawer(); // true ou false
+    const token = localStorage.getItem("token");
     const theme = useTheme();
     useEffect(() => {
         getCursos();
@@ -18,12 +19,12 @@ export const MeusConteudos = () => {
     }, []);
 
     const getCursos = () => {
-        api.get("/curso-selecionado/cursos")
+        api.get("/curso-selecionado/cursos", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
             .then((response) => setCursos(response.data))
             .catch((error) => console.error(error));
     };
-
-
     const getCategorias = () => {
         api.get("categoria/list")
             .then((response) => setCategorias(response.data))
@@ -36,13 +37,13 @@ export const MeusConteudos = () => {
 
     return (
         <Grid sx={{ p: 5 }} container spacing={2}>
-            <Grid size={{ xs: 12,md:8, lg: miniDrawer ? 10 : 10 }}>
+            <Grid size={{ xs: 12, md: 8, lg: miniDrawer ? 10 : 10 }}>
                 <Box sx={{ textAlign: 'start', mt: 5 }}>
                     <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
                         Meus conteúdos
                     </Typography>
                     <Typography sx={{ fontSize: 14, color: theme.palette.text.tertiary, mt: 2 }}>
-                      Acesse os seus conteúdos assistidos 
+                        Acesse os seus conteúdos assistidos
                     </Typography>
                 </Box>
 
@@ -130,7 +131,7 @@ export const MeusConteudos = () => {
                     </>
                 )}
             </Grid>
-            <Grid size={{ xs: 12,md:4, lg: miniDrawer ? 2 : 2 }} >
+            <Grid size={{ xs: 12, md: 4, lg: miniDrawer ? 2 : 2 }} >
                 <Box sx={{ position: 'sticky', top: '80px' }}>
                     <Subscription />
                     <Box sx={{ mt: 5 }}>

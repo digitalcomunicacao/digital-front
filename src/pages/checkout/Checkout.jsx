@@ -17,6 +17,7 @@ import api from '../../config/Api';
 import PaymentForma from './PaymentForma';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { HeaderCheckout } from './HeaderCheckout';
 
 const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 const stripePromise = loadStripe(
@@ -40,36 +41,39 @@ export const Checkout = () => {
   const theme = useTheme();
   const { showSnackbar } = useSnackbar();
   const totalSteps = steps.length;
+  useEffect(()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  },[])
+  const handleStep = (step) => () => {
+    if (activeStep === totalSteps - 1 && step < activeStep) {
+      showSnackbar("Você já concluiu o cadastro. Não é possível voltar.", "warning");
+      return;
+    }
 
-const handleStep = (step) => () => {
-  if (activeStep === totalSteps - 1 && step < activeStep) {
-    showSnackbar("Você já concluiu o cadastro. Não é possível voltar.", "warning");
-    return;
-  }
+    setActiveStep(step);
+  };
 
-  setActiveStep(step);
-};
+  const validarCamposUsuario = () => {
+    const { nome, email, senha, confirmSenha, celular } = usuarioData;
 
-const validarCamposUsuario = () => {
-  const { nome, email, senha, confirmSenha, celular } = usuarioData;
+    if (!nome || !email || !senha || !confirmSenha || !celular) {
+      showSnackbar("Preencha todos os campos obrigatórios", "error");
+      return false;
+    }
 
-  if (!nome || !email || !senha || !confirmSenha || !celular) {
-    showSnackbar("Preencha todos os campos obrigatórios", "error");
-    return false;
-  }
+    if (senha.length < 6) {
+      showSnackbar("A senha deve ter no mínimo 6 caracteres", "error");
+      return false;
+    }
 
-  if (senha.length < 6) {
-    showSnackbar("A senha deve ter no mínimo 6 caracteres", "error");
-    return false;
-  }
+    if (senha !== confirmSenha) {
+      showSnackbar("As senhas não coincidem", "error");
+      return false;
+    }
 
-  if (senha !== confirmSenha) {
-    showSnackbar("As senhas não coincidem", "error");
-    return false;
-  }
-
-  return true;
-};
+    return true;
+  };
 
 
   useEffect(() => {
@@ -94,7 +98,7 @@ const validarCamposUsuario = () => {
   }, [token]);
 
   const cadastrarUsuario = async () => {
-   
+
     if (usuarioData.senha !== usuarioData.confirmSenha) {
       showSnackbar("As senhas não coincidem", "error");
       return false;
@@ -123,21 +127,21 @@ const validarCamposUsuario = () => {
   };
 
 
-const handleComplete = async () => {
-  if (activeStep === 1) {
-    const valido = validarCamposUsuario();
-    if (!valido) return;
+  const handleComplete = async () => {
+    if (activeStep === 1) {
+      const valido = validarCamposUsuario();
+      if (!valido) return;
 
-    const sucesso = await cadastrarUsuario();
-    if (!sucesso) return;
-  }
+      const sucesso = await cadastrarUsuario();
+      if (!sucesso) return;
+    }
 
-  setCompleted((prev) => ({ ...prev, [activeStep]: true }));
+    setCompleted((prev) => ({ ...prev, [activeStep]: true }));
 
-  if (activeStep < totalSteps - 1) {
-    setActiveStep((prev) => prev + 1);
-  }
-};
+    if (activeStep < totalSteps - 1) {
+      setActiveStep((prev) => prev + 1);
+    }
+  };
 
 
 
@@ -192,88 +196,17 @@ const handleComplete = async () => {
 
 
   return (
-    <Box
-      sx={{
-        position: 'relative',
-        height: { xs: 'auto', md: '100vh' },
-        width: '100%',
-        overflowY: { xs: 'auto', md: 'hidden' }, // scroll só no mobile
-        overflowX: 'hidden',
-      }}
-    >
-
-      <Box
-        component="img"
-        src="aseets/background-image-checkout.png"
-        alt="background"
-        sx={{
-          position: 'absolute',
-          top: { xs: 0, md: 100 },
-          left: 0,
-          height: '100%',
-          width: '100%',
-          objectFit: 'cover',
-          objectPosition: { xs: '0% 18%', md: '0% 15%' }, // fixo no mobile
-          animation: {
-            xs: 'moveBackground 30s linear infinite alternate', // sem animação no mobile
-            md: 'moveBackground 5s linear infinite alternate', // animação só no desktop
-          },
-          mixBlendMode: 'screen',
-          pointerEvents: 'none',
-          userSelect: 'none',
-          '@keyframes moveBackground': {
-            '0%': {
-              objectPosition: '0% 18%',
-            },
-            '100%': {
-              objectPosition: '100% 20%',
-            },
-          },
-        }}
-      />
-
+  
+ 
       <Container>
         {/* Stepper */}
-        <Box sx={{
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          mt: 10,
-          border: 1,
-          borderColor: "divider",
-          borderRadius: '15px',
-          bgcolor: theme.palette.background.paper,
-          p: 3,
-        }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <SettingsOutlinedIcon sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />
-            <Box>
-              <Typography sx={{ fontSize: 29, fontWeight: "bolder" }}>Meu plano</Typography>
-              <Typography color='textTertiary'>Escolha o melhor plano para você</Typography>
-            </Box>
-          </Box>
-          <Box sx={{ width: '20%' }}>
-            <Stepper nonLinear activeStep={activeStep} sx={{
-              '& .MuiStepConnector-line': {
-                borderTopWidth: 3,
-              },
-              '& .MuiStepIcon-root': {
-                color: theme.palette.background.paperAzul,
-              },
-              '& .MuiStepIcon-root.Mui-completed': {
-                color: theme.palette.primary.main,
-              },
-              '& .MuiStepIcon-text': {
-                display: 'none',
-              },
-            }}>
-              {steps.map((label, index) => (
-                <Step key={label} completed={completed[index]}>
-                  <StepButton onClick={handleStep(index)} />
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-        </Box>
-
+        <HeaderCheckout
+          activeStep={activeStep}
+          completed={completed}
+          handleStep={handleStep}
+          theme={theme}
+          steps={steps}
+        />
         <Box sx={{ mt: 10 }}>{getStepContent(activeStep)}</Box>
 
         {/* Botões */}
@@ -301,7 +234,5 @@ const handleComplete = async () => {
           )}
         </Box>
       </Container>
-
-    </Box>
   );
 };

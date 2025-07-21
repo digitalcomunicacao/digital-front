@@ -2,22 +2,22 @@ import { Box, Container, Typography } from "@mui/material"
 import theme from "../../theme/theme"
 import api from "../../config/Api"
 import { useEffect, useState } from "react"
-import { CardCurso} from "./CardCurso"
+import { CardCurso } from "./CardCurso"
 
 export const Cursos = () => {
-    const [cursos,setCursos]=useState([])
-    const getCursos=()=>{
-        api.get('curso/cursos',{
-        }).then(function(response){
+    const [cursos, setCursos] = useState([])
+    const getCursos = () => {
+        api.get('curso/cursos', {
+        }).then(function (response) {
             console.log(response)
             setCursos(response.data)
-        }).catch(function(error){
+        }).catch(function (error) {
             console.log(error)
         })
     }
-    useEffect(()=>{
+    useEffect(() => {
         getCursos()
-    },[])
+    }, [])
     return (
         <Box sx={{
             background: "radial-gradient(circle at top left, #1E2A46, #0A1128)",
@@ -53,10 +53,10 @@ export const Cursos = () => {
                     <Typography sx={{ fontSize: 30, fontWeight: 'bolder', color: theme.palette.text.primary }}>Nossos Cursos</Typography>
                     <Typography sx={{ fontSize: 20, color: theme.palette.text.secondary, mt: 2 }}>Explore nossa coleção de cursos cuidadosamente selecionados<br /> para acelerar sua carreira em tecnologia</Typography>
                 </Box>
-                <Box sx={{display:"flex",gap:5,flexWrap:"wrap",flexDirection:{xs:"column",md:"row"},mt:10}}>
-                {cursos.map((curso,index)=>(              
-                <CardCurso key={index} curso={curso}/>
-                  ))}
+                <Box sx={{ display: "flex", gap: 5, flexWrap: "wrap", flexDirection: { xs: "column", md: "row" }, mt: 10 }}>
+                    {cursos.map((curso, index) => (
+                        <CardCurso key={index} curso={curso} />
+                    ))}
                 </Box>
             </Container>
 

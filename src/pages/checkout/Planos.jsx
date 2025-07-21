@@ -48,7 +48,7 @@ const getPlanos = () => {
             }}
           >
             <Box sx={{ width: "45%" }}>
-              <Box sx={{ width: "115px", height: "65px" }}>
+              <Box sx={{ width:{xs:"60px",md:"115px"}, height: {xs:"32px",md:"65px"} }}>
                 <img src={plano.intervalo==="year" ? "aseets/logo-dark.png":"aseets/logo-prata.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
               </Box>
               <Typography color="textTertiary" sx={{ mt: 2 }}>
@@ -56,7 +56,7 @@ const getPlanos = () => {
               </Typography>
             </Box>
 
-            <Box sx={{ display: "flex", gap: 1, alignItems: "start" }}>
+            <Box sx={{ display: "flex", flexDirection:{xs:"column",md:"row"},gap: 1, alignItems:{md:"start",xs:"center"} }}>
               <Box sx={{ position: "relative", width: "fit-content" }}>
                 
                 <img src="/aseets/icone_anual.png" alt="ícone anual" />
@@ -75,7 +75,7 @@ const getPlanos = () => {
               </Box>
 
               <Box sx={{ textAlign: "center" }}>
-                <Typography color="textTertiary" sx={{ fontSize: 20 }}>
+                <Typography color="textTertiary" sx={{ fontSize: {xs:15,md:20} }}>
                   Assinatura {plano.nome}
                 </Typography>
                 <Box
@@ -87,11 +87,11 @@ const getPlanos = () => {
                     mt: 1
                   }}
                 >
-                  <Typography color="textTertiary" sx={{ fontSize: 22 }}>
+                  <Typography color="textTertiary" sx={{ fontSize:{md:15,xs:12} }}>
                     {plano.nome}
                   </Typography>
                 </Box>
-                <Typography sx={{ fontSize: 38, fontWeight: "bolder", mt: 2 }}>
+                <Typography sx={{ fontSize:{md:38,xs:20}, fontWeight: "bolder", mt: 2 }}>
                   R$ {plano.preco.toFixed(2)}
                 </Typography>
               </Box>

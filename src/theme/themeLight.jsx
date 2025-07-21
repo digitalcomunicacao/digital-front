@@ -5,15 +5,15 @@ const themeLight = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#0D68F9', // azul padrão no claro
+      main: '#141E30', // azul padrão no claro
     },
     secondary: {
-      main: '#FFB800', // amarelo destaque no light
+      main: '#141E30', // amarelo destaque no light
     },
     background: {
-      default: '#F5F7FA',
-      paper: '#F5F7FA80', // fundo branco para cards, modais etc.
-      paperAzul: '#0D68F9'
+      default: '#f2f2f2',
+      paper: '#fff', // fundo branco para cards, modais etc.
+      paperAzul: '#E1A127'
     },
     text: {
       primary: '#0A1128',

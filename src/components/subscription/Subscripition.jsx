@@ -22,7 +22,7 @@ export const Subscription = () => {
   const diasRestantes = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
  
   return (
-    <Box sx={{display:"flex",flexDirection:"column",gap:5,width: "100%",height: 400,bgcolor: theme.palette.background.paper, 
+    <Box sx={{display:"flex",flexDirection:"column",gap:5,width: "100%",height:{xs:400,md:400},bgcolor: theme.palette.background.paper, 
         p:3,   
         border: 1,
         borderColor: "divider",
@@ -38,7 +38,7 @@ export const Subscription = () => {
     <Box sx={{display:"flex",alignItems:"center",justifyContent:"space-between",flexDirection:"column",gap:2}}>
     <Box
       sx={{
-        display: { xs: 'none', sm: 'flex' },
+        display:"flex",
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',

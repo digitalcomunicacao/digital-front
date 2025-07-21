@@ -1,9 +1,7 @@
-import { Box, Button, Chip, Container, Divider, IconButton, Typography } from "@mui/material"
-import ResponsiveAppBar from "../customAppBar/ResponsiveAppBar"
+import { Box,Divider, IconButton, Typography, useTheme } from "@mui/material"
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import theme from "../../theme/theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import Tab from '@mui/material/Tab';
@@ -12,12 +10,34 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { VisaoGeral } from "./VisaoGeral";
 import { ConteudoCurso } from "./ConteudoCurso";
-import AppBarUsuario from "../appBarUsuario/AppBarUsuario";
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import api from "../../config/Api";
 export const DetalhesCurso = () => {
     const location = useLocation();
-    const curso = location.state?.curso;
+    const cursoId = location.state?.cursoId;
     const navigate = useNavigate()
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const theme=useTheme()
+    const [curso, setCurso] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  if (!cursoId) {
+    setLoading(false);
+    return;
+  }
+
+  setLoading(true);
+  api.get(`/curso/${cursoId}`)
+    .then(res => {
+      setCurso(res.data);
+      console.log(res)
+    })
+    .catch(() => {
+      setCurso(null);
+    })
+    .finally(() => setLoading(false));
+}, [cursoId]);
    const tab = location.state?.tab;
     const [value, setValue] = useState(tab ?? 0);
 
@@ -25,47 +45,60 @@ export const DetalhesCurso = () => {
         setValue(newValue);
     };
 
-    if (!curso) return <div>Curso não encontrado</div>;
+if (loading) return <div>Carregando curso...</div>;
+
+if (!curso) return <div>Curso não encontrado</div>;
+        const calcularDuracaoTotal = () => {
+        const totalSegundos = curso.modulos.reduce((soma, modulo) => {
+            const segundosModulo = modulo.videos?.reduce((acc, video) => acc + (video.duracao || 0), 0) || 0;
+            return soma + segundosModulo;
+        }, 0);
+
+        const totalMinutos = Math.floor(totalSegundos / 60);
+        const horas = Math.floor(totalMinutos / 60);
+
+        if (horas >= 1) {
+            return `${horas}H`;
+        } else {
+            return `${totalMinutos}min`;
+        }
+    };
+
     return (
-        <>
-
-            {user ? (
-                <AppBarUsuario />
-            ) : (
-                <ResponsiveAppBar />
-            )}
-
-            <Box sx={{ mt: { xs: 10, md: 15 } }}>
-                <Container>
-                    <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
+     
+            <Box sx={{p:{xs:2,md:5}}}>
+                    <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center"}}>
                         <KeyboardBackspaceIcon sx={{ color: theme.palette.text.secondary }} />
                         <Typography color="textSecondary">Voltar</Typography>
                     </IconButton>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Box sx={{ display: "flex", flexDirection: "column" }}>
-                            <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: { xs: 20, md: 30 } }}>{curso.titulo}</Typography>
-                            <Typography color="textSecondary" sx={{ fontSize: { xs: 16, md: 18 }, width: { xs: "100%", md: "60%" } }}>{curso.descricao}</Typography>
-                            <Box>
-                                <Chip
-                                    label={curso.level}
-                                    size="small"
-                                    sx={{
-                                        mt: 2,
-                                        backgroundColor: "primary.main",
-                                        color: "primary.contrastText",
-                                        fontWeight: "bold",
-                                    }}
-                                />
-                            </Box>
+                    <Box sx={{ display: "flex",alignItems: "center",justifyContent:"space-between"}}>
+                        <Box sx={{ display: "flex", flexDirection: "column",width:{md:"40%",xs:"100%"}}}>
+                            <Typography color="textPrimary" sx={{ fontWeight: "bolder",fontSize:24 }}>{curso.titulo}</Typography>
+                            <Typography color="textTertiary" sx={{ fontSize:16, width: { xs: "100%", md: "60%" }}}>{curso.descricao}</Typography>
+                               <Box sx={{display: "flex",gap:2,mt:2}}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <SignalCellularAltIcon />
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold", textTransform: "uppercase" }}>{curso.level}</Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <PlayCircleOutlineIcon />
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>
+                            + {calcularDuracaoTotal()} DE AULAS
+                        </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <WorkspacePremiumIcon />
+                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>CERTIFICADO</Typography>
+                    </Box>
+                </Box>
                         </Box>
-                        <Box sx={{ display: { xs: "none", md: "block" }, width: "400px", height: "auto" }}>
-                            <img src={`http://localhost:3000/${curso.thumbnail}`} style={{ width: "100%", height: "100%", borderRadius: 30, boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", }} />
+                        <Box sx={{ display: { xs: "none", md: "block" }, width: "600px", height: "auto"}}>
+                            <img src={`https://api.digitaleduca.com.vc/${curso.thumbnail}`} style={{ width: "100%", height: "100%",borderRadius:"15px"}} />
                         </Box>
                     </Box>
-                </Container>
-                <Box sx={{ mt: 5 }}>
+                <Box>
                     <TabContext value={value}>
-                        <Container>
+                     
                             <Box sx={{ display: "flex", justifyContent: "start" }}>
                                 <TabList value={value} onChange={handleChange} aria-label="basic tabs example">
                                     <Tab icon={<WidgetsIcon />} iconPosition="start" label="Visão geral" />
@@ -73,24 +106,22 @@ export const DetalhesCurso = () => {
                                 </TabList>
 
                             </Box>
-                        </Container>
+                      
 
                         <Box sx={{ width: "100%" }}>
                             <Divider />
                         </Box>
-                        <Container>
+               
                             <TabPanel value={0}>
                                 <VisaoGeral curso={curso} />
                             </TabPanel>
                             <TabPanel value={1}>
                                 <ConteudoCurso curso={curso} />
                             </TabPanel>
-                        </Container>
+                       
                     </TabContext>
 
                 </Box>
             </Box>
-
-        </>
     )
 }

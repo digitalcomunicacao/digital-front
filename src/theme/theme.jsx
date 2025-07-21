@@ -13,7 +13,7 @@ const theme = createTheme({
     background: {
       default: '#141E30',
       paper: '#0D68F914', 
-      paperSolid: '#0D68F9',  
+      paperSolid: '#141E30',  
       paperAzul:"#0D68F9"
     },
     text: {

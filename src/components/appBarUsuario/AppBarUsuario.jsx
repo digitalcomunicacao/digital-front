@@ -56,6 +56,15 @@ function AppBarUsuario() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
+const [scrolled, setScrolled] = useState(false);
+useEffect(() => {
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 10); // Você pode ajustar esse valor
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
 
   const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
   const handleCloseUserMenu = () => setAnchorElUser(null);
@@ -176,15 +185,25 @@ const handleToggleDrawer = () => {
 
   return (
     <>
-      <AppBar elevation={0} position="fixed" sx={{ borderBottom: 1, borderColor: "divider", zIndex: theme.zIndex.drawer + 1 }}>
-        <Toolbar disableGutters sx={{bgcolor:theme.palette.background.default}} >
+<AppBar
+  elevation={0}
+  position="fixed"
+  sx={{
+    borderBottom: 1,
+    borderColor: "divider",
+    zIndex: theme.zIndex.drawer + 1,
+    bgcolor:theme.palette.background.default
+  }}
+>
+
+        <Toolbar disableGutters  >
           <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between", mx: { xs: 2, md: 5 } }}>
             <Box sx={{ display: "flex", gap: 2 }}>
               <IconButton size="large" edge="start"  onClick={handleToggleDrawer}>
                 {(isMobile ? mobileOpen : !miniDrawer) ? <MenuOpenIcon /> : <MenuIcon />}
               </IconButton>
               <Box onClick={() => navigate("/painel-usuario/home-usuario")} sx={{ cursor: "pointer", ml: 2, width: "94px", height: "52px" }}>
-                <img src={!darkMode ? "/aseets/logo-dark.png":"/aseets/logo-digital-educa.png"} style={{ width: "100%", height: "100%" }} />
+                <img src={!darkMode ? "/aseets/logo-color.svg":"/aseets/logo-digital-educa.png"} style={{ width: "100%", height: "100%" }} />
               </Box>
             </Box>
 
@@ -308,7 +327,7 @@ const handleToggleDrawer = () => {
         PaperProps={{
           sx: {
             width: drawerWidth,
-            bgcolor: theme.palette.background.default,
+              bgcolor:theme.palette.background.default,
             top: '64px',
             height: 'calc(100% - 64px)',
             overflowX: 'hidden',

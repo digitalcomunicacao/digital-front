@@ -122,7 +122,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
             onChange={handleChange("nome")}
           />
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5, mt: 2 }}>
+          <Box sx={{ display: "flex",flexDirection:{xs:"column",md:"row"},justifyContent: "space-between", gap: 2, mt: 2 }}>
                        <InputMask
             mask="(99) 99999-9999"
             value={usuarioData.celular}
@@ -135,14 +135,14 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
                 variant="outlined"
                 required
               
-             sx={{ width: "50%" }}
+             sx={{ width: "100%" }}
               />
             )}
           </InputMask>
             <TextField
               label="Email"
                  required
-              sx={{ width: "50%" }}
+              sx={{ width: "100%" }}
               value={usuarioData.email}
               onChange={handleChange("email")}
             />
@@ -150,7 +150,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
 
           <Typography sx={{ mt: 3 }}>Defina uma senha de acesso</Typography>
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5, mt: 2 }}>
+          <Box sx={{ display: "flex", flexDirection:{xs:"column",md:"row"},justifyContent: "space-between", gap: 2, mt: 2}}>
             <TextField
               label="Senha"
               required

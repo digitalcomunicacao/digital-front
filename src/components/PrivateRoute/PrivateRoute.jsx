@@ -23,7 +23,7 @@ useEffect(() => {
    
       // Salvar no localStorage ou contexto global
       localStorage.setItem('user', JSON.stringify(user));
-
+      console.log(response)
       setIsAuth(true);
     } catch (error) {
       setIsAuth(false);

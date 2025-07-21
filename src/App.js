@@ -9,17 +9,11 @@ import { MeusConteudos } from "./pages/painelUsuario/MeusConteudos";
 import { Catalago } from "./pages/painelUsuario/Catalago";
 import { SnackbarProvider } from "./context/SnackBarContext";
 import { Eventos } from "./pages/painelUsuario/Eventos";
-import { PlayerCurso } from "./pages/painelUsuario/playerCurso/PlayerCurso";
-import { VideoPlayer } from "./pages/painelUsuario/playerCurso/VideoPlayer";
 import { Checkout } from "./pages/checkout/Checkout";
 import {NovaSenha} from "./pages/login/NovaSenha"
 import { Configuracoes } from "./pages/painelUsuario/configuracoes/Configuracoes";
 import { HomeUsuario } from "./pages/painelUsuario/HomeUsuario";
-
-
-
-
-
+import { VideoPlayer } from "./pages/painelUsuario/VideoPlayer";
 
 
 function App() {
@@ -43,12 +37,12 @@ function App() {
             <Route path="meus-cursos" element={<MeusConteudos />} />
             <Route path="home-usuario" element={<HomeUsuario />} />
             <Route path="eventos" element={<Eventos />} />
-            <Route path="curso" element={<PlayerCurso />} />
-            <Route path="/painel-usuario/curso/player" element={<VideoPlayer />} />
             <Route path="configuracoes" element={<Configuracoes />} />
-          </Route>
+           <Route path="curso/detalhe" element={<DetalhesCurso />} />
+         <Route path="player" element={<VideoPlayer />} />
 
-          <Route path="/curso/detalhe" element={<DetalhesCurso />} />
+          </Route>
+  
           <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </BrowserRouter>

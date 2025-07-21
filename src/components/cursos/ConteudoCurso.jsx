@@ -1,119 +1,124 @@
-import { Box, Button, Chip, Grid, Typography } from "@mui/material"
-import theme from "../../theme/theme"
+import { Box, Button, Chip, Divider, Grid, Typography, useTheme } from "@mui/material"
+import PlayCircleOutlinedIcon from '@mui/icons-material/PlayCircleOutlined';
 import { useNavigate } from "react-router-dom"
+import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
+import { useSnackbar } from "../../context/SnackBarContext";
+import api from "../../config/Api";
+export const ConteudoCurso = ({ curso }) => {
+  const navigate = useNavigate()
+  const theme = useTheme()
+  const { showSnackbar } = useSnackbar();
+const handleSelecionarModulo = async (modulo) => {
+    try {
+      const token = localStorage.getItem("token");
 
-export const ConteudoCurso=({curso})=>{
-   const navigate=useNavigate()
-    return(
-        <>
-        <Grid container>
+      // Verifica se o curso já está selecionado
+      const response = await api.get("/curso-selecionado/cursos", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const cursosSelecionados = response.data;
+      const jaSelecionado = cursosSelecionados.some((c) => c.id === curso.id);
+
+      // Se ainda não foi selecionado, envia para a API
+      if (!jaSelecionado) {
+        await api.post("/curso-selecionado", { cursoId: curso.id }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        showSnackbar("Curso adicionado aos seus conteúdos.");
+      }
+
+      // Redireciona para o player
+navigate("/painel-usuario/player", {
+  state: {
+    cursoId: curso.id,
+    moduloId: modulo.id,
+  },
+});
+
+    } catch (err) {
+      console.error("Erro ao selecionar curso:", err);
+      showSnackbar("Erro ao acessar o módulo", "error");
+    }
+  };
+  return (
+    <>
+      <Grid container>
         <Grid size={{ xs: 12, md: 8 }} >
-        {curso.modulos.map((modulo,index)=>(
-               <Box
-            key={index}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              mb: 5,
-              width: { xs: "100%", md: "90%" },
-              cursor: "pointer",
-           
-            }}
-           
-          >
-            <Typography color="textSecondary">Nivel {modulo.id}</Typography>
-            <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 20 }}>
-              {modulo.titulo}
-            </Typography>
+          {curso.modulos.map((modulo, index) => (
             <Box
+              key={index}
               sx={{
-                   "&:hover": {
-                boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)",
-                transform: "translateY(-2px)",
-              },
-                border: 1,
-                borderColor: "divider",
-                mt: 2,
-                p: 3,
-                borderRadius: 5,
-                bgcolor: theme.palette.background.paper,
+                display: "flex",
+                flexDirection: "column",
+                mb: 5,
+                width: { xs: "100%", md: "90%" },
+                cursor: "pointer",
               }}
+                        onClick={() => handleSelecionarModulo(modulo)}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  flexDirection: { xs: "column", md: "row" },
-                }}
-              >
-                <Typography
-                  color="textPrimary"
-                  sx={{
-                    fontWeight: "bolder",
-                    fontSize:{xs:14,md:18},
-                    
-                    textAlign: "start",
-                  }}
-                >
-                  {modulo.subtitulo}
-                </Typography>
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <Chip
-                    label="Módulo"
-                    size="small"
-                    sx={{
-                      top: 12,
-                      left: 12,
-                      backgroundColor: "primary.main",
-                      color: "primary.contrastText",
-                      fontWeight: "bold",
-                    }}
-                  />
-                  <Chip
-                    label={modulo.videos.length + " Aulas"}
-                    size="small"
-                    sx={{
-                      top: 12,
-                      left: 12,
-                      backgroundColor: "primary.main",
-                      color: "primary.contrastText",
-                      fontWeight: "bold",
-                    }}
-                  />
-                </Box>
-              </Box>
-              <Typography color="textSecondary" sx={{ mt: 2,fontSize:{xs:12,md:14} }}>
-                {modulo.descricao}
-              </Typography>
-            </Box>
-          </Box>
-               ))}
-               </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
-                <Box
-                    sx={{
-                        mt: { xs: 10, md: 0 },
-                        height: "220px",
-                        border: 1,
-                        borderColor: "divider",
-                        p: 3,
-                        borderRadius: 5,
 
-                    }}
-                >
-                    <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 16 }}>
-                        Inicie sua jornada na programação
-                    </Typography>
-                    <Typography color="textSecondary" sx={{ fontSize: 16, mt: 2 }}>
-                        Inicie sua jornada na programação com um curso gratuito.
-                    </Typography>
-                    <Button fullWidth variant="contained" onClick={()=>navigate("/checkout")} sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
-                        Começar Jornada
-                    </Button>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
+                  <Typography color="textPrimary">Módulo {index + 1}</Typography>
                 </Box>
-            </Grid>
-               </Grid>
-        </>
-      
-    )
+                <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 20 }}>
+                  {modulo.titulo}
+                </Typography>
+              </Box>
+
+              <Box sx={{
+                display: "flex", flexDirection: { xs: "column", md: "row" }, "&:hover": {
+                  border: 3,
+                  borderColor: theme.palette.background.paperAzul,
+                }, border: 1, borderColor: "divider", p: 2, borderRadius: 5, mt: 5, height: "250px", gap: 2, alignItems: { xs: "center", md: "start" }
+              }}>
+                <PlayCircleOutlinedIcon sx={{ fontSize: "80px", color: theme.palette.background.paperAzul }} />
+                <Box sx={{ width: "70%", mt: 2 }}>
+                  <Typography sx={{ fontSize: 18, fontWeight: "bolder" }}>{modulo.subtitulo}</Typography>
+                  <Box sx={{ mt: 1, display: "flex", gap: 0.5, justifyContent: "center", borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
+                    <VideoLibraryOutlinedIcon sx={{ color: theme.palette.background.paperAzul }} />
+                    <Typography>
+                      {modulo.videos.length} Aulas
+                    </Typography>
+
+                  </Box>
+
+                  <Divider variant="fullWidth" sx={{ mt: 2 }} />
+                  <Typography sx={{ mt: 2 }}>{modulo.descricao}</Typography>
+                </Box>
+
+
+              </Box>
+
+            </Box>
+          ))}
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Box
+            sx={{
+              mt: { xs: 10, md: 0 },
+              height: "220px",
+              border: 1,
+              borderColor: "divider",
+              p: 3,
+              borderRadius: 5,
+
+            }}
+          >
+            <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 16 }}>
+              Inicie sua jornada na programação
+            </Typography>
+            <Typography color="textSecondary" sx={{ fontSize: 16, mt: 2 }}>
+              Inicie sua jornada na programação com um curso gratuito.
+            </Typography>
+            <Button fullWidth variant="contained" onClick={() => navigate("/checkout")} sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
+              Começar Jornada
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
+    </>
+
+  )
 }

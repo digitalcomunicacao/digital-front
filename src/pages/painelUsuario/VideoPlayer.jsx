@@ -19,70 +19,79 @@ import {
 } from "@mui/material"
 import { ArrowBack, MenuOpen, Menu, PlayCircleOutline, CheckCircle, VideoLibrary } from "@mui/icons-material"
 import { useLocation, useNavigate } from "react-router-dom"
-import axios from "axios"
 import ReactPlayer from "react-player"
 import { useTheme } from "@mui/material/styles"
 import ContadorPlayer from "./ContadorPlayer"
-import api from "../../../config/Api"
+import api from "../../config/Api"
 
 export const VideoPlayer = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [curso, setCurso] = useState(location.state?.curso || null)
-  const [modulo, setModulo] = useState(location.state?.modulo || null)
-  const [currentVideo, setCurrentVideo] = useState(modulo?.videos?.[0] || null)
-  const [videoBlobUrl, setVideoBlobUrl] = useState(null)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+  const token = localStorage.getItem("token")
+
+  // IDs vindo da rota
+  const cursoId = location.state?.cursoId
+  const moduloId = location.state?.moduloId
+
+  const [curso, setCurso] = useState(null)
+  const [modulo, setModulo] = useState(null)
+  const [currentVideo, setCurrentVideo] = useState(null)
   const [progressoInicial, setProgressoInicial] = useState(0)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [loadingProgresso, setLoadingProgresso] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [nextVideo, setNextVideo] = useState(null)
   const [showCountdownOverlay, setShowCountdownOverlay] = useState(false)
   const [countdown, setCountdown] = useState(null)
-
   const [progressoPronto, setProgressoPronto] = useState(false)
   const [hasSeeked, setHasSeeked] = useState(false)
   const [isPlayerReady, setIsPlayerReady] = useState(false)
   const [maxProgressoSalvo, setMaxProgressoSalvo] = useState(0)
 
   const playerRef = useRef(null)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
-  const token = localStorage.getItem("token")
 
   useEffect(() => {
-    if (isMobile) {
-      setIsCollapsed(true)
-    } else {
-      setIsCollapsed(false)
-    }
+    if (isMobile) setIsCollapsed(true)
+    else setIsCollapsed(false)
   }, [isMobile])
 
-  const fetchCursosAtualizados = async () => {
-    try {
-      const response = await api.get("/curso-selecionado/cursos", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const cursos = response.data
-      const cursoAtualizado = cursos.find((c) => c.id === curso?.id)
-      if (!cursoAtualizado) return navigate("/painel-usuario/meus-cursos")
-
-      const moduloAtualizado = cursoAtualizado.modulos.find((m) => m.id === modulo?.id)
-      if (!moduloAtualizado) return navigate("/painel-usuario/meus-cursos")
-
-      setCurso(cursoAtualizado)
-      setModulo(moduloAtualizado)
-    } catch (err) {
-      console.error("Erro ao buscar cursos:", err)
-      navigate("/painel-usuario/meus-cursos")
-    }
-  }
-
   useEffect(() => {
-    if (!curso || !modulo) return navigate("/painel-usuario/meus-cursos")
-    fetchCursosAtualizados()
-  }, [])
+    if (!cursoId || !moduloId) {
+      navigate("/painel-usuario/meus-cursos")
+      return
+    }
+
+    const fetchCursoModulo = async () => {
+      setIsLoading(true)
+      try {
+        const response = await api.get("/curso-selecionado/cursos", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const cursos = response.data
+        const cursoEncontrado = cursos.find((c) => c.id === cursoId)
+        if (!cursoEncontrado) {
+          navigate("/painel-usuario/meus-cursos")
+          return
+        }
+        setCurso(cursoEncontrado)
+
+        const moduloEncontrado = cursoEncontrado.modulos.find((m) => m.id === moduloId)
+        if (!moduloEncontrado) {
+          navigate("/painel-usuario/meus-cursos")
+          return
+        }
+        setModulo(moduloEncontrado)
+      } catch (err) {
+        console.error(err)
+        navigate("/painel-usuario/meus-cursos")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchCursoModulo()
+  }, [cursoId, moduloId, navigate, token])
 
   useEffect(() => {
     if (!modulo?.videos?.length) return
@@ -101,7 +110,7 @@ export const VideoPlayer = () => {
       const segundos = response.data?.segundos || 0
       setProgressoInicial(segundos)
     } catch (err) {
-      console.error("Erro ao buscar progresso:", err)
+      console.error(err)
       setProgressoInicial(0)
     } finally {
       setProgressoPronto(true)
@@ -109,59 +118,35 @@ export const VideoPlayer = () => {
     }
   }
 
-  const getVideoBlob = async (videoUrl) => {
-    try {
-      const response = await api.get(`/files/${videoUrl}`, {
-        responseType: "blob",
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const blobUrl = URL.createObjectURL(response.data)
-      setVideoBlobUrl(blobUrl)
-    } catch (err) {
-      console.error("Erro ao carregar vídeo:", err)
-      setVideoBlobUrl(null)
-    }
-  }
-
   useEffect(() => {
-    if (!currentVideo?.url) return
+    if (!currentVideo) return
 
-    setIsLoading(true)
-    setHasSeeked(false)
+    setIsPlaying(false)
     setProgressoPronto(false)
+    setHasSeeked(false)
     setIsPlayerReady(false)
-    setVideoBlobUrl(null)
 
     getProgressoVideo(currentVideo.id)
-      .then(() => getVideoBlob(currentVideo.url))
-      .finally(() => setIsLoading(false))
-
-    return () => {
-      if (videoBlobUrl) URL.revokeObjectURL(videoBlobUrl)
-    }
   }, [currentVideo])
 
-  // ✅ Realiza o seekTo com segurança
   useEffect(() => {
     if (
       isPlayerReady &&
       progressoPronto &&
       !hasSeeked &&
-      playerRef.current &&
-      videoBlobUrl
+      playerRef.current
     ) {
-      // Pequeno atraso para garantir montagem
       setTimeout(() => {
         playerRef.current.seekTo(progressoInicial, "seconds")
         setHasSeeked(true)
+        setIsPlaying(true)
       }, 500)
     }
-  }, [isPlayerReady, progressoPronto, hasSeeked, videoBlobUrl])
+  }, [isPlayerReady, progressoPronto, hasSeeked, progressoInicial])
 
-  // ⏱ Salva progresso a cada 10s
   useEffect(() => {
     const interval = setInterval(() => {
-      if (playerRef.current && currentVideo?.id) {
+      if (playerRef.current && currentVideo?.id && isPlaying) {
         const tempoAtual = playerRef.current.getCurrentTime()
         const duracao = currentVideo.duracao || 0
         const concluido = tempoAtual >= duracao - 2
@@ -173,9 +158,7 @@ export const VideoPlayer = () => {
             concluido,
           }, {
             headers: { Authorization: `Bearer ${token}` },
-          }).catch((err) => {
-            console.error("Erro ao salvar progresso:", err)
-          })
+          }).catch((err) => console.error(err))
 
           setMaxProgressoSalvo(tempoAtual)
         }
@@ -183,11 +166,10 @@ export const VideoPlayer = () => {
     }, 10000)
 
     return () => clearInterval(interval)
-  }, [currentVideo, maxProgressoSalvo])
+  }, [currentVideo, maxProgressoSalvo, isPlaying, token])
 
-  // ▶ Ao terminar vídeo
   const handleVideoEnd = async () => {
-    if (!currentVideo) return
+    if (!currentVideo || !modulo) return
 
     setCurrentVideo((prev) => ({
       ...prev,
@@ -209,23 +191,22 @@ export const VideoPlayer = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
     } catch (err) {
-      console.error("Erro ao concluir vídeo:", err)
+      console.error(err)
     }
 
     const currentIndex = modulo.videos.findIndex((v) => v.id === currentVideo.id)
     const next = modulo.videos[currentIndex + 1]
-    setNextVideo(next)
 
     if (next) {
       setShowCountdownOverlay(true)
       setCountdown(5)
+
       const interval = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1) {
             clearInterval(interval)
             setShowCountdownOverlay(false)
             setCurrentVideo(next)
-            setNextVideo(null)
             setIsPlaying(true)
             return null
           }
@@ -235,7 +216,6 @@ export const VideoPlayer = () => {
     }
   }
 
-  // Helpers
   const getCurrentVideoIndex = () =>
     modulo?.videos?.findIndex((v) => v.id === currentVideo?.id) || 0
 
@@ -245,19 +225,25 @@ export const VideoPlayer = () => {
     return (concluidos / total) * 100
   }
 
-
-  useEffect(() => {
-    if (isMobile) {
-      setIsCollapsed(true)
-    } else {
-      setIsCollapsed(false)
-    }
-  }, [isMobile])
-  const videosConcluidos = modulo?.videos?.filter(
-    (v) => v.progresso?.concluido === true
-  ).length || 0
-
+  const videosConcluidos = modulo?.videos?.filter((v) => v.progresso?.concluido === true).length || 0
   const totalVideos = modulo?.videos?.length || 0
+
+  if (isLoading || !curso || !modulo) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "#0A1128",
+          color: "#fff",
+        }}
+      >
+        <CircularProgress sx={{ color: "#FFB800" }} />
+      </Box>
+    )
+  }
 
   return (
     <Box
@@ -298,7 +284,7 @@ export const VideoPlayer = () => {
         </IconButton>
 
         <Avatar
-          src={`http://localhost:3000/${curso.thumbnail}`}
+          src={`https://api.digitaleduca.com.vc/${curso.thumbnail}`}
           alt="Thumbnail"
           variant="rounded"
           sx={{
@@ -342,7 +328,6 @@ export const VideoPlayer = () => {
               },
             }}
           />
-
         </Box>
       </Paper>
 
@@ -366,141 +351,132 @@ export const VideoPlayer = () => {
             flexDirection: "column",
           }}
         >
-       <Paper
-  elevation={8}
-  sx={{
-    borderRadius: { xs: 2, md: 4 },
-    overflow: "hidden",
-    background: "linear-gradient(145deg, #121829, #1E2A46)",
-    position: "relative",
-  }}
->
-  <Box
-    sx={{
-      aspectRatio: "16/9",
-      position: "relative",
-      "&::before": {
-        content: '""',
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background:
-          "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
-        zIndex: videoBlobUrl ? -1 : 1,
-        pointerEvents: "none",
-      },
-    }}
-  >
-    {(isLoading || loadingProgresso) ? (
-      <Box
-        sx={{
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 2,
-          color: "white",
-        }}
-      >
-        <CircularProgress
-          size={60}
-          thickness={4}
-          sx={{
-            color: "#FFB800",
-            "& .MuiCircularProgress-circle": {
-              strokeLinecap: "round",
-            },
-          }}
-        />
-        <Typography variant="body1" sx={{ opacity: 0.8 }}>
-          Carregando vídeo...
-        </Typography>
-      </Box>
-    ) : videoBlobUrl ? (
-      <>
-      <Box
-  onContextMenu={(e) => e.preventDefault()} // ← aqui
-  sx={{
-    aspectRatio: "16/9",
-    position: "relative",
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background:
-        "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
-      zIndex: videoBlobUrl ? -1 : 1,
-      pointerEvents: "none",
-    },
-  }}>
-
-
-        <ReactPlayer
-          ref={playerRef}
-          url={videoBlobUrl}
-          controls
-         playing={isPlaying && hasSeeked}
-          onEnded={handleVideoEnd}
-          width="100%"
-          height="100%"
-onReady={() => {
-  setIsPlayerReady(true)
-}}
-
-
-          config={{
-            file: {
-              attributes: {
-                controlsList: "nodownload",
-              },
-            },
-          }}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-          }}
-        />
-
-        {showCountdownOverlay && countdown !== null && (
-          <ContadorPlayer countdown={countdown} nextVideo={nextVideo} />
-        )}
-          </Box>
-      </>
-    ) : (
-      <Box
-        sx={{
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#fff",
-          gap: 2,
-          p: 4,
-          textAlign: "center",
-        }}
-      >
-        <PlayCircleOutline
-          sx={{ fontSize: 80, opacity: 0.6, color: "#FFB800" }}
-        />
-        <Typography variant="h6" sx={{ opacity: 0.8 }}>
-          Vídeo não disponível
-        </Typography>
-        <Typography variant="body2" sx={{ opacity: 0.6 }}>
-          Tente novamente mais tarde
-        </Typography>
-      </Box>
-    )}
-  </Box>
-</Paper>
-
+          <Paper
+            elevation={8}
+            sx={{
+              borderRadius: { xs: 2, md: 4 },
+              overflow: "hidden",
+              background: "linear-gradient(145deg, #121829, #1E2A46)",
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                aspectRatio: "16/9",
+                position: "relative",
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background:
+                    "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
+                  zIndex: -1,
+                  pointerEvents: "none",
+                },
+              }}
+            >
+              {(isLoading || loadingProgresso) ? (
+                <Box
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 2,
+                    color: "white",
+                  }}
+                >
+                  <CircularProgress
+                    size={60}
+                    thickness={4}
+                    sx={{
+                      color: "#FFB800",
+                      "& .MuiCircularProgress-circle": {
+                        strokeLinecap: "round",
+                      },
+                    }}
+                  />
+                  <Typography variant="body1" sx={{ opacity: 0.8 }}>
+                    Carregando vídeo...
+                  </Typography>
+                </Box>
+              ) : currentVideo ? (
+                <>
+                  <Box
+                    onContextMenu={(e) => e.preventDefault()}
+                    sx={{
+                      aspectRatio: "16/9",
+                      position: "relative",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background:
+                          "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
+                        zIndex: -1,
+                        pointerEvents: "none",
+                      },
+                    }}
+                  >
+                    <ReactPlayer
+                      ref={playerRef}
+                      url={currentVideo.url}
+                      controls
+                      playing={isPlaying && hasSeeked}
+                      onEnded={handleVideoEnd}
+                      width="100%"
+                      height="100%"
+                      onReady={() => setIsPlayerReady(true)}
+                      config={{
+                        file: {
+                          attributes: {
+                            controlsList: "nodownload",
+                          },
+                        },
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                      }}
+                    />
+                    {showCountdownOverlay && countdown !== null && (
+                      <ContadorPlayer countdown={countdown} nextVideo={modulo.videos[getCurrentVideoIndex() + 1]} />
+                    )}
+                  </Box>
+                </>
+              ) : (
+                <Box
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    gap: 2,
+                    p: 4,
+                    textAlign: "center",
+                  }}
+                >
+                  <PlayCircleOutline sx={{ fontSize: 80, opacity: 0.6, color: "#FFB800" }} />
+                  <Typography variant="h6" sx={{ opacity: 0.8 }}>
+                    Vídeo não disponível
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.6 }}>
+                    Tente novamente mais tarde
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Paper>
 
           {/* Video Info */}
           {currentVideo && (
@@ -595,6 +571,7 @@ onReady={() => {
             overflow: "hidden",
             position: isMobile ? "fixed" : "static",
             bottom: isMobile ? 0 : "auto",
+            zIndex: 1100,
           }}
         >
           {/* Header */}
@@ -801,15 +778,12 @@ onReady={() => {
                           )
                         }
                       />
-
                     </ListItemButton>
                   </ListItem>
                 ))}
               </List>
             </Box>
           )}
-
-
         </Paper>
       </Box>
     </Box>

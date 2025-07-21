@@ -83,7 +83,7 @@ export const Catalago = () => {
                 border: 1,
                 borderRadius: 5,
                 ml: 2,
-                bgcolor: theme.palette.background.paper,
+                bgcolor: theme.palette.secondary,
                 color: theme.palette.text.primary,
               }}
             />
