@@ -35,8 +35,8 @@ export const Catalago = () => {
   };
 
   return (
-    <Grid sx={{ p: 5 }} container spacing={2}>
-    <Grid size={{ xs: 12,md:8, lg: miniDrawer ? 10 : 10 }}>
+    <Grid  container spacing={2}>
+    <Grid size={{ xs: 12, lg: miniDrawer ? 10 : 10 }}>
         <Box sx={{ textAlign: 'start', mt: 5 }}>
           <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
             Catálogo
@@ -101,16 +101,19 @@ export const Catalago = () => {
             if (cursosDaCategoria.length === 0) return null;
 
             return (
-              <Box key={categoria.id} sx={{ mb: 6 }}>
+              <Box key={categoria.id} sx={{mb:2}}>
                 <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: theme.palette.text.primary, mb: 2 }}>
                   {categoria.nome}
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
-                <Box sx={{ display: 'flex', gap:"2%", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+                           <Grid container spacing={2}>
+
+                      
                   {cursosDaCategoria.map((curso, index) => (
                     <CardCurso key={index} curso={curso} />
                   ))}
-                </Box>
+                       </Grid>
+      
               </Box>
             );
           })
@@ -120,15 +123,20 @@ export const Catalago = () => {
             <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: theme.palette.text.primary, mb: 2 }}>
               {categorias[tabAtiva - 1]?.nome}
             </Typography>
-            <Box sx={{ display: 'flex', gap:"2%", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+      
+
+
+             <Grid container spacing={2}>
               {cursos
                 .filter((curso) => curso.categoria?.id === categorias[tabAtiva - 1]?.id)
                 .map((curso, index) => (
                   <CardCurso key={index} curso={curso} />
                 ))}
-            </Box>
+                      </Grid>
+
           </>
         )}
+        
       </Grid>
        <Grid size={{ xs: 12,md:4, lg: miniDrawer ? 2 : 2 }} >
         <Box sx={{ position: 'sticky', top: '80px' }}>

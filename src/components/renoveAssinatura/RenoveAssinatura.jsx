@@ -3,7 +3,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 export const RenoveAssinatura = () => {
     const theme = useTheme()
     return (
-        <Box sx={{ width: 260, height: 360, border: 3, borderColor: theme.palette.background.paperAzul, borderRadius: 5 }}>
+        <Box sx={{ width: "100%", height: 360, border: 3, borderColor: theme.palette.background.paperAzul, borderRadius: 5 }}>
             <Box sx={{p:5,textAlign:"center",display:"flex",justifyContent:"center",flexDirection:"column",alignItems:"center",gap:5}}>
                 <Box sx={{width:90,height:50}}>
                     <img src="/aseets/logo-dark.png" style={{width:"100%",height:"100%"}}/>

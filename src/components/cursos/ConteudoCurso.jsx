@@ -8,7 +8,7 @@ export const ConteudoCurso = ({ curso }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const { showSnackbar } = useSnackbar();
-const handleSelecionarModulo = async (modulo) => {
+  const handleSelecionarModulo = async (modulo) => {
     try {
       const token = localStorage.getItem("token");
 
@@ -29,12 +29,12 @@ const handleSelecionarModulo = async (modulo) => {
       }
 
       // Redireciona para o player
-navigate("/painel-usuario/player", {
-  state: {
-    cursoId: curso.id,
-    moduloId: modulo.id,
-  },
-});
+      navigate("/painel-usuario/player", {
+        state: {
+          cursoId: curso.id,
+          moduloId: modulo.id,
+        },
+      });
 
     } catch (err) {
       console.error("Erro ao selecionar curso:", err);
@@ -44,7 +44,7 @@ navigate("/painel-usuario/player", {
   return (
     <>
       <Grid container>
-        <Grid size={{ xs: 12, md: 8 }} >
+        <Grid size={{ xs: 12, md: 10 }} >
           {curso.modulos.map((modulo, index) => (
             <Box
               key={index}
@@ -55,7 +55,7 @@ navigate("/painel-usuario/player", {
                 width: { xs: "100%", md: "90%" },
                 cursor: "pointer",
               }}
-                        onClick={() => handleSelecionarModulo(modulo)}
+              onClick={() => handleSelecionarModulo(modulo)}
             >
 
               <Box sx={{ display: "flex", gap: 1 }}>
@@ -69,7 +69,7 @@ navigate("/painel-usuario/player", {
 
               <Box sx={{
                 display: "flex", flexDirection: { xs: "column", md: "row" }, "&:hover": {
-                  border: 3,
+                
                   borderColor: theme.palette.background.paperAzul,
                 }, border: 1, borderColor: "divider", p: 2, borderRadius: 5, mt: 5, height: "250px", gap: 2, alignItems: { xs: "center", md: "start" }
               }}>
@@ -94,7 +94,7 @@ navigate("/painel-usuario/player", {
             </Box>
           ))}
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 2 }}>
           <Box
             sx={{
               mt: { xs: 10, md: 0 },

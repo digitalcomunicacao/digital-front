@@ -13,6 +13,7 @@ import {
     Rating,
     useTheme,
     Link,
+    Grid,
 
 } from "@mui/material"
 import { useNavigate } from "react-router-dom";
@@ -46,13 +47,13 @@ export const CardCurso = ({ curso }) => {
 
 
     return (
-        <Box>
+      
+            <Grid  size={{xs:12,md:4}}>        
             <Card
                 elevation={0}
                 component={"form"}
                 onClick={() => handleDetalhes(curso.id)}
                 sx={{
-                    mb: 5,
                     height: "285px",
                     position: "relative", // necessário para overlay funcionar
                     border: 2,
@@ -116,8 +117,6 @@ export const CardCurso = ({ curso }) => {
                     />
                 </Box>
                 <CardContent sx={{ p: 2 }}>
-
-
                     {/* Título */}
                     <Typography
                         sx={{ fontSize: 19, fontWeight: "bold" }}
@@ -143,6 +142,9 @@ export const CardCurso = ({ curso }) => {
                 </Box>
 
             </Card>
-        </Box>
+                </Grid>
+
+         
+    
     )
 }

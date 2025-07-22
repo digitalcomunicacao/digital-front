@@ -9,7 +9,6 @@ import {
   useTheme,
   Typography,
 } from '@mui/material';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Planos } from './Planos';
 import { PlanoSelecionado } from './PlanoSelecionado';
 import { useSnackbar } from '../../context/SnackBarContext';
@@ -21,7 +20,7 @@ import { HeaderCheckout } from './HeaderCheckout';
 
 const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 const stripePromise = loadStripe(
-  "pk_test_51Rkqnl4UJY192FzeyHoJGjBYq3ZI6iJFhkk1F5ZFCbEDxUQAbjD2aRU4E8jggtzaXGr71uxBQVNe7bugB0t7pTfu00CM9glODz"
+  "pk_test_51Rnh22B2ukqKBRKpu7vmzpy9tGj7bQh3GA7fnxQlqXkxk5VHIttkglAYcfivKQA5u201Aq30hTJVnHcMUdFTfAi500L9MnXJNG"
 );
 
 export const Checkout = () => {
@@ -41,10 +40,7 @@ export const Checkout = () => {
   const theme = useTheme();
   const { showSnackbar } = useSnackbar();
   const totalSteps = steps.length;
-  useEffect(()=>{
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  },[])
+
   const handleStep = (step) => () => {
     if (activeStep === totalSteps - 1 && step < activeStep) {
       showSnackbar("Você já concluiu o cadastro. Não é possível voltar.", "warning");
@@ -126,22 +122,21 @@ export const Checkout = () => {
     }
   };
 
+const handleComplete = async () => {
+  if (activeStep === 1 && !token) {
+    const valido = validarCamposUsuario();
+    if (!valido) return;
 
-  const handleComplete = async () => {
-    if (activeStep === 1) {
-      const valido = validarCamposUsuario();
-      if (!valido) return;
+    const sucesso = await cadastrarUsuario();
+    if (!sucesso) return;
+  }
 
-      const sucesso = await cadastrarUsuario();
-      if (!sucesso) return;
-    }
+  setCompleted((prev) => ({ ...prev, [activeStep]: true }));
 
-    setCompleted((prev) => ({ ...prev, [activeStep]: true }));
-
-    if (activeStep < totalSteps - 1) {
-      setActiveStep((prev) => prev + 1);
-    }
-  };
+  if (activeStep < totalSteps - 1) {
+    setActiveStep((prev) => prev + 1);
+  }
+};
 
 
 
@@ -171,11 +166,13 @@ export const Checkout = () => {
         return <Planos selectedPlano={selectedPlano} setSelectedPlano={setSelectedPlano} />;
       case 1:
         return (
-          <PlanoSelecionado
-            plano={selectedPlano}
-            usuarioData={usuarioData}
-            setUsuarioData={setUsuarioData}
-          />
+       <PlanoSelecionado
+  plano={selectedPlano}
+  usuarioData={usuarioData}
+  setUsuarioData={setUsuarioData}
+  isLogado={!!token}
+/>
+
         );
       case 2:
         if (!clientSecret) {

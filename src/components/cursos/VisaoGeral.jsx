@@ -6,9 +6,11 @@ import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import { useNavigate } from "react-router-dom";
 import { RenoveAssinatura } from "../renoveAssinatura/RenoveAssinatura";
 import ReactPlayer from "react-player";
+import { useState } from "react";
 export const VisaoGeral = ({ curso }) => {
     const navigate = useNavigate()
-
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isLight, setIsLight] = useState(true);
     const calcularDuracaoTotal = () => {
         const totalSegundos = curso.modulos.reduce((soma, modulo) => {
             const segundosModulo = modulo.videos?.reduce((acc, video) => acc + (video.duracao || 0), 0) || 0;
@@ -26,19 +28,98 @@ export const VisaoGeral = ({ curso }) => {
     };
     return (
         <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 8 }} >
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: { xs: "column", md: "row" }, borderRadius: 5, gap: { xs: 2, md: 10 }, border: 1, borderColor: "divider", p: 5, bgcolor: theme.palette.background.paper }}>
-                    <Box sx={{ width: { xs: "100%", md: "50%" }, height: "300px" }}>
+            <Grid size={{ xs: 12, md: 9 }} >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: { xs: "column", xl: "row" }, borderRadius: 5, gap: { xs: 2, md: 10 }, border: 1, borderColor: "divider", p: 5, bgcolor: theme.palette.background.paper }}>
+                    <Box
+                        sx={{
+                            width: "550px",
+                            height: "320px",
+                 
+                            position: "relative",
+                            border: 5,
+                            borderColor: "divider",
+                            borderRadius: 2,
+                            overflow: "hidden",
+                            backgroundColor: "#000", // previne flash branco
+                            "&::before": {
+                                content: '""',
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
+                                zIndex: 1,
+                                pointerEvents: "none",
+                            },
+                        }}
+                    >
                         <ReactPlayer
                             url={curso.modulos[0]?.videos[0]?.url}
+                            light={isLight}
+                            playing={isPlaying}
+                            onStart={() => {
+                                setIsPlaying(true);
+                                setIsLight(false);
+                            }}
+                            playIcon={
+                                <Box
+                                    onClick={() => {
+                                        setIsPlaying(true);
+                                        setIsLight(false);
+                                    }}
+                                    sx={{
+                                        width: 80,
+                                        height: 80,
+                                        borderRadius: "50%",
+                                        backgroundColor: "rgba(255, 255, 255, 0.2)",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 0 24 24" width="48" fill="#fff">
+                                        <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                </Box>
+                            }
                             controls
                             width="100%"
                             height="100%"
-
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                zIndex: 2
+                            }}
                         />
+
+                        {!isPlaying && (
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    bottom: 10,
+                                    left: 10,
+                                    zIndex: 3,
+                                    color: "#fff",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                    padding: "6px 12px",
+                                    borderRadius: "8px"
+                                }}
+                            >
+                                <Typography sx={{ fontWeight: "bold" }}>{curso.modulos[0]?.videos[0]?.titulo}</Typography>
+                                <AccessTimeIcon sx={{ fontSize: 16 }} />
+                                <Typography sx={{ fontSize: 14 }}>3min</Typography>
+                            </Box>
+                        )}
                     </Box>
+
+
                     <Box sx={{ width: { xs: "100%", md: "50%" } }}>
-                        <Typography sx={{ textAlign: "start", fontSize: { xs: 12, md: 16 } }}>{curso.descricao}</Typography>
+                        <Typography sx={{ textAlign: "start", fontSize: { xs: 12, md: 16 } }}>O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável. O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável.</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row", justifyContent: "space-between" } }}>
@@ -111,7 +192,7 @@ export const VisaoGeral = ({ curso }) => {
             </Grid>
 
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 3 }} container sx={{ justifyContent: "flex-end", alignItems: "start", }}>
                 <RenoveAssinatura />
             </Grid>
         </Grid>

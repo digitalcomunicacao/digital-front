@@ -9,7 +9,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import InputMask from 'react-input-mask';
-export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
+
+export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado }) => {
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmSenha, setShowConfirmSenha] = useState(false);
   const toggleShowSenha = () => setShowSenha((prev) => !prev);
@@ -25,7 +26,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5,flexDirection:{xs:"column",md:"row"} }}>
+    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5, flexDirection: { xs: "column", md: "row" } }}>
       {/* Bloco do plano */}
       <Box
         sx={{
@@ -36,7 +37,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
           bgcolor: theme.palette.background.paper,
           border: 1,
           borderColor: theme.palette.background.paperAzul,
-          width: {xs:"100%",md:"55%"},
+          width: { xs: "100%", md: "55%" },
         }}
       >
         <Box sx={{ width: "45%" }}>
@@ -51,7 +52,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
               style={{ width: "100%", height: "100%" }}
             />
           </Box>
-          <Typography color="textTertiary" sx={{ mt: 2}}>
+          <Typography color="textTertiary" sx={{ mt: 2 }}>
             Acesso total à plataforma com todas as formações e experiências da Digital Educa.
           </Typography>
         </Box>
@@ -97,98 +98,110 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData }) => {
         </Box>
       </Box>
 
-      {/* Bloco de cadastro */}
-      <Box
- 
-        sx={{
-          display: "flex",
-          justifyContent: "end",
-          border: 1,
-          borderRadius: 5,
-          p: 5,
-          bgcolor: theme.palette.background.paper,
-          borderColor: theme.palette.background.paperAzul,
-       width: {xs:"100%",md:"55%"},
-        }}
-      >
-        <Box sx={{ width: "100%" }}>
-          <Typography sx={{ mb: 2 }}>Dados Pessoais</Typography>
+      {/* Bloco de cadastro — apenas se não estiver logado */}
+      {!isLogado && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            border: 1,
+            borderRadius: 5,
+            p: 5,
+            bgcolor: theme.palette.background.paper,
+            borderColor: theme.palette.background.paperAzul,
+            width: { xs: "100%", md: "55%" },
+          }}
+        >
+          <Box sx={{ width: "100%" }}>
+            <Typography sx={{ mb: 2 }}>Dados Pessoais</Typography>
 
-          <TextField
-            fullWidth
-            required
-            label="Nome Completo"
-            value={usuarioData.nome}
-            onChange={handleChange("nome")}
-          />
+            <TextField
+              fullWidth
+              required
+              label="Nome Completo"
+              value={usuarioData.nome}
+              onChange={handleChange("nome")}
+            />
 
-          <Box sx={{ display: "flex",flexDirection:{xs:"column",md:"row"},justifyContent: "space-between", gap: 2, mt: 2 }}>
-                       <InputMask
-            mask="(99) 99999-9999"
-            value={usuarioData.celular}
-            onChange={handleChange("celular")}
-          >
-            {(inputProps) => (
+            <Box sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "space-between",
+              gap: 2,
+              mt: 2
+            }}>
+              <InputMask
+                mask="(99) 99999-9999"
+                value={usuarioData.celular}
+                onChange={handleChange("celular")}
+              >
+                {(inputProps) => (
+                  <TextField
+                    {...inputProps}
+                    label="Celular"
+                    variant="outlined"
+                    required
+                    sx={{ width: "100%" }}
+                  />
+                )}
+              </InputMask>
               <TextField
-                {...inputProps}
-                label="Celular"
-                variant="outlined"
+                label="Email"
                 required
-              
-             sx={{ width: "100%" }}
+                sx={{ width: "100%" }}
+                value={usuarioData.email}
+                onChange={handleChange("email")}
               />
-            )}
-          </InputMask>
-            <TextField
-              label="Email"
-                 required
-              sx={{ width: "100%" }}
-              value={usuarioData.email}
-              onChange={handleChange("email")}
-            />
-          </Box>
+            </Box>
 
-          <Typography sx={{ mt: 3 }}>Defina uma senha de acesso</Typography>
+            <Typography sx={{ mt: 3 }}>Defina uma senha de acesso</Typography>
 
-          <Box sx={{ display: "flex", flexDirection:{xs:"column",md:"row"},justifyContent: "space-between", gap: 2, mt: 2}}>
-            <TextField
-              label="Senha"
-              required
-              placeholder="Deve ter no mínimo 6 caracteres"
-              type={showSenha ? "text" : "password"}
-              value={usuarioData.senha}
-              onChange={handleChange("senha")}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={toggleShowSenha} edge="end">
-                      {showSenha ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <Box sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "space-between",
+              gap: 2,
+              mt: 2
+            }}>
+              <TextField
+                label="Senha"
+                required
+                placeholder="Deve ter no mínimo 6 caracteres"
+                type={showSenha ? "text" : "password"}
+                value={usuarioData.senha}
+                onChange={handleChange("senha")}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={toggleShowSenha} edge="end">
+                        {showSenha ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-            <TextField
-              required
-              label="Confirme sua senha"
-              placeholder="Repita sua senha"
-              type={showConfirmSenha ? "text" : "password"}
-              value={usuarioData.confirmSenha}
-              onChange={handleChange("confirmSenha")}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={toggleShowConfirmSenha} edge="end">
-                      {showConfirmSenha ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+              <TextField
+                required
+                label="Confirme sua senha"
+                placeholder="Repita sua senha"
+                type={showConfirmSenha ? "text" : "password"}
+                value={usuarioData.confirmSenha}
+                onChange={handleChange("confirmSenha")}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={toggleShowConfirmSenha} edge="end">
+                        {showConfirmSenha ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
           </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };

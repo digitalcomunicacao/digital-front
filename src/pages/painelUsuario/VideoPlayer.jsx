@@ -16,11 +16,12 @@ import {
   ListItemButton,
   Chip,
   LinearProgress,
+  useTheme,
 } from "@mui/material"
 import { ArrowBack, MenuOpen, Menu, PlayCircleOutline, CheckCircle, VideoLibrary } from "@mui/icons-material"
 import { useLocation, useNavigate } from "react-router-dom"
 import ReactPlayer from "react-player"
-import { useTheme } from "@mui/material/styles"
+
 import ContadorPlayer from "./ContadorPlayer"
 import api from "../../config/Api"
 
@@ -236,7 +237,7 @@ export const VideoPlayer = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          background: "#0A1128",
+          
           color: "#fff",
         }}
       >
@@ -251,7 +252,7 @@ export const VideoPlayer = () => {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        background: "radial-gradient(circle at top left, #1E2A46, #0A1128)",
+        bgcolor:theme.palette.background.default,
         backgroundAttachment: "fixed",
       }}
     >
