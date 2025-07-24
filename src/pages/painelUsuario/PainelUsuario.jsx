@@ -40,17 +40,18 @@ export const PainelUsuario = () => {
   </Box>
 ) : (
   <Container maxWidth="xl">
-    <Box
-      component="main"
-      sx={{
-        p: 0,
-        mt: '95px',
-        ml: isMobile ? 0 : `${drawerWidth}px`,
-        width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
-        transition: 'margin-left 0.3s, width 0.3s',
-        boxSizing: 'border-box',
-      }}
-    >
+<Box
+  component="main"
+  sx={{
+    p: 0,
+    mt: { xs: '95px', sm: '80px', md: '95px' },
+    ml: isMobile ? 0 : `${drawerWidth}px`,
+    width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
+    transition: 'margin-left 0.3s, width 0.3s',
+    boxSizing: 'border-box',
+  }}
+>
+
       <Outlet />
     </Box>
   </Container>

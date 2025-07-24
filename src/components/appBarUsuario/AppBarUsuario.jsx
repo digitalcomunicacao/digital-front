@@ -371,8 +371,8 @@ function AppBarUsuario() {
           sx: {
             width: drawerWidth,
             bgcolor: theme.palette.background.paper,
-            top: '95px',
-            height: 'calc(100% - 95px)',
+            top: {xs:"72px",sm:"80px",md:"95px"},
+            height: { xs: 'calc(100% - 72px)', sm: 'calc(100% - 80px)' },
             overflowX: 'hidden',
             transition: 'width 0.3s',
             display: 'flex',

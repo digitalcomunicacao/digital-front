@@ -47,7 +47,7 @@ export const VideoPlayer = () => {
   const [showCountdownOverlay, setShowCountdownOverlay] = useState(false)
   const [countdown, setCountdown] = useState(null)
   const [progressoPronto, setProgressoPronto] = useState(false)
-  const [hasSeeked, setHasSeeked] = useState(false)
+
   const [isPlayerReady, setIsPlayerReady] = useState(false)
   const [maxProgressoSalvo, setMaxProgressoSalvo] = useState(0)
 
@@ -124,7 +124,7 @@ const fetchCursoModulo = async () => {
 
     setIsPlaying(false)
     setProgressoPronto(false)
-    setHasSeeked(false)
+   
     setIsPlayerReady(false)
 
     getProgressoVideo(currentVideo.id)
@@ -134,16 +134,16 @@ const fetchCursoModulo = async () => {
     if (
       isPlayerReady &&
       progressoPronto &&
-      !hasSeeked &&
+    
       playerRef.current
     ) {
       setTimeout(() => {
         playerRef.current.seekTo(progressoInicial, "seconds")
-        setHasSeeked(true)
+      
         setIsPlaying(true)
-      }, 500)
+      }, 200)
     }
-  }, [isPlayerReady, progressoPronto, hasSeeked, progressoInicial])
+  }, [isPlayerReady, progressoPronto, progressoInicial])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -293,6 +293,8 @@ const handleVideoEnd = async () => {
         minHeight: "100vh",
         bgcolor:theme.palette.background.default,
         backgroundAttachment: "fixed",
+    
+      
       }}
     >
       {/* Top Bar */}
@@ -300,14 +302,13 @@ const handleVideoEnd = async () => {
         elevation={0}
         sx={{
           p: { xs: 2, md: 3 },
-          
           backdropFilter: "blur(10px)",
           borderBottom: "1px solid rgba(255, 184, 0, 0.2)",
           display: "flex",
           alignItems: "center",
           gap: 2,
-          position: "sticky",
-          top: 0,
+          position:"relative",
+          top: {xs:-22,md:0},
           zIndex: 1000,
         }}
       >
@@ -467,7 +468,7 @@ const handleVideoEnd = async () => {
                       ref={playerRef}
                       url={currentVideo.url}
                       controls
-                      playing={isPlaying && hasSeeked}
+                      playing={isPlaying}
                       onEnded={handleVideoEnd}
                       width="100%"
                       height="100%"
@@ -593,14 +594,13 @@ const handleVideoEnd = async () => {
 
         {/* Sidebar */}
         <Paper
-          elevation={4}
+       
           sx={{
             width: isMobile ? "100%" : isCollapsed ? 80 : 350,
             height: isMobile ? (isCollapsed ? 80 : 400) : "fit-content",
             maxHeight: isMobile ? (isCollapsed ? 80 : 400) : "calc(100vh - 200px)",
             borderRadius: { xs: "16px 16px 0 0", md: 3 },
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        
             backdropFilter: "blur(10px)",
             border:1,
             borderColor:"divider",
@@ -618,7 +618,7 @@ const handleVideoEnd = async () => {
               p: 2,
               borderBottom: 1,
               borderColor:"divider"
-        
+              
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -646,6 +646,7 @@ const handleVideoEnd = async () => {
                 p: 2,
                 textAlign: "center",
                 display: "flex",
+              
                 flexDirection: isMobile ? "row" : "column",
                 alignItems: "center",
                 justifyContent: isMobile ? "space-between" : "center",
