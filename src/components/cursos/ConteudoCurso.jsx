@@ -12,8 +12,27 @@ export const ConteudoCurso = ({ curso }) => {
   const theme = useTheme()
   const { showSnackbar } = useSnackbar();
         const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const handleIniciarJornada = () => {
-    // Encontrar o primeiro módulo com vídeo não assistido
+const handleIniciarJornada = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    // Verifica se o curso já está selecionado
+    const response = await api.get("/curso-selecionado/cursos", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const cursosSelecionados = response.data;
+    const jaSelecionado = cursosSelecionados.some((c) => c.id === curso.id);
+
+    // Se ainda não foi selecionado, envia para a API
+    if (!jaSelecionado) {
+      await api.post("/curso-selecionado", { cursoId: curso.id }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showSnackbar("Curso adicionado aos seus conteúdos.");
+    }
+
+    // Encontrar o primeiro vídeo não assistido
     for (const modulo of curso.modulos) {
       for (const video of modulo.videos) {
         if (!video.assistido) {
@@ -29,7 +48,7 @@ export const ConteudoCurso = ({ curso }) => {
       }
     }
 
-    // Se todos os vídeos foram assistidos, mandar para o primeiro módulo
+    // Se todos os vídeos foram assistidos, mandar para o primeiro
     if (curso.modulos.length > 0 && curso.modulos[0].videos.length > 0) {
       navigate("/painel-usuario/player", {
         state: {
@@ -41,7 +60,13 @@ export const ConteudoCurso = ({ curso }) => {
     } else {
       showSnackbar("Este curso ainda não tem vídeos.", "warning");
     }
-  };
+
+  } catch (err) {
+    console.error("Erro ao iniciar jornada:", err);
+    showSnackbar(err.response?.data?.message || "Erro ao iniciar jornada", "error");
+  }
+};
+
 
   const handleSelecionarModulo = async (modulo) => {
     try {

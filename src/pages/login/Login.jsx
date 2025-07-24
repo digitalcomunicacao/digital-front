@@ -109,8 +109,7 @@ export const Login = () => {
                   fontSize: "16px",
                   fontWeight: "bold",
                   textTransform: "none",
-                  height:35,
-                  borderRadius: 2,
+                  borderRadius: "15px",
                   "&:hover": {
                 
                     transform: "translateY(-2px)",

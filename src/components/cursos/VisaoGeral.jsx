@@ -33,7 +33,7 @@ export const VisaoGeral = ({ curso }) => {
                     <Box
                         sx={{
                             width: { xs: "100%", lg: "550px" },
-                            height: "320px",
+                            height: {xs:"220px",md:"350px"},
                             position: "relative",
                             border: 3,
                             borderColor: "divider",
@@ -109,7 +109,7 @@ export const VisaoGeral = ({ curso }) => {
                                     borderRadius: "8px"
                                 }}
                             >
-                                <Typography sx={{ fontWeight: "bold" }}>{curso.modulos[0]?.videos[0]?.titulo}</Typography>
+                                <Typography sx={{ fontWeight: "bold",fontSize:{xs:10,md:14}}}>{curso.modulos[0]?.videos[0]?.titulo}</Typography>
                                 <AccessTimeIcon sx={{ fontSize: 16 }} />
                                 <Typography sx={{ fontSize: 14 }}>3min</Typography>
                             </Box>

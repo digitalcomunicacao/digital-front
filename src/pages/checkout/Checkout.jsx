@@ -16,6 +16,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { HeaderCheckout } from './HeaderCheckout';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { HeaderPayment } from '../../components/header/HeaderPayment';
+import { useLocation } from 'react-router-dom';
 
 const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 const stripePromise = loadStripe(
@@ -23,11 +24,17 @@ const stripePromise = loadStripe(
 );
 
 export const Checkout = () => {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState({});
-  const [selectedPlano, setSelectedPlano] = React.useState(null); // <-- aqui
+  
   const [clientSecret, setClientSecret] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
+    const location = useLocation();
+
+  const stepInicial = location.state?.stepInicial || 0;
+  const planoSelecionadoInicial = location.state?.planoSelecionado || null;
+
+  const [activeStep, setActiveStep] = React.useState(stepInicial);
+  const [completed, setCompleted] = React.useState({});
+  const [selectedPlano, setSelectedPlano] = React.useState(planoSelecionadoInicial);
   const [usuarioData, setUsuarioData] = useState({
     nome: '',
     email: '',

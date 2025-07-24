@@ -1,4 +1,4 @@
-import { Box, Divider, Typography, Tabs, Tab, Grid, useTheme } from "@mui/material";
+import { Box, Divider, Typography, Tabs, Tab, Grid, useTheme, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { CardCurso } from "../../components/cursos/CardCurso";
 import api from "../../config/Api";
@@ -13,11 +13,14 @@ export const Catalago = () => {
   const [tabAtiva, setTabAtiva] = useState(0);
   const { miniDrawer } = useMiniDrawer(); // true ou false
   const theme = useTheme();
-  useEffect(() => {
-    getCursos();
-    getCategorias();
-  }, []);
+    const [loading, setLoading] = useState(true);
 
+
+      useEffect(() => {
+    Promise.all([getCursos(), getCategorias()]).finally(() => {
+      setLoading(false); // <- Finaliza o loading
+    });
+  }, []);
 
   const getCursos = () => {
     api.get("curso/cursos")
@@ -34,7 +37,14 @@ export const Catalago = () => {
   const handleTabChange = (event, newValue) => {
     setTabAtiva(newValue);
   };
-
+  if (loading) {
+    return (
+    <Box sx={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+      <CircularProgress size={40} color="primary" />
+     
+    </Box>
+    );
+  }
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12,  md: miniDrawer ? 10 : 10 }}>

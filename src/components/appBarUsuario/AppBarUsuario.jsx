@@ -195,13 +195,13 @@ function AppBarUsuario() {
           borderColor: "divider",
           zIndex: theme.zIndex.drawer + 1,
           bgcolor: theme.palette.background.paper,
-          py: 2
+          py: { xs: 1, md: 2 }
         }}
       >
 
         <Toolbar disableGutters  >
           <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between", mx: { xs: 2, md: 5 } }}>
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
               <IconButton size="large" edge="start" onClick={handleToggleDrawer}>
                 {(isMobile ? mobileOpen : !miniDrawer) ? <MenuOpenIcon /> : <MenuIcon />}
               </IconButton>
@@ -234,24 +234,26 @@ function AppBarUsuario() {
             )}
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <IconButton size="large" color="inherit">
-                <Badge
-                  badgeContent={4}
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      backgroundColor: theme.palette.background.containedAzul, // cor de fundo do número
-                      color: theme.palette.text.tertiary,               // cor do número
-                      fontWeight: "bolder",
-                      fontSize: "14px", // ou o tamanho que preferir
-                    },
-                  }}
-                >
-                  <CircleNotificationsIcon
-                    sx={{ fontSize: 40, color: theme.palette.background.contained }}
-                  />
-                </Badge>
 
-              </IconButton>
+              <Badge
+                badgeContent={12}
+            
+                sx={{
+                  '& .MuiBadge-badge': {
+                    backgroundColor: theme.palette.background.containedAzul,
+                    color: theme.palette.text.tertiary,
+                    fontWeight: "bolder",
+                    fontSize: "10px",
+                    transform: 'translate(30%, 5%)', // Ajusta para descer e ir mais à direita
+                  },
+                }}
+              >
+                <CircleNotificationsIcon
+                  sx={{ fontSize: 40, color: theme.palette.background.contained }}
+                />
+              </Badge>
+
+
 
               <Tooltip title="Meu perfil">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -336,14 +338,25 @@ function AppBarUsuario() {
       {isMobile && searchOpen && (
         <Box sx={{
           px: 2, py: 1, bgcolor: theme.palette.background.paper,
-          boxShadow: 1, position: 'absolute', top: 65, width: "100%",
+          boxShadow: 1, position: 'absolute', top: 70, width: "100%",
           zIndex: theme.zIndex.appBar - 1,
         }}>
           <Box sx={{
-            display: 'flex', alignItems: 'center', bgcolor: theme.palette.background.paper,
-            borderRadius: 2, px: 2, py: 1,
+            display: 'flex', alignItems: 'center', bgcolor: theme.palette.background.de,
+          
           }}>
-            <InputBase autoFocus placeholder="Buscar..." sx={{ flex: 1 }} />
+              <TextField
+                placeholder="Busque por assuntos e aulas"
+                variant="outlined"
+                sx={{ p: 0, m: 0, width: "100%", height: "100%" }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon color="action" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
             <IconButton onClick={() => setSearchOpen(false)}>✖️</IconButton>
           </Box>
         </Box>

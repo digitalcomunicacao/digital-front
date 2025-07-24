@@ -633,7 +633,7 @@ const handleVideoEnd = async () => {
                 </Box>
               )}
 
-              <IconButton onClick={() => setIsCollapsed((prev) => !prev)} sx={{ color: "white", ml: "auto" }}>
+              <IconButton onClick={() => setIsCollapsed((prev) => !prev)} sx={{ ml: "auto" }}>
                 {isCollapsed ? <MenuOpen /> : <Menu />}
               </IconButton>
             </Box>

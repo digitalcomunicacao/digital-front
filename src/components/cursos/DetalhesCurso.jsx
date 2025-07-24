@@ -1,4 +1,4 @@
-import { Box, Container, Divider, IconButton, Typography, useTheme } from "@mui/material"
+import { Box, CircularProgress, Container, Divider, IconButton, Typography, useTheme } from "@mui/material"
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useEffect, useState } from "react";
@@ -70,9 +70,19 @@ export const DetalhesCurso = () => {
         setValue(newValue);
     };
 
-    if (loading) return <div>Carregando curso...</div>;
+if (loading) {
+  return (
+    <Box sx={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+      <CircularProgress size={40} color="primary" />
+      <Typography color="textSecondary">Carregando curso...</Typography>
+    </Box>
+  );
+}
 
-    if (!curso) return <div>Curso não encontrado</div>;
+    if (!curso) return <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+  <CircularProgress size={40} color="primary" />
+  <Typography color="textSecondary">Carregando curso...</Typography>
+</Box>;
     const calcularDuracaoTotal = () => {
         const totalSegundos = curso.modulos.reduce((soma, modulo) => {
             const segundosModulo = modulo.videos?.reduce((acc, video) => acc + (video.duracao || 0), 0) || 0;

@@ -56,8 +56,6 @@ export const Cadastro = ({ setPasso }) => {
 
     return (
         <Box sx={{ width: { xs: "100%", md: "30%" }, bgcolor: theme.palette.background.paper, display: "flex", justifyContent: "center", alignItems: "center" }}>
-
-
             <Box sx={{ width: "400px", p: 5 }}>
             <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "end" }}>
               <Box sx={{ width: "100px", height: "auto" }}>

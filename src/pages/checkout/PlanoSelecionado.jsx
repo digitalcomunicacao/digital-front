@@ -37,7 +37,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado 
           bgcolor: theme.palette.background.paper,
           border: 1,
           borderColor: theme.palette.background.paperAzul,
-          width: { xs: "100%", md: "55%" },
+          width: { xs: "100%", md: !isLogado ? "55%" :"100%"},
         }}
       >
         <Box sx={{ width: "45%" }}>

@@ -31,16 +31,18 @@ export const RecuperarSenha = ({ setPasso }) => {
         })
     }
     return (
-        <Box sx={{ width: { xs: "100%", md: "50%" }, display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Box sx={{ width: "400px", p: 5, bgcolor: theme.palette.secondary.main, borderRadius: 2, }}>
+  <Box sx={{ width: { xs: "100%", md: "30%" }, bgcolor: theme.palette.background.paper, display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <Box sx={{ width: "400px", p: 5, bgcolor: theme.palette.background.paper, borderRadius: 2, }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <IconButton onClick={() => setPasso(0)} disableRipple sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <ArrowBackIcon />
                         <Typography>Voltar</Typography>
                     </IconButton>
-                    <Box sx={{ width: "100px", height: "auto" }}>
-                        <img src='/aseets/logo-digital-educa.png' style={{ width: "100%", height: "100%" }} />
-                    </Box>
+                       <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "end" }}>
+              <Box sx={{ width: "100px", height: "auto" }}>
+              <img src={"/aseets/logo-color.svg"} style={{ width: "100%", height: "100%" }} />
+              </Box>
+            </Box>
                 </Box>
                 {!emailEnviado && (
 
