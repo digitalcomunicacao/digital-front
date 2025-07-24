@@ -42,6 +42,35 @@ export const MeusConteudos = () => {
         setTabAtiva(newValue);
     };
 
+if (cursos.length === 0) {
+  return (
+    <Box sx={{ mt: 20, textAlign: "center", width: "100%" }}>
+      <Typography variant="h5" sx={{ fontWeight: "bold", color: theme.palette.text.primary }}>
+        Você ainda não começou nenhum curso!
+      </Typography>
+      <Typography sx={{ mt: 2, color: theme.palette.text.secondary }}>
+        Explore nosso catálogo e comece a aprender agora mesmo.
+      </Typography>
+      <Box sx={{ mt: 4 }}>
+        <button
+          onClick={() => navigate("/painel-usuario/catalago")}
+          style={{
+            backgroundColor: theme.palette.primary.main,
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: 8,
+            border: "none",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "16px",
+          }}
+        >
+          Ver Catálogo
+        </button>
+      </Box>
+    </Box>
+  );
+}
 
     return (
         <Grid container spacing={2}>

@@ -23,6 +23,8 @@ import {
   Button,
   Switch,
   useTheme,
+  TextField,
+  InputAdornment,
 } from '@mui/material';
 import {
   Facebook,
@@ -143,7 +145,7 @@ function AppBarUsuario() {
                   justifyContent: miniDrawer ? 'center' : 'flex-start',
                   px: 2.5,
                   bgcolor: selected ? theme.palette.primary.light : 'transparent',
-                  
+
                 }}
               >
                 <ListItemIcon
@@ -215,12 +217,20 @@ function AppBarUsuario() {
                 </IconButton>
               )
             ) : (
-              <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
-                <IconButton type="button" sx={{ p: '10px' }}>
-                  <SearchIcon />
-                </IconButton>
-                <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Busque por assuntos e aulas" />
-              </Paper>
+              <TextField
+                placeholder="Busque por assuntos e aulas"
+                variant="outlined"
+                sx={{ p: 0, m: 0, width: "25%", height: "100%" }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon color="action" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+
             )}
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>

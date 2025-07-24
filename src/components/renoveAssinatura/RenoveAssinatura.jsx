@@ -8,7 +8,7 @@ export const RenoveAssinatura = () => {
     return (
         <>
         {!user.assinante && (
-        <Box sx={{ width: "100%", height: "50%", border: 1, bgcolor: theme.palette.background.paper, borderColor: "divider", borderRadius: 5 }}>
+        <Box sx={{ width: "100%", height: "auto", border: 1, bgcolor: theme.palette.background.paper, borderColor: "divider", borderRadius: 5 }}>
             <Box sx={{ p: 5, textAlign: "center", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center", gap: 3 }}>
                 <Box sx={{ width: 90, height: 50 }}>
                     <img src="/aseets/logo-dark.png" style={{ width: "100%", height: "100%" }} />

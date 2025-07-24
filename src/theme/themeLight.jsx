@@ -41,7 +41,25 @@ const themeLight = createTheme({
           fontWeight: 500,
           padding: '8px 16px',
         },
-    
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#ffffff', // fundo branco
+          borderRadius: "10px", // borda arredondada
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12, // arredondamento da borda do input
+          backgroundColor: '#ffffff',
+        },
+        notchedOutline: {
+          borderColor: '#ccc',
+        },
       },
     },
   },

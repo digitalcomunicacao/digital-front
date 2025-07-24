@@ -92,7 +92,7 @@ export const DetalhesCurso = () => {
     return (
 
         <Box sx={{pb:5}}>
-            <IconButton onClick={() => navigate(-1)} sx={{ position:"relative",top:40,display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
+            <IconButton onClick={() => navigate(-1)} sx={{ position:"relative",top:{xs:5,md:40},display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
                 <KeyboardBackspaceIcon sx={{ color: theme.palette.primary.main }} />
                 <Typography color="textSecondary">Voltar</Typography>
             </IconButton>
@@ -137,10 +137,10 @@ export const DetalhesCurso = () => {
                         <Divider />
                     </Box>
 
-                    <TabPanel sx={{ p: 0, mt: 5 }} value={0}>
+                    <TabPanel sx={{ p: 0, mt: 2 }} value={0}>
                         <VisaoGeral curso={curso} />
                     </TabPanel>
-                    <TabPanel sx={{ p: 0, mt: 5 }} value={1}>
+                    <TabPanel sx={{ p: 0, mt: 2 }} value={1}>
                         <ConteudoCurso curso={curso} />
                     </TabPanel>
 

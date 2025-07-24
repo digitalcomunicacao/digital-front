@@ -8,7 +8,7 @@ import ReactPlayer from "react-player";
 import { useState } from "react";
 export const VisaoGeral = ({ curso }) => {
     const navigate = useNavigate()
-    const theme=useTheme()
+    const theme = useTheme()
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLight, setIsLight] = useState(true);
     const calcularDuracaoTotal = () => {
@@ -28,17 +28,16 @@ export const VisaoGeral = ({ curso }) => {
     };
     return (
         <Grid container spacing={2}>
-            <Grid size={{ xs: 12,lg: 9 }} >
+            <Grid size={{ xs: 12, lg: 9 }} >
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: { xs: "column", xl: "row" }, borderRadius: 5, gap: { xs: 2, md: 10 }, border: 1, borderColor: "divider", p: 5, bgcolor: theme.palette.background.paper }}>
                     <Box
                         sx={{
-                            width: {xs:"100%",lg:"550px"},
+                            width: { xs: "100%", lg: "550px" },
                             height: "320px",
-                            
                             position: "relative",
                             border: 3,
                             borderColor: "divider",
-                            borderRadius: 2,
+                            borderRadius: "15px",
                             overflow: "hidden",
                             backgroundColor: "#000", // previne flash branco
                             "&::before": {
@@ -116,14 +115,12 @@ export const VisaoGeral = ({ curso }) => {
                             </Box>
                         )}
                     </Box>
-
-
-                    <Box sx={{ width: { xs: "100%", lg: "50%" } }}>
-                        <Typography sx={{ textAlign: "start", fontSize: { xs: 12, md: 16 } }}>O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável. O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável.</Typography>
+                    <Box sx={{ width: { xs: "100%", lg: "60%" } }}>
+                        <Typography sx={{ textAlign: {xs:"justify",md:"start"}, fontSize: { xs: 12, md: 16 } }}>O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável. O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável.</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row", justifyContent: "space-between" } }}>
-                    <Box sx={{ mt: 5, border: 1, borderColor: 'divider', width: { xs: "100%", md: "50%" }, borderRadius: 5,  bgcolor: theme.palette.background.paper }}>
+                    <Box sx={{ mt: 2, border: 1, borderColor: 'divider', width: { xs: "100%", md: "50%" }, borderRadius: 5, bgcolor: theme.palette.background.paper }}>
                         <Box sx={{ p: 3 }}>
                             <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.contained }}>
                                 <Typography color="textSecondary" sx={{ fontSize: 17, color: theme.palette.text.tertiary }}>Educador</Typography>
@@ -146,7 +143,7 @@ export const VisaoGeral = ({ curso }) => {
                     </Box>
 
 
-                    <Box sx={{ mt: 5, border: 1, borderColor: 'divider', width: { xs: "100%", md: "45%" }, borderRadius: 5, bgcolor: theme.palette.background.paper }}>
+                    <Box sx={{mt: 2, border: 1, borderColor: 'divider', width: { xs: "100%", md: "48%" }, borderRadius: 5, bgcolor: theme.palette.background.paper }}>
                         <Box sx={{ p: 3 }}>
                             <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.contained }}>
                                 <Typography color="textSecondary" sx={{ fontSize: 17, color: theme.palette.text.tertiary }}>Detalhes</Typography>
@@ -192,7 +189,7 @@ export const VisaoGeral = ({ curso }) => {
             </Grid>
 
 
-            <Grid size={{ xs: 12, lg: 3 }} container sx={{ justifyContent: "flex-end", alignItems: "start", }}>
+            <Grid size={{ xs: 12, lg: 3 }}>
                 <RenoveAssinatura />
             </Grid>
         </Grid>

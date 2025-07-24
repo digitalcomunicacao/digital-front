@@ -6,10 +6,12 @@ import { useSnackbar } from "../../context/SnackBarContext";
 import api from "../../config/Api";
 import { ProgressoCurso } from "../progressoCurso/ProgressoCurso";
 import { ProgressoModuloCircular } from "../progressoModulo/ProgressoModulo";
+import { RenoveAssinatura } from "../renoveAssinatura/RenoveAssinatura";
 export const ConteudoCurso = ({ curso }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const { showSnackbar } = useSnackbar();
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
   const handleIniciarJornada = () => {
     // Encontrar o primeiro módulo com vídeo não assistido
     for (const modulo of curso.modulos) {
@@ -71,13 +73,13 @@ export const ConteudoCurso = ({ curso }) => {
 
     } catch (err) {
       console.error("Erro ao selecionar curso:", err);
-      showSnackbar("Erro ao acessar o módulo", "error");
+      showSnackbar(err.response.data.message, "error");
     }
   };
   return (
     <>
       <Grid container>
-        <Grid size={{ xs: 12, md: 10 }} >
+        <Grid size={{ xs: 12, lg: 9 }} >
           {curso.modulos.map((modulo, index) => (
             <Box
               key={index}
@@ -127,7 +129,8 @@ export const ConteudoCurso = ({ curso }) => {
             </Box>
           ))}
         </Grid>
-        <Grid size={{ xs: 12, md: 2 }}>
+        <Grid size={{ xs: 12, lg: 3 }}>
+          {user.assinante && (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, justifyContent: "center", borderRadius: "15px", width: "100%", border: 1, borderColor: 'divider', bgcolor: theme.palette.background.paper, p: 2 }}>
             <ProgressoCurso curso={curso} />
             <Button
@@ -138,8 +141,9 @@ export const ConteudoCurso = ({ curso }) => {
             >
               Iniciar jornada
             </Button>
-
           </Box>
+                 )}
+                 <RenoveAssinatura/>
         </Grid>
       </Grid>
     </>
