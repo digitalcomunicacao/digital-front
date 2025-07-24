@@ -51,7 +51,7 @@ const getPlanos = () => {
               <Box sx={{ width:{xs:"60px",md:"115px"}, height: {xs:"32px",md:"65px"} }}>
                 <img src={plano.intervalo==="year" ? "aseets/logo-dark.png":"aseets/logo-prata.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
               </Box>
-              <Typography color="textTertiary" sx={{ mt: 2 }}>
+              <Typography color="textPrimary" sx={{ mt: 2 }}>
                 Acesso total à plataforma com todas as formações e experiências da Digital Educa.
               </Typography>
             </Box>
@@ -65,7 +65,7 @@ const getPlanos = () => {
                     position: "absolute",
                     top: 8,
                     left: 20,
-                    color: theme.palette.text.primary,
+                    color: theme.palette.text.secondary,
                     fontSize: 28,
                     fontWeight: "bold"
                   }}
@@ -75,7 +75,7 @@ const getPlanos = () => {
               </Box>
 
               <Box sx={{ textAlign: "center" }}>
-                <Typography color="textTertiary" sx={{ fontSize: {xs:15,md:20} }}>
+                <Typography color="textPrimary" sx={{ fontSize: {xs:15,md:20} }}>
                   Assinatura {plano.nome}
                 </Typography>
                 <Box
@@ -87,7 +87,7 @@ const getPlanos = () => {
                     mt: 1
                   }}
                 >
-                  <Typography color="textTertiary" sx={{ fontSize:{md:15,xs:12} }}>
+                  <Typography color="textPrimary" sx={{ fontSize:{md:15,xs:12} }}>
                     {plano.nome}
                   </Typography>
                 </Box>

@@ -1,5 +1,4 @@
-import { Avatar, Box, Button, Grid, IconButton, Typography } from "@mui/material"
-import theme from "../../theme/theme"
+import { Avatar, Box, Button, Grid, IconButton, Typography, useTheme } from "@mui/material"
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SchoolIcon from '@mui/icons-material/School';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
@@ -9,6 +8,7 @@ import ReactPlayer from "react-player";
 import { useState } from "react";
 export const VisaoGeral = ({ curso }) => {
     const navigate = useNavigate()
+    const theme=useTheme()
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLight, setIsLight] = useState(true);
     const calcularDuracaoTotal = () => {
@@ -28,15 +28,15 @@ export const VisaoGeral = ({ curso }) => {
     };
     return (
         <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 9 }} >
+            <Grid size={{ xs: 12,lg: 9 }} >
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: { xs: "column", xl: "row" }, borderRadius: 5, gap: { xs: 2, md: 10 }, border: 1, borderColor: "divider", p: 5, bgcolor: theme.palette.background.paper }}>
                     <Box
                         sx={{
-                            width: "550px",
+                            width: {xs:"100%",lg:"550px"},
                             height: "320px",
-                 
+                            
                             position: "relative",
-                            border: 5,
+                            border: 3,
                             borderColor: "divider",
                             borderRadius: 2,
                             overflow: "hidden",
@@ -118,15 +118,15 @@ export const VisaoGeral = ({ curso }) => {
                     </Box>
 
 
-                    <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+                    <Box sx={{ width: { xs: "100%", lg: "50%" } }}>
                         <Typography sx={{ textAlign: "start", fontSize: { xs: 12, md: 16 } }}>O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável. O curso Marketing Previsível foi criado para empreendedores e profissionais que querem dominar estratégias de marketing que realmente funcionam. Com uma abordagem prática e focada em resultados, você vai aprender a criar campanhas previsíveis, que geram vendas de forma constante e escalável.</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row", justifyContent: "space-between" } }}>
-                    <Box sx={{ mt: 5, border: 1, borderColor: 'divider', width: { xs: "100%", md: "50%" }, borderRadius: 5, bgcolor: theme.palette.background.paper }}>
+                    <Box sx={{ mt: 5, border: 1, borderColor: 'divider', width: { xs: "100%", md: "50%" }, borderRadius: 5,  bgcolor: theme.palette.background.paper }}>
                         <Box sx={{ p: 3 }}>
-                            <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
-                                <Typography color="textSecondary" sx={{ fontSize: 17, color: theme.palette.text.primary }}>Educador</Typography>
+                            <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.contained }}>
+                                <Typography color="textSecondary" sx={{ fontSize: 17, color: theme.palette.text.tertiary }}>Educador</Typography>
                             </Box>
 
                             <Box sx={{ display: "flex", alignItems: "center", mb: 2, mt: 2 }}>
@@ -148,16 +148,16 @@ export const VisaoGeral = ({ curso }) => {
 
                     <Box sx={{ mt: 5, border: 1, borderColor: 'divider', width: { xs: "100%", md: "45%" }, borderRadius: 5, bgcolor: theme.palette.background.paper }}>
                         <Box sx={{ p: 3 }}>
-                            <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
-                                <Typography color="textSecondary" sx={{ fontSize: 17, color: theme.palette.text.primary }}>Detalhes</Typography>
+                            <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.contained }}>
+                                <Typography color="textSecondary" sx={{ fontSize: 17, color: theme.palette.text.tertiary }}>Detalhes</Typography>
                             </Box>
                             <Box sx={{ display: "flex" }}>
                                 <Box>
                                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
                                         <AccessTimeIcon sx={{ color: theme.palette.text.secondary }} />
                                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
-                                            <Typography color="textprimary" sx={{ fontSize: 14 }}>Horas de estudo</Typography>
-                                            <Typography color="textTertiary" sx={{ fontSize: 14 }}>Aprox. {calcularDuracaoTotal()} DE AULAS</Typography>
+                                            <Typography color="textPrimary" sx={{ fontSize: 14 }}>Horas de estudo</Typography>
+                                            <Typography color="textSecondary" sx={{ fontSize: 14 }}>Aprox. {calcularDuracaoTotal()} DE AULAS</Typography>
                                         </Box>
 
                                     </Box>
@@ -165,7 +165,7 @@ export const VisaoGeral = ({ curso }) => {
                                         <SchoolIcon sx={{ color: theme.palette.text.secondary }} />
                                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
                                             <Typography color="textprimary" sx={{ fontSize: 14 }}>Aulas</Typography>
-                                            <Typography color="textTertiary" sx={{ fontSize: 14 }}>
+                                            <Typography color="textSecondary" sx={{ fontSize: 14 }}>
                                                 {curso.modulos.reduce((acc, modulo) => acc + modulo.videos.length, 0)}
                                             </Typography>
                                         </Box>
@@ -175,7 +175,7 @@ export const VisaoGeral = ({ curso }) => {
                                         <SignalCellularAltIcon sx={{ color: theme.palette.text.secondary }} />
                                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
                                             <Typography color="textprimary" sx={{ fontSize: 14 }}>Nível de dificuldade</Typography>
-                                            <Typography color="textTertiary" sx={{ fontSize: 14 }}>{curso.level}</Typography>
+                                            <Typography color="textSecondary" sx={{ fontSize: 14 }}>{curso.level}</Typography>
                                         </Box>
                                     </Box>
                                 </Box>
@@ -183,7 +183,7 @@ export const VisaoGeral = ({ curso }) => {
                             </Box>
                             <Box sx={{ mt: 2 }}>
                                 <Typography color="textPrimary" >Pré-requisitos:</Typography>
-                                <Typography color="textTertiary">Recomendações para o melhor proveito dos conteúdos e facilidade de aplicação prática</Typography>
+                                <Typography color="textSecondary">Recomendações para o melhor proveito dos conteúdos e facilidade de aplicação prática</Typography>
                                 <Typography color="textPrimary" sx={{ fontWeight: "bolder" }}>* {curso.requisitos}</Typography>
                             </Box>
                         </Box>
@@ -192,7 +192,7 @@ export const VisaoGeral = ({ curso }) => {
             </Grid>
 
 
-            <Grid size={{ xs: 12, md: 3 }} container sx={{ justifyContent: "flex-end", alignItems: "start", }}>
+            <Grid size={{ xs: 12, lg: 3 }} container sx={{ justifyContent: "flex-end", alignItems: "start", }}>
                 <RenoveAssinatura />
             </Grid>
         </Grid>

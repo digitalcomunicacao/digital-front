@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom"
 import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
 import { useSnackbar } from "../../context/SnackBarContext";
 import api from "../../config/Api";
+import { ProgressoCurso } from "../progressoCurso/ProgressoCurso";
+import { ProgressoModuloCircular } from "../progressoModulo/ProgressoModulo";
 export const ConteudoCurso = ({ curso }) => {
   const navigate = useNavigate()
   const theme = useTheme()
@@ -68,13 +70,13 @@ export const ConteudoCurso = ({ curso }) => {
               </Box>
 
               <Box sx={{
-                display: "flex", flexDirection: { xs: "column", md: "row" }, "&:hover": {
-                
+                display: "flex",bgcolor:theme.palette.background.paper ,"&:hover": {
                   borderColor: theme.palette.background.paperAzul,
-                }, border: 1, borderColor: "divider", p: 2, borderRadius: 5, mt: 5, height: "250px", gap: 2, alignItems: { xs: "center", md: "start" }
+                }, border: 1, borderColor: "divider", p: 2, borderRadius: 5, mt: 5, height: "auto", gap: 2, alignItems:"start"
               }}>
-                <PlayCircleOutlinedIcon sx={{ fontSize: "80px", color: theme.palette.background.paperAzul }} />
-                <Box sx={{ width: "70%", mt: 2 }}>
+               <ProgressoModuloCircular modulo={modulo} size={80} />
+
+                <Box sx={{ width: "70%"}}>
                   <Typography sx={{ fontSize: 18, fontWeight: "bolder" }}>{modulo.subtitulo}</Typography>
                   <Box sx={{ mt: 1, display: "flex", gap: 0.5, justifyContent: "center", borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
                     <VideoLibraryOutlinedIcon sx={{ color: theme.palette.background.paperAzul }} />
@@ -84,8 +86,8 @@ export const ConteudoCurso = ({ curso }) => {
 
                   </Box>
 
-                  <Divider variant="fullWidth" sx={{ mt: 2 }} />
-                  <Typography sx={{ mt: 2 }}>{modulo.descricao}</Typography>
+                  <Divider variant="fullWidth" sx={{ mt: 2,display:{xs:"none",md:"block"} }} />
+                  <Typography sx={{ mt: 2,display:{xs:"none",md:"block"} }}>{modulo.descricao}</Typography>
                 </Box>
 
 
@@ -95,26 +97,9 @@ export const ConteudoCurso = ({ curso }) => {
           ))}
         </Grid>
         <Grid size={{ xs: 12, md: 2 }}>
-          <Box
-            sx={{
-              mt: { xs: 10, md: 0 },
-              height: "220px",
-              border: 1,
-              borderColor: "divider",
-              p: 3,
-              borderRadius: 5,
-
-            }}
-          >
-            <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 16 }}>
-              Inicie sua jornada na programação
-            </Typography>
-            <Typography color="textSecondary" sx={{ fontSize: 16, mt: 2 }}>
-              Inicie sua jornada na programação com um curso gratuito.
-            </Typography>
-            <Button fullWidth variant="contained" onClick={() => navigate("/checkout")} sx={{ boxShadow: "0 12px 32px rgba(255, 184, 0, 0.4)", fontWeight: "bolder", fontSize: 18, mt: 2 }}>
-              Começar Jornada
-            </Button>
+          <Box sx={{display:"flex",flexDirection:"column",gap:2,justifyContent:"center",borderRadius:"15px",width:"100%",border:1,borderColor:'divider',bgcolor:theme.palette.background.paper,p:2}}>
+            <ProgressoCurso curso={curso}/>
+            <Button variant="outlined" sx={{fontWeight:"bolder",color:theme.palette.text.primary}} endIcon={<PlayCircleOutlinedIcon sx={{color:theme.palette.background.paperAzul}}/>}>Iniciar jornada</Button>
           </Box>
         </Grid>
       </Grid>

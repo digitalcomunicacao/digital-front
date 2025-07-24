@@ -169,36 +169,63 @@ export const VideoPlayer = () => {
     return () => clearInterval(interval)
   }, [currentVideo, maxProgressoSalvo, isPlaying, token])
 
-  const handleVideoEnd = async () => {
-    if (!currentVideo || !modulo) return
+const [cursoConcluido, setCursoConcluido] = useState(false)
 
-    setCurrentVideo((prev) => ({
-      ...prev,
-      progresso: { ...(prev.progresso || {}), concluido: true },
-    }))
+const handleVideoEnd = async () => {
+  if (!currentVideo || !modulo || !curso || cursoConcluido) return
 
-    modulo.videos = modulo.videos.map((v) =>
-      v.id === currentVideo.id
-        ? { ...v, progresso: { ...(v.progresso || {}), concluido: true } }
-        : v
-    )
+  // Marca vídeo atual como concluído
+  setCurrentVideo((prev) => ({
+    ...prev,
+    progresso: { ...(prev.progresso || {}), concluido: true },
+  }))
 
-    try {
-      await api.patch("/progresso-video", {
-        videoId: currentVideo.id,
-        segundos: currentVideo.duracao,
-        concluido: true,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
+  modulo.videos = modulo.videos.map((v) =>
+    v.id === currentVideo.id
+      ? { ...v, progresso: { ...(v.progresso || {}), concluido: true } }
+      : v
+  )
+
+  try {
+    await api.patch("/progresso-video", {
+      videoId: currentVideo.id,
+      segundos: currentVideo.duracao,
+      concluido: true,
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch (err) {
+    console.error(err)
+  }
+
+  const currentIndex = modulo.videos.findIndex((v) => v.id === currentVideo.id)
+  const nextVideo = modulo.videos[currentIndex + 1]
+
+  if (nextVideo) {
+    // Próximo vídeo no mesmo módulo
+    setShowCountdownOverlay(true)
+    setCountdown(5)
+
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev === 1) {
+          clearInterval(interval)
+          setShowCountdownOverlay(false)
+          setCurrentVideo(nextVideo)
+          setIsPlaying(true)
+          return null
+        }
+        return prev - 1
       })
-    } catch (err) {
-      console.error(err)
-    }
+    }, 1000)
+  } else {
+    // Próximo módulo?
+    const currentModuloIndex = curso.modulos.findIndex((m) => m.id === modulo.id)
+    const nextModulo = curso.modulos[currentModuloIndex + 1]
 
-    const currentIndex = modulo.videos.findIndex((v) => v.id === currentVideo.id)
-    const next = modulo.videos[currentIndex + 1]
+    if (nextModulo && nextModulo.videos.length > 0) {
+      const primeiroVideoNextModulo = nextModulo.videos.find((v) => !v.progresso?.concluido) || nextModulo.videos[0]
 
-    if (next) {
       setShowCountdownOverlay(true)
       setCountdown(5)
 
@@ -207,15 +234,28 @@ export const VideoPlayer = () => {
           if (prev === 1) {
             clearInterval(interval)
             setShowCountdownOverlay(false)
-            setCurrentVideo(next)
+            setModulo(nextModulo)
+            setCurrentVideo(primeiroVideoNextModulo)
             setIsPlaying(true)
             return null
           }
           return prev - 1
         })
       }, 1000)
+    } else {
+      // Não tem próximo módulo = fim do curso
+      setCursoConcluido(true)  // Marca como concluído
+      setShowCountdownOverlay(false)
+      setCountdown(null)
+
+      // Aqui você pode exibir um modal, alerta, ou navegar
+      alert("Parabéns! Você concluiu todos os módulos e vídeos do curso.")
+
+      // Se quiser, pode navegar para outra página:
+      // navigate("/painel-usuario/meus-cursos")
     }
   }
+}
 
   const getCurrentVideoIndex = () =>
     modulo?.videos?.findIndex((v) => v.id === currentVideo?.id) || 0
@@ -261,7 +301,7 @@ export const VideoPlayer = () => {
         elevation={0}
         sx={{
           p: { xs: 2, md: 3 },
-          background: "rgba(18, 24, 41, 0.95)",
+          
           backdropFilter: "blur(10px)",
           borderBottom: "1px solid rgba(255, 184, 0, 0.2)",
           display: "flex",
@@ -357,7 +397,7 @@ export const VideoPlayer = () => {
             sx={{
               borderRadius: { xs: 2, md: 4 },
               overflow: "hidden",
-              background: "linear-gradient(145deg, #121829, #1E2A46)",
+          
               position: "relative",
             }}
           >
@@ -372,8 +412,7 @@ export const VideoPlayer = () => {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  background:
-                    "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
+        
                   zIndex: -1,
                   pointerEvents: "none",
                 },
@@ -419,8 +458,7 @@ export const VideoPlayer = () => {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background:
-                          "linear-gradient(45deg, rgba(255, 184, 0, 0.1), rgba(30, 42, 70, 0.1))",
+                   
                         zIndex: -1,
                         pointerEvents: "none",
                       },
@@ -487,9 +525,8 @@ export const VideoPlayer = () => {
                 mt: 3,
                 p: 3,
                 borderRadius: 3,
-                background: "rgba(18, 24, 41, 0.9)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255, 184, 0, 0.1)",
+                border:1,
+                borderColor:"divider"
               }}
             >
               <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
@@ -497,7 +534,7 @@ export const VideoPlayer = () => {
                   sx={{
                     width: 40,
                     height: 40,
-                    bgcolor: "#FFB800",
+               
                     color: "#0A1128",
                     fontWeight: "bold",
                   }}
@@ -541,8 +578,8 @@ export const VideoPlayer = () => {
                         label="Assistido"
                         size="small"
                         sx={{
-                          bgcolor: "#FFB800",
-                          color: "#0A1128",
+                       
+                          
                           maxWidth: "100%",
                           fontSize: { xs: 10, sm: 12 },
                         }}
@@ -564,9 +601,10 @@ export const VideoPlayer = () => {
             maxHeight: isMobile ? (isCollapsed ? 80 : 400) : "calc(100vh - 200px)",
             borderRadius: { xs: "16px 16px 0 0", md: 3 },
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            background: "rgba(18, 24, 41, 0.95)",
+        
             backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 184, 0, 0.1)",
+            border:1,
+            borderColor:"divider",
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
@@ -579,9 +617,9 @@ export const VideoPlayer = () => {
           <Box
             sx={{
               p: 2,
-              borderBottom: "1px solid rgba(255, 184, 0, 0.2)",
-              background: "linear-gradient(135deg, #1E2A46 0%, #0A1128 100%)",
-              color: "#FFFFFF",
+              borderBottom: 1,
+              borderColor:"divider"
+        
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -722,16 +760,16 @@ export const VideoPlayer = () => {
                         py: 1.5,
                         transition: "all 0.2s",
                         "&.Mui-selected": {
-                          background: "linear-gradient(135deg, #FFB800 0%, #dba600 100%)",
-                          color: "#0A1128",
+                          background: theme.palette.primary.light,
+                          color:theme.palette.text.primary,
                           transform: "translateX(4px)",
-                          boxShadow: "0 4px 12px rgba(255, 184, 0, 0.25)",
+                        
                         },
                         "&.Mui-selected:hover": {
                           background: "linear-gradient(135deg, #dba600 0%, #c49600 100%)",
                         },
                         "&:hover": {
-                          bgcolor: "rgba(30, 42, 70, 0.3)",
+                       
                           transform: "translateX(2px)",
                         },
                       }}

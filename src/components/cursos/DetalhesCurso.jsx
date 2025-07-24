@@ -16,11 +16,12 @@ import api from "../../config/Api";
 export const DetalhesCurso = () => {
     const location = useLocation();
     const cursoId = location.state?.cursoId;
-    const navigate = useNavigate()
-    const theme = useTheme()
     const [curso, setCurso] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const theme = useTheme()
+    const navigate = useNavigate()
+    const token = localStorage.getItem("token");
+    const isLoggedIn = !!token;
     useEffect(() => {
         if (!cursoId) {
             setLoading(false);
@@ -28,16 +29,40 @@ export const DetalhesCurso = () => {
         }
 
         setLoading(true);
-        api.get(`/curso/${cursoId}`)
-            .then(res => {
-                setCurso(res.data);
-                console.log(res)
-            })
-            .catch(() => {
-                setCurso(null);
-            })
-            .finally(() => setLoading(false));
-    }, [cursoId]);
+
+        const fetchCurso = async () => {
+            const headers = isLoggedIn ? { Authorization: `Bearer ${token}` } : {};
+
+            // Função auxiliar para fallback em caso de erro
+            const buscarPublico = async () => {
+                try {
+                    const res = await api.get(`/curso/${cursoId}`, { headers: {} });
+                    setCurso(res.data);
+                } catch {
+                    setCurso(null);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            try {
+                if (isLoggedIn) {
+                    const res = await api.get(`/curso-selecionado/${cursoId}`, { headers });
+                    setCurso(res.data);
+                    setLoading(false);
+                } else {
+                    await buscarPublico();
+                }
+            } catch (error) {
+                console.warn("Erro ao buscar curso-selecionado, tentando público:", error);
+                await buscarPublico(); // fallback para curso público
+            }
+        };
+
+        fetchCurso();
+    }, [cursoId, isLoggedIn, token]);
+
+
     const tab = location.state?.tab;
     const [value, setValue] = useState(tab ?? 0);
 
@@ -66,15 +91,15 @@ export const DetalhesCurso = () => {
 
     return (
 
-        <Box >
+        <Box sx={{pb:5}}>
             <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
-                <KeyboardBackspaceIcon sx={{ color: theme.palette.text.secondary }} />
+                <KeyboardBackspaceIcon sx={{ color: theme.palette.primary.main }} />
                 <Typography color="textSecondary">Voltar</Typography>
             </IconButton>
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <Box sx={{ display: "flex", flexDirection: "column", width: { md: "40%", xs: "100%" } }}>
                     <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 24 }}>{curso.titulo}</Typography>
-                    <Typography color="textTertiary" sx={{ fontSize: 16, width: { xs: "100%", md: "60%" } }}>{curso.descricao}</Typography>
+                    <Typography color="textSecondary" sx={{ fontSize: 16}}>{curso.descricao}</Typography>
                     <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                             <SignalCellularAltIcon />

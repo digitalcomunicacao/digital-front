@@ -1,5 +1,4 @@
 
-
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import {
     Card,
@@ -7,26 +6,27 @@ import {
     CardMedia,
     Typography,
     Chip,
-    Button,
     Box,
-    Avatar,
-    Rating,
     useTheme,
     Link,
-    Grid,
+
 
 } from "@mui/material"
 import { useNavigate } from "react-router-dom";
-import api from "../../config/Api";
-import { useSnackbar } from "../../context/SnackBarContext";
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-export const CardCurso = ({ curso }) => {
+export const CardCurso = ({ curso, origin = ""}) => {
     const theme = useTheme()
     const navigate = useNavigate();
     const handleDetalhes = () => {
-        navigate("/painel-usuario/curso/detalhe", { state: { cursoId: curso.id } });
+        const isFromMeusConteudos = origin === "meus-conteudos";
+        navigate("/painel-usuario/curso/detalhe", {
+            state: {
+                cursoId: curso.id,
+                tab: isFromMeusConteudos ? 1 : 0 // tab 1 = Conteúdos, tab 0 = Visão geral
+            }
+        });
     };
     const token = localStorage.getItem('token')
     const calcularDuracaoTotal = () => {
@@ -47,8 +47,6 @@ export const CardCurso = ({ curso }) => {
 
 
     return (
-      
-            <Grid  size={{xs:12,md:4}}>        
             <Card
                 elevation={0}
                 component={"form"}
@@ -60,7 +58,7 @@ export const CardCurso = ({ curso }) => {
                     borderColor: "divider",
                     cursor: "pointer",
                     borderRadius: 5,
-                    backgroundColor: theme.palette.background.paper,
+                    backgroundColor: theme.palette.background.default,
                     overflow: "hidden",
                     "&:hover": {
                         border: 3,
@@ -124,25 +122,25 @@ export const CardCurso = ({ curso }) => {
                         {curso.titulo}
                     </Typography>
                 </CardContent>
-                <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: "divider", display: "flex", justifyContent: "space-between", p: 1 }}>
+                <Box sx={{ borderTop: 1, borderColor: "divider", display: "flex", justifyContent: "space-between", p: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <SignalCellularAltIcon />
-                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold", textTransform: "uppercase" }}>{curso.level}</Typography>
+                        <Typography color="textSecondary" sx={{ fontSize: 8, fontWeight: "bold", textTransform: "uppercase" }}>{curso.level}</Typography>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <PlayCircleOutlineIcon />
-                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>
+                        <Typography color="textSecondary" sx={{ fontSize: 8, fontWeight: "bold" }}>
                             + {calcularDuracaoTotal()} DE AULAS
                         </Typography>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <WorkspacePremiumIcon />
-                        <Typography color="textSecondary" sx={{ fontSize: 10, fontWeight: "bold" }}>CERTIFICADO</Typography>
+                        <Typography color="textSecondary" sx={{ fontSize: 8, fontWeight: "bold" }}>CERTIFICADO</Typography>
                     </Box>
                 </Box>
 
             </Card>
-                </Grid>
+        
 
          
     

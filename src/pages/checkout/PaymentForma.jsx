@@ -88,7 +88,7 @@ const handleSubmit = async (e) => {
           p: 5,
           bgcolor: theme.palette.background.paper,
           border: 1,
-          borderColor: theme.palette.background.paperAzul,
+          borderColor: theme.palette.primary.main,
     width: {xs:"100%",md:"55%"},
           height:"50%"
         }}
@@ -105,7 +105,7 @@ const handleSubmit = async (e) => {
               style={{ width: "100%", height: "100%" }}
             />
           </Box>
-          <Typography color="textTertiary" sx={{ mt: 2}}>
+          <Typography color="textPrimary" sx={{ mt: 2}}>
             Acesso total à plataforma com todas as formações e experiências da Digital Educa.
           </Typography>
         </Box>
@@ -128,7 +128,7 @@ const handleSubmit = async (e) => {
           </Box>
 
           <Box sx={{ textAlign: "center" }}>
-            <Typography color="textTertiary" sx={{ fontSize: 20 }}>
+            <Typography color="textPrimary" sx={{ fontSize: 20 }}>
               Assinatura {plano.nome}
             </Typography>
             <Box
@@ -140,7 +140,7 @@ const handleSubmit = async (e) => {
                 mt: 1,
               }}
             >
-              <Typography color="textTertiary" sx={{ fontSize: 22 }}>
+              <Typography color="textPrimary" sx={{ fontSize: 22 }}>
                 {plano.nome}
               </Typography>
             </Box>

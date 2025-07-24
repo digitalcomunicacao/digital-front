@@ -52,7 +52,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado 
               style={{ width: "100%", height: "100%" }}
             />
           </Box>
-          <Typography color="textTertiary" sx={{ mt: 2 }}>
+          <Typography color="textPrimary" sx={{ mt: 2 }}>
             Acesso total à plataforma com todas as formações e experiências da Digital Educa.
           </Typography>
         </Box>
@@ -75,7 +75,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado 
           </Box>
 
           <Box sx={{ textAlign: "center" }}>
-            <Typography color="textTertiary" sx={{ fontSize: 20 }}>
+            <Typography color="textPrimary" sx={{ fontSize: 20 }}>
               Assinatura {plano.nome}
             </Typography>
             <Box
@@ -87,7 +87,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado 
                 mt: 1,
               }}
             >
-              <Typography color="textTertiary" sx={{ fontSize: 22 }}>
+              <Typography color="textPrimary" sx={{ fontSize: 22 }}>
                 {plano.nome}
               </Typography>
             </Box>

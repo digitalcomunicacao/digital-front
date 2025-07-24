@@ -29,7 +29,7 @@ export const PainelUsuario = () => {
     component="main"
     sx={{
       p: 0,
-      mt: '64px',
+      mt: '95px',
       ml: isMobile ? 0 : `${drawerWidth}px`,
       width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
       transition: 'margin-left 0.3s, width 0.3s',
@@ -44,7 +44,7 @@ export const PainelUsuario = () => {
       component="main"
       sx={{
         p: 0,
-        mt: '64px',
+        mt: '95px',
         ml: isMobile ? 0 : `${drawerWidth}px`,
         width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
         transition: 'margin-left 0.3s, width 0.3s',

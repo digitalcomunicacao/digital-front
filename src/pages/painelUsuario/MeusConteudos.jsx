@@ -5,6 +5,8 @@ import api from "../../config/Api";
 import { Subscription } from "../../components/subscription/Subscripition";
 import { Ads } from "../../components/ads/Ads";
 import { useMiniDrawer } from "../../context/DrawerContext";
+import { ProgressoCurso } from "../../components/progressoCurso/ProgressoCurso";
+import { useNavigate } from "react-router-dom";
 
 export const MeusConteudos = () => {
     const [cursos, setCursos] = useState([]);
@@ -13,6 +15,7 @@ export const MeusConteudos = () => {
     const { miniDrawer } = useMiniDrawer(); // true ou false
     const token = localStorage.getItem("token");
     const theme = useTheme();
+    const navigate = useNavigate()
     useEffect(() => {
         getCursos();
         getCategorias();
@@ -21,10 +24,13 @@ export const MeusConteudos = () => {
     const getCursos = () => {
         api.get("/curso-selecionado/cursos", {
             headers: { Authorization: `Bearer ${token}` },
+        }).then(function (response) {
+            setCursos(response.data)
+            console.log(response)
+        }).catch(function (error) {
+            console.log(error)
         })
-            .then((response) => setCursos(response.data))
-            .catch((error) => console.error(error));
-    };
+    }
     const getCategorias = () => {
         api.get("categoria/list")
             .then((response) => setCategorias(response.data))
@@ -35,9 +41,10 @@ export const MeusConteudos = () => {
         setTabAtiva(newValue);
     };
 
+
     return (
-        <Grid sx={{ p: 5 }} container spacing={2}>
-            <Grid size={{ xs: 12, md: 8, lg: miniDrawer ? 10 : 10 }}>
+        <Grid container spacing={2}>
+            <Grid size={{ xs: 12, lg: miniDrawer ? 10 : 10 }}>
                 <Box sx={{ textAlign: 'start', mt: 5 }}>
                     <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
                         Meus conteúdos
@@ -57,6 +64,7 @@ export const MeusConteudos = () => {
                     scrollButtons="auto"
                     sx={{
                         mb: 4,
+
                         '& .MuiTabs-indicator': {
                             display: 'none',
                         },
@@ -70,8 +78,15 @@ export const MeusConteudos = () => {
                             border: 1,
                             borderRadius: 5,
                             ml: 2,
-                            bgcolor: theme.palette.background.paper,
                             color: theme.palette.text.primary,
+                            '&.Mui-selected': {
+                                border: 3,
+                                color: theme.palette.text.tertiary,
+                                borderColor: theme.palette.primary.main,
+                                bgcolor: theme.palette.background.contained,
+                                fontWeight: 'bold',
+                            },
+
                         }}
                     />
                     {categorias.map((categoria) => (
@@ -83,9 +98,17 @@ export const MeusConteudos = () => {
                                 height: "15px",
                                 border: 1,
                                 borderRadius: 5,
+
                                 ml: 2,
-                                bgcolor: theme.palette.background.paper,
+                                bgcolor: theme.palette.secondary,
                                 color: theme.palette.text.primary,
+                                '&.Mui-selected': {
+                                    border:3,
+                                    color: theme.palette.text.tertiary,
+                                    borderColor: theme.palette.primary.main,
+                                    bgcolor: theme.palette.background.contained,
+                                    fontWeight: 'bold',
+                                },
                             }}
                         />
                     ))}
@@ -102,37 +125,53 @@ export const MeusConteudos = () => {
                         if (cursosDaCategoria.length === 0) return null;
 
                         return (
-                            <Box key={categoria.id} sx={{ mb: 6 }}>
+                            <Box key={categoria.id} sx={{ mb: 2 }}>
                                 <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: theme.palette.text.primary, mb: 2 }}>
                                     {categoria.nome}
                                 </Typography>
                                 <Divider sx={{ mb: 2 }} />
-                                <Box sx={{ display: 'flex', gap: "2%", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+                                <Grid container spacing={2}>
                                     {cursosDaCategoria.map((curso, index) => (
-                                        <CardCurso key={index} curso={curso} />
+                                        <Grid size={{ xs: 12, md:6,lg: 4 }}>
+                                            <CardCurso key={index} curso={curso} origin="meus-conteudos" />
+
+                                            <Box sx={{ position: "relative", bottom: 131, left: 0 }}>
+                                                <ProgressoCurso curso={curso} showText={false} />
+                                            </Box>
+                                        </Grid>
                                     ))}
-                                </Box>
+                                </Grid>
+
                             </Box>
                         );
                     })
                 ) : (
                     // Mostrar apenas a categoria selecionada
                     <>
+
                         <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: theme.palette.text.primary, mb: 2 }}>
                             {categorias[tabAtiva - 1]?.nome}
                         </Typography>
-                        <Box sx={{ display: 'flex', justifyContent: "space-between", minHeight: 400, flexWrap: 'wrap', flexDirection: { xs: 'column', md: 'row' } }}>
+                        <Divider sx={{ mb: 2 }} />
+                        <Grid container spacing={2}>
                             {cursos
                                 .filter((curso) => curso.categoria?.id === categorias[tabAtiva - 1]?.id)
                                 .map((curso, index) => (
-                                    <CardCurso key={index} curso={curso} />
+                                    <Grid size={{ xs: 12, md:6,lg: 4 }}>
+                                        <CardCurso key={index} curso={curso} origin="meus-conteudos" />
+                                     <Box sx={{ position: "relative", bottom: 131, left: 0 }}>
+                                            <ProgressoCurso curso={curso}  showText={false}/>
+                                        </Box>
+
+                                    </Grid>
+
                                 ))}
-                        </Box>
+                        </Grid>
                     </>
                 )}
             </Grid>
-            <Grid size={{ xs: 12, md: 4, lg: miniDrawer ? 2 : 2 }} >
-                <Box sx={{ position: 'sticky', top: '80px' }}>
+            <Grid size={{ xs: 12, lg: miniDrawer ? 2 : 2  }} >
+                <Box sx={{ position: 'sticky', mt: 5 }}>
                     <Subscription />
                     <Box sx={{ mt: 5 }}>
                         <Ads />

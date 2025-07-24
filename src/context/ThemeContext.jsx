@@ -6,7 +6,7 @@ export const ThemeProviderCustom = ({ children }) => {
   // Inicializa com base no localStorage, ou usa true (dark) por padrão
   const [darkMode, setDarkMode] = useState(() => {
     const stored = localStorage.getItem('darkMode');
-    return stored === null ? true : stored === 'true';
+    return stored === null ? false : stored === 'true';
   });
 
   // Sempre que o tema mudar, atualiza o localStorage

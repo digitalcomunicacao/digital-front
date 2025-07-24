@@ -5,22 +5,26 @@ const themeLight = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#141E30', // azul padrão no claro
+      main: '#E0A027', 
+      light:"#FFE9BC",
+      dark:"#E0A027"
     },
     secondary: {
-      main: '#141E30', // amarelo destaque no light
+      main: '#141E30'
     },
     background: {
-      default: '#f2f2f2',
-      paper: '#fff', // fundo branco para cards, modais etc.
-      paperAzul: '#E1A127'
+      default: '#FFFFFF',
+      paper: '#F6F6F6', 
+      contained:"#22345F",
+      containedAzul:"#0D68F9",
+      paperAzul: '#FFE9BC'
     },
     text: {
-      primary: '#0A1128',
-      secondary: '#40619D',
-      tertiary: '#4F5D75',
+      primary: '#22345F',
+      secondary: '#939393',
+      tertiary: '#fff',
     },
-    divider: '#E0E0E0',
+    divider: '#E8E8E8',
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -37,15 +41,7 @@ const themeLight = createTheme({
           fontWeight: 500,
           padding: '8px 16px',
         },
-     
-        outlinedPrimary: {
-          borderColor: '#0D68F9',
-          color: '#0D68F9',
-          '&:hover': {
-            borderColor: '#0954cc',
-            backgroundColor: 'rgba(13, 104, 249, 0.06)',
-          },
-        },
+    
       },
     },
   },

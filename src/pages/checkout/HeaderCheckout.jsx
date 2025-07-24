@@ -32,10 +32,10 @@ export const HeaderCheckout = ({ activeStep, completed, handleStep, theme, steps
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <SettingsOutlinedIcon sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />
+        <SettingsOutlinedIcon sx={{ fontSize: "50px", color: theme.palette.primary.main }} />
         <Box>
           <Typography sx={{ fontSize: 29, fontWeight: "bolder" }}>{title}</Typography>
-          <Typography color='textTertiary'>{subtitle}</Typography>
+          <Typography color='textSecondary'>{subtitle}</Typography>
         </Box>
       </Box>
 
@@ -48,10 +48,10 @@ export const HeaderCheckout = ({ activeStep, completed, handleStep, theme, steps
               borderTopWidth: 3,
             },
             '& .MuiStepIcon-root': {
-              color: theme.palette.background.paperAzul,
+              color: theme.palette.primary.main,
             },
             '& .MuiStepIcon-root.Mui-completed': {
-              color: theme.palette.primary.main,
+              color: theme.palette.primary.dark,
             },
             '& .MuiStepIcon-text': {
               display: 'none',

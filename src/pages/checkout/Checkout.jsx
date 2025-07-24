@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Stepper,
-  Step,
-  StepButton,
   Button,
   Container,
   useTheme,
@@ -17,6 +14,8 @@ import PaymentForma from './PaymentForma';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { HeaderCheckout } from './HeaderCheckout';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import { HeaderPayment } from '../../components/header/HeaderPayment';
 
 const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 const stripePromise = loadStripe(
@@ -194,7 +193,9 @@ const handleComplete = async () => {
 
   return (
   
- 
+    <Box>
+
+    <HeaderPayment/>
       <Container>
         {/* Stepper */}
         <HeaderCheckout
@@ -209,7 +210,9 @@ const handleComplete = async () => {
         {/* Botões */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
           {activeStep > 0 && (
-            <Button onClick={handleBack} variant="outlined">
+            <Button onClick={handleBack} variant="outlined"
+              sx={{borderRadius:"15px",color:theme.palette.text.secondary,fontWeight:"bold",fontSize:17}}
+              startIcon={<ArrowBack sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />}>
               Voltar
             </Button>
           )}
@@ -223,7 +226,9 @@ const handleComplete = async () => {
           ) : (
             <Button
               onClick={handleComplete}
-              variant="contained"
+              variant="outlined"
+              sx={{borderRadius:"15px",color:theme.palette.text.primary,fontWeight:"bold",fontSize:17}}
+              endIcon={<ArrowForward sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />}
               disabled={activeStep === 0 && !selectedPlano} // não avança sem plano
             >
               {activeStep === totalSteps - 1 ? 'Finalizar' : 'Avançar'}
@@ -231,5 +236,6 @@ const handleComplete = async () => {
           )}
         </Box>
       </Container>
+          </Box>
   );
 };
