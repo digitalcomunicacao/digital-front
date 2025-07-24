@@ -64,32 +64,32 @@ export const VideoPlayer = () => {
       return
     }
 
-    const fetchCursoModulo = async () => {
-      setIsLoading(true)
-      try {
-        const response = await api.get("/curso-selecionado/cursos", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        const cursos = response.data
-        const cursoEncontrado = cursos.find((c) => c.id === cursoId)
-        if (!cursoEncontrado) {
-          navigate("/painel-usuario/meus-cursos")
-          return
-        }
-        setCurso(cursoEncontrado)
+const fetchCursoModulo = async () => {
+  setIsLoading(true)
+  try {
+    const response = await api.get(`/curso-selecionado/${cursoId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
 
-        const moduloEncontrado = cursoEncontrado.modulos.find((m) => m.id === moduloId)
-        if (!moduloEncontrado) {
-          navigate("/painel-usuario/meus-cursos")
-          return
-        }
-        setModulo(moduloEncontrado)
-      } catch (err) {
-        console.error(err)
-        navigate("/painel-usuario/meus-cursos")
-      } finally {
-        setIsLoading(false)
-      }
+    const cursoEncontrado = response.data
+    if (!cursoEncontrado) {
+      navigate("/painel-usuario/meus-cursos")
+      return
+    }
+    setCurso(cursoEncontrado)
+
+    const moduloEncontrado = cursoEncontrado.modulos.find((m) => m.id === moduloId)
+    if (!moduloEncontrado) {
+      navigate("/painel-usuario/meus-cursos")
+      return
+    }
+    setModulo(moduloEncontrado)
+  } catch (err) {
+    console.error(err)
+    navigate("/painel-usuario/meus-cursos")
+  } finally {
+    setIsLoading(false)
+  }
     }
     fetchCursoModulo()
   }, [cursoId, moduloId, navigate, token])
@@ -285,7 +285,6 @@ const handleVideoEnd = async () => {
       </Box>
     )
   }
-
   return (
     <Box
       sx={{

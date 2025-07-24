@@ -92,7 +92,7 @@ export const DetalhesCurso = () => {
     return (
 
         <Box sx={{pb:5}}>
-            <IconButton onClick={() => navigate(-1)} sx={{ display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
+            <IconButton onClick={() => navigate(-1)} sx={{ position:"relative",top:40,display: "flex", gap: 1, borderRadius: 2, alignItems: "center" }}>
                 <KeyboardBackspaceIcon sx={{ color: theme.palette.primary.main }} />
                 <Typography color="textSecondary">Voltar</Typography>
             </IconButton>

@@ -1,7 +1,7 @@
 import {
-    Box, Button, CircularProgress, Container, Divider, TextField, Typography
+    Box, Button, CircularProgress, Container, Divider, TextField, Typography,
+    useTheme
 } from "@mui/material"
-import theme from "../../../theme/theme"
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import api from "../../../config/Api";
 import { useEffect, useState } from "react";
@@ -22,6 +22,7 @@ export const Configuracoes = () => {
     const userString = localStorage.getItem('user');
     const user = userString ? JSON.parse(userString) : null;
     const token = localStorage.getItem("token")
+    const theme=useTheme()
     const [usuario, setUsuario] = useState(null)
     const [loading, setLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false);
@@ -120,8 +121,8 @@ export const Configuracoes = () => {
     };
 
     return (
-        <Container>
-            <Box sx={{ textAlign: 'start', mt: 5 }}>
+        <Container maxWidth="xl">
+            <Box sx={{ textAlign: 'start', mt: 15}}>
                 <Typography sx={{ fontSize: 30, fontWeight: 'bolder', color: theme.palette.text.primary }}>Configurações da Conta</Typography>
                 <Typography sx={{ fontSize: 20, color: theme.palette.text.secondary, mt: 2 }}>Gerencie suas informações pessoais e assinatura</Typography>
             </Box>
@@ -133,16 +134,16 @@ export const Configuracoes = () => {
             ) : (
                 <Box>
                     {/* Dados do usuário */}
-                    <Box sx={{ border: 'divider', mt: 10, p: 3, bgcolor: theme.palette.secondary.main, borderRadius: 3 }}>
+                    <Box sx={{ border: 'divider', mt: 10, p: 3, bgcolor: theme.palette.background.paper, borderRadius: 3 }}>
                         <Typography sx={{ fontSize: 22, fontWeight: 'bolder', color: theme.palette.text.primary }}>Configurações da Conta</Typography>
                         <Typography sx={{ fontSize: 18, color: theme.palette.text.secondary, mt: 2 }}>Atualize suas informações de perfil</Typography>
                         <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: 5 }}>
                             <Box sx={{ display: "flex", flexDirection: "column", gap: 5, width: "100%", mt: 5 }}>
-                                <TextField slotProps={{ inputLabel: { shrink: true } }} fullWidth label="Nome completo" defaultValue={usuario.nome} sx={{ bgcolor: theme.palette.secondary.light }} />
-                                <TextField slotProps={{ inputLabel: { shrink: true } }} label="Celular" defaultValue={usuario.celular} sx={{ bgcolor: theme.palette.secondary.light }} />
+                                <TextField slotProps={{ inputLabel: { shrink: true } }} fullWidth label="Nome completo" defaultValue={usuario.nome} sx={{ }} />
+                                <TextField slotProps={{ inputLabel: { shrink: true } }} label="Celular" defaultValue={usuario.celular} sx={{ }} />
                             </Box>
                             <Box sx={{ display: "flex", flexDirection: "column", gap: 5, width: "100%", mt: { xs: 0, md: 5 } }}>
-                                <TextField slotProps={{ inputLabel: { shrink: true } }} fullWidth label="Email" defaultValue={usuario.email} sx={{ bgcolor: theme.palette.secondary.light }} />
+                                <TextField slotProps={{ inputLabel: { shrink: true } }} fullWidth label="Email" defaultValue={usuario.email} sx={{ }} />
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", justifyContent: "end", mt: { xs: 3, md: 0 } }}>
@@ -151,7 +152,7 @@ export const Configuracoes = () => {
                     </Box>
 
                     {/* Assinatura */}
-                    <Box sx={{ border: 'divider', mt: 10, p: 3, bgcolor: theme.palette.secondary.main, borderRadius: 3 }}>
+                    <Box sx={{ border: 'divider', mt: 10, p: 3, bgcolor: theme.palette.background.paper, borderRadius: 3 }}>
                         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                             <CreditCardIcon />
                             <Typography sx={{ fontSize: 22, fontWeight: 'bolder', color: theme.palette.text.primary }}>Gerenciar Assinatura</Typography>
@@ -165,7 +166,7 @@ export const Configuracoes = () => {
                                 <Box sx={{
                                     display: "flex", flexDirection: { xs: "column", md: "row" },
                                     justifyContent: "space-between", gap: 5,
-                                    bgcolor: theme.palette.secondary.light, p: 5, borderRadius: 3, mt: 2
+                                    bgcolor: theme.palette.background.default, p: 5, borderRadius: 3, mt: 2
                                 }}>
                                     <Box>
                                         <Typography sx={{ fontWeight: "bolder", fontSize: 16 }}>Plano {user.plano}</Typography>
@@ -200,7 +201,7 @@ export const Configuracoes = () => {
                                 <Box sx={{
                                     display: "flex", flexDirection: { xs: "column", md: "row" },
                                     justifyContent: "space-between", gap: 5,
-                                    bgcolor: theme.palette.secondary.light, p: 5, borderRadius: 3, mt: 2
+                                    bgcolor: theme.palette.background.paper, p: 5, borderRadius: 3, mt: 2
                                 }}>
                                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                         <CreditCardIcon />

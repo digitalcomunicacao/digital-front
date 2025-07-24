@@ -5,6 +5,7 @@ import api from "../../config/Api";
 import { Subscription } from "../../components/subscription/Subscripition";
 import { Ads } from "../../components/ads/Ads";
 import { useMiniDrawer } from "../../context/DrawerContext";
+import { RenoveAssinatura } from "../../components/renoveAssinatura/RenoveAssinatura";
 
 export const Catalago = () => {
   const [cursos, setCursos] = useState([]);
@@ -154,6 +155,7 @@ export const Catalago = () => {
       </Grid>
       <Grid size={{ xs: 12,md: miniDrawer ? 2 : 2 }} >
         <Box sx={{ position: 'sticky', mt: 5 }}>
+          <RenoveAssinatura/>
           <Subscription />
           <Box sx={{ mt: 5 }}>
             <Ads />

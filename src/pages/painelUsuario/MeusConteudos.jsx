@@ -7,6 +7,7 @@ import { Ads } from "../../components/ads/Ads";
 import { useMiniDrawer } from "../../context/DrawerContext";
 import { ProgressoCurso } from "../../components/progressoCurso/ProgressoCurso";
 import { useNavigate } from "react-router-dom";
+import { RenoveAssinatura } from "../../components/renoveAssinatura/RenoveAssinatura";
 
 export const MeusConteudos = () => {
     const [cursos, setCursos] = useState([]);
@@ -172,6 +173,7 @@ export const MeusConteudos = () => {
             </Grid>
             <Grid size={{ xs: 12, lg: miniDrawer ? 2 : 2  }} >
                 <Box sx={{ position: 'sticky', mt: 5 }}>
+                    <RenoveAssinatura/>
                     <Subscription />
                     <Box sx={{ mt: 5 }}>
                         <Ads />

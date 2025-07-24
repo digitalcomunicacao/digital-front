@@ -10,6 +10,37 @@ export const ConteudoCurso = ({ curso }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const { showSnackbar } = useSnackbar();
+  const handleIniciarJornada = () => {
+    // Encontrar o primeiro módulo com vídeo não assistido
+    for (const modulo of curso.modulos) {
+      for (const video of modulo.videos) {
+        if (!video.assistido) {
+          navigate("/painel-usuario/player", {
+            state: {
+              cursoId: curso.id,
+              moduloId: modulo.id,
+              videoId: video.id,
+            },
+          });
+          return;
+        }
+      }
+    }
+
+    // Se todos os vídeos foram assistidos, mandar para o primeiro módulo
+    if (curso.modulos.length > 0 && curso.modulos[0].videos.length > 0) {
+      navigate("/painel-usuario/player", {
+        state: {
+          cursoId: curso.id,
+          moduloId: curso.modulos[0].id,
+          videoId: curso.modulos[0].videos[0].id,
+        },
+      });
+    } else {
+      showSnackbar("Este curso ainda não tem vídeos.", "warning");
+    }
+  };
+
   const handleSelecionarModulo = async (modulo) => {
     try {
       const token = localStorage.getItem("token");
@@ -70,13 +101,13 @@ export const ConteudoCurso = ({ curso }) => {
               </Box>
 
               <Box sx={{
-                display: "flex",bgcolor:theme.palette.background.paper ,"&:hover": {
+                display: "flex", bgcolor: theme.palette.background.paper, "&:hover": {
                   borderColor: theme.palette.background.paperAzul,
-                }, border: 1, borderColor: "divider", p: 2, borderRadius: 5, mt: 5, height: "auto", gap: 2, alignItems:"start"
+                }, border: 1, borderColor: "divider", p: 2, borderRadius: 5, mt: 5, height: "auto", gap: 2, alignItems: "start"
               }}>
-               <ProgressoModuloCircular modulo={modulo} size={80} />
+                <ProgressoModuloCircular modulo={modulo} size={80} />
 
-                <Box sx={{ width: "70%"}}>
+                <Box sx={{ width: "70%" }}>
                   <Typography sx={{ fontSize: 18, fontWeight: "bolder" }}>{modulo.subtitulo}</Typography>
                   <Box sx={{ mt: 1, display: "flex", gap: 0.5, justifyContent: "center", borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
                     <VideoLibraryOutlinedIcon sx={{ color: theme.palette.background.paperAzul }} />
@@ -86,8 +117,8 @@ export const ConteudoCurso = ({ curso }) => {
 
                   </Box>
 
-                  <Divider variant="fullWidth" sx={{ mt: 2,display:{xs:"none",md:"block"} }} />
-                  <Typography sx={{ mt: 2,display:{xs:"none",md:"block"} }}>{modulo.descricao}</Typography>
+                  <Divider variant="fullWidth" sx={{ mt: 2, display: { xs: "none", md: "block" } }} />
+                  <Typography sx={{ mt: 2, display: { xs: "none", md: "block" } }}>{modulo.descricao}</Typography>
                 </Box>
 
 
@@ -97,9 +128,17 @@ export const ConteudoCurso = ({ curso }) => {
           ))}
         </Grid>
         <Grid size={{ xs: 12, md: 2 }}>
-          <Box sx={{display:"flex",flexDirection:"column",gap:2,justifyContent:"center",borderRadius:"15px",width:"100%",border:1,borderColor:'divider',bgcolor:theme.palette.background.paper,p:2}}>
-            <ProgressoCurso curso={curso}/>
-            <Button variant="outlined" sx={{fontWeight:"bolder",color:theme.palette.text.primary}} endIcon={<PlayCircleOutlinedIcon sx={{color:theme.palette.background.paperAzul}}/>}>Iniciar jornada</Button>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, justifyContent: "center", borderRadius: "15px", width: "100%", border: 1, borderColor: 'divider', bgcolor: theme.palette.background.paper, p: 2 }}>
+            <ProgressoCurso curso={curso} />
+            <Button
+              variant="outlined"
+              sx={{ fontWeight: "bolder", color: theme.palette.text.primary }}
+              endIcon={<PlayCircleOutlinedIcon sx={{ color: theme.palette.primary.main }} />}
+              onClick={handleIniciarJornada}
+            >
+              Iniciar jornada
+            </Button>
+
           </Box>
         </Grid>
       </Grid>
