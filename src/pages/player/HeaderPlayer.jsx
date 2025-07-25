@@ -16,10 +16,10 @@ export const HeaderPlayer =({titulo,subtitulo,thumb})=>{
                 <img src={"https://api.digitaleduca.com.vc/"+thumb} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
             </Box>
             <Box>
-            <Typography sx={{fontWeight:"bolder",fontSize:20}}>{titulo}</Typography>
+            <Typography sx={{fontWeight:"bolder",fontSize:{xs:16,md:20}}}>{titulo}</Typography>
             <Box sx={{display:"flex",alignItems:"center",gap:1}}>
               <VideoLibraryOutlinedIcon sx={{color:theme.palette.text.secondary}}/>
-                <Typography color="textSecondary" sx={{fontSize:14}}>{subtitulo}</Typography>
+                <Typography color="textSecondary" sx={{fontSize:{xs:12,md:14}}}>{subtitulo}</Typography>
             </Box>
               </Box>
                  </Box>

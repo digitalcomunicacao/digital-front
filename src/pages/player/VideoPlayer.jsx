@@ -30,6 +30,8 @@ export const VideoPlayer = () => {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const [canPlay, setCanPlay] = useState(!isIOS); // iOS = false, outros = true
 
   console.log("location.state:", location.state); // Veja o que vem no state da rota
 
@@ -147,58 +149,58 @@ export const VideoPlayer = () => {
     return () => clearInterval(interval);
   }, [currentVideo, token]);
 
-const handleVideoEnd = async () => {
-  if (!curso || !moduloSelecionado || !currentVideo) return;
+  const handleVideoEnd = async () => {
+    if (!curso || !moduloSelecionado || !currentVideo) return;
 
-  console.log("Vídeo finalizado:", currentVideo.titulo);
+    console.log("Vídeo finalizado:", currentVideo.titulo);
 
-  const duracaoFinal = currentVideo.duracao;
+    const duracaoFinal = currentVideo.duracao;
 
-  try {
-    // Marca como concluído com 100% progresso
-    await api.patch(
-      "/progresso-video",
-      {
-        videoId: currentVideo.id,
-        segundos: duracaoFinal,
-        concluido: true,
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    try {
+      // Marca como concluído com 100% progresso
+      await api.patch(
+        "/progresso-video",
+        {
+          videoId: currentVideo.id,
+          segundos: duracaoFinal,
+          concluido: true,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    currentVideo.progresso = { concluido: true, segundos: duracaoFinal };
+      currentVideo.progresso = { concluido: true, segundos: duracaoFinal };
 
-    // Avança para o próximo vídeo
-    const currentIndex = moduloSelecionado.videos.findIndex((v) => v.id === currentVideo.id);
-    let nextVideo = moduloSelecionado.videos[currentIndex + 1];
+      // Avança para o próximo vídeo
+      const currentIndex = moduloSelecionado.videos.findIndex((v) => v.id === currentVideo.id);
+      let nextVideo = moduloSelecionado.videos[currentIndex + 1];
 
-    if (nextVideo) {
-      console.log("Indo para próximo vídeo no módulo:", nextVideo.titulo);
-      setCurrentVideo(nextVideo);
-      if (isMobile) setDrawerOpen(false);
-      return;
+      if (nextVideo) {
+        console.log("Indo para próximo vídeo no módulo:", nextVideo.titulo);
+        setCurrentVideo(nextVideo);
+        if (isMobile) setDrawerOpen(false);
+        return;
+      }
+
+      const moduloIndex = curso.modulos.findIndex((m) => m.id === moduloSelecionado.id);
+      const nextModulo = curso.modulos[moduloIndex + 1];
+
+      if (nextModulo && nextModulo.videos.length) {
+        console.log("Indo para próximo módulo:", nextModulo.titulo);
+        setModuloSelecionado(nextModulo);
+
+        const videoInicial =
+          nextModulo.videos.find((v) => !(v.progresso?.concluido)) || nextModulo.videos[0];
+        setCurrentVideo(videoInicial);
+
+        if (isMobile) setDrawerOpen(false);
+        return;
+      }
+
+      alert("Parabéns! Você concluiu todos os vídeos do curso.");
+    } catch (e) {
+      console.error("Erro ao marcar vídeo como concluído:", e);
     }
-
-    const moduloIndex = curso.modulos.findIndex((m) => m.id === moduloSelecionado.id);
-    const nextModulo = curso.modulos[moduloIndex + 1];
-
-    if (nextModulo && nextModulo.videos.length) {
-      console.log("Indo para próximo módulo:", nextModulo.titulo);
-      setModuloSelecionado(nextModulo);
-
-      const videoInicial =
-        nextModulo.videos.find((v) => !(v.progresso?.concluido)) || nextModulo.videos[0];
-      setCurrentVideo(videoInicial);
-
-      if (isMobile) setDrawerOpen(false);
-      return;
-    }
-
-    alert("Parabéns! Você concluiu todos os vídeos do curso.");
-  } catch (e) {
-    console.error("Erro ao marcar vídeo como concluído:", e);
-  }
-};
+  };
 
 
   if (loading || !curso || !moduloSelecionado) {
@@ -227,9 +229,9 @@ const handleVideoEnd = async () => {
         <Grid size={{ xs: 12, md: 8 }}>
           <Box
             sx={{
-              
-              aspectRatio:"16/9",
-           
+
+              aspectRatio: "16/9",
+
               display: "flex",
               flexDirection: "column",
             }}
@@ -242,78 +244,103 @@ const handleVideoEnd = async () => {
                 overflow: "hidden", // ESSENCIAL pra cortar as bordas do vídeo
               }}
             >
+              {isIOS && !canPlay && (
+                <Box
+                  onClick={() => setCanPlay(true)}
+                  sx={{
+                    position: "absolute",
+                    inset: 0,
+                    bgcolor: "rgba(0,0,0,0.6)",
+                    zIndex: 10,
+                    color: "#fff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  ▶ Começar video
+                </Box>
+              )}
+
               <ReactPlayer
                 ref={playerRef}
                 url={currentVideo.url}
                 width="100%"
                 height="100%"
-                playing
+                playing={canPlay}
                 controls
+                playsinline
                 onEnded={handleVideoEnd}
                 onReady={onPlayerReady}
                 config={{
-                  file: { attributes: { controlsList: "nodownload" } },
+                  file: {
+                    attributes: {
+                      controlsList: "nodownload",
+                      playsInline: true,
+                    },
+                  },
                 }}
               />
+
             </Box>
 
-         
+
           </Box>
-             <Box sx={{ borderRadius: 5, bgcolor: theme.palette.background.paper, p:3,mt:2}}>
-              <Box sx={{ display: "flex", gap: 1, alignItems: "start" }}>
-                <Box
-                  sx={{
-                    bgcolor: "primary.main",
-                    color: "white",
-                    px: 1.5,
-                    py: 0.5,
-                    borderRadius: "50%",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: 32,
-                    minHeight: 32,
-                  }}
-                >
-                  1
-                </Box>
-                <Box>
-                  <Typography sx={{ fontWeight: "bolder", fontSize: 16 }}>{currentVideo.titulo}</Typography>
+          <Box sx={{ borderRadius: 5, bgcolor: theme.palette.background.paper, p: 3, mt: 2 }}>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "start" }}>
+              <Box
+                sx={{
+                  bgcolor: "primary.main",
+                  color: "white",
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: "50%",
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: 32,
+                  minHeight: 32,
+                }}
+              >
+                1
+              </Box>
+              <Box>
+                <Typography sx={{ fontWeight: "bolder", fontSize: {xs:14,md:16} }}>{currentVideo.titulo}</Typography>
 
-                  <Typography color="text.secondary" sx={{ mt: 1, fontWeight: "bolder" }}>
-                    {moduloSelecionado.titulo}
-                  </Typography>
-
-                </Box>
+                <Typography color="text.secondary" sx={{ fontSize:{xs:12,md:14},mt: 1, fontWeight: "bolder" }}>
+                  {moduloSelecionado.titulo}
+                </Typography>
 
               </Box>
+
             </Box>
+          </Box>
         </Grid>
 
         <Grid size={{ xs: 12, md: 4 }}>
           {isMobile ? (
             <>
-              <Drawer
-                anchor="bottom"
-                open={true} // sempre aberto
-                hideBackdrop
-                variant="temporary"
-                ModalProps={{
-                  keepMounted: true,
-                  onClose: () => { }, // desativa swipe-to-close
+              <Box
+                sx={{
+                  position: "fixed",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  bgcolor: "background.paper",
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12,
+                  boxShadow: 6,
+                  maxHeight: drawerOpen ? "60vh" : 60,
+                  overflow: "hidden",
+                  transition: "max-height 0.3s ease",
+                  zIndex: 1000, // abaixo do AppBar e Header
                 }}
-                PaperProps={{
-                  sx: {
-                    borderTopLeftRadius: 12,
-                    borderTopRightRadius: 12,
-                    maxHeight: drawerOpen ? "60vh" : 150,
-                    overflow: "hidden",
-                    transition: "max-height 0.3s ease",
-                  },
-                  onClick: () => setDrawerOpen(!drawerOpen), // toca no header = recolhe/expande
-                }}
+                onClick={() => setDrawerOpen(!drawerOpen)}
               >
                 <Box sx={{ p: 2 }}>
                   <Typography sx={{ fontWeight: "bolder", fontSize: 16 }}>
@@ -331,7 +358,7 @@ const handleVideoEnd = async () => {
                         <ListItemButton
                           selected={video.id === currentVideo.id}
                           onClick={(e) => {
-                            e.stopPropagation(); // evita fechar drawer
+                            e.stopPropagation(); // impede recolher ao clicar
                             setCurrentVideo(video);
                           }}
                           sx={{ gap: 1 }}
@@ -360,16 +387,14 @@ const handleVideoEnd = async () => {
                                 {video.titulo}
                               </Typography>
                             }
-                            secondary={
-                              video.progresso?.concluido ? "Concluído" : ""
-                            }
+                            secondary={video.progresso?.concluido ? "Concluído" : ""}
                           />
                         </ListItemButton>
                       </ListItem>
                     ))}
                   </List>
                 )}
-              </Drawer>
+              </Box>
             </>
           ) : (
             <Drawer
@@ -378,9 +403,9 @@ const handleVideoEnd = async () => {
               open={drawerOpen}
               onClose={() => setDrawerOpen(false)}
               sx={{
-                width: {md:"25%",lg:"25%",xl:"20%"},
+                width: { md: "25%", lg: "25%", xl: "20%" },
                 "& .MuiDrawer-paper": {
-                 width: {md:"25%",lg:"25%",xl:"20%"},
+                  width: { md: "25%", lg: "25%", xl: "20%" },
                   boxSizing: "border-box",
                   borderRadius: 5,
                   top: 220,

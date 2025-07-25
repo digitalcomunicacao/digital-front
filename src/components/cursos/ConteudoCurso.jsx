@@ -118,25 +118,25 @@ const handleIniciarJornada = async () => {
               onClick={() => handleSelecionarModulo(modulo)}
             >
 
-              <Box sx={{ display: "flex", gap: 1 }}>
+              <Box sx={{ display: "flex",alignItems:"center",gap: 1 }}>
                 <Box sx={{ borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
                   <Typography color="textPrimary">Módulo {index + 1}</Typography>
                 </Box>
-                <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: 20 }}>
+                <Typography color="textPrimary" sx={{ fontWeight: "bolder", fontSize: {xs:14,md:18} }}>
                   {modulo.titulo}
                 </Typography>
               </Box>
 
               <Box sx={{
-                display: "flex", bgcolor: theme.palette.background.paper, "&:hover": {
+                display: "flex",bgcolor: theme.palette.background.paper, "&:hover": {
                   borderColor: theme.palette.background.paperAzul,
                 }, border: 1, borderColor: "divider", p: 2, borderRadius: 5, mt: 5, height: "auto", gap: 2, alignItems: "start"
               }}>
                 <ProgressoModuloCircular modulo={modulo} size={80} />
 
                 <Box sx={{ width: "70%" }}>
-                  <Typography sx={{ fontSize: 18, fontWeight: "bolder" }}>{modulo.subtitulo}</Typography>
-                  <Box sx={{ mt: 1, display: "flex", gap: 0.5, justifyContent: "center", borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
+                  <Typography sx={{ fontSize:{xs:12,md:16}, fontWeight: "bolder" }}>{modulo.subtitulo}</Typography>
+                  <Box sx={{ mt: 1, display: "flex", gap: 0.5, justifyContent: {xs:"start",md:"center"}, borderRadius: 5, border: 1, borderColor: 'divider', width: "100px", textAlign: "center", bgcolor: theme.palette.background.paper }}>
                     <VideoLibraryOutlinedIcon sx={{ color: theme.palette.background.paperAzul }} />
                     <Typography>
                       {modulo.videos.length} Aulas
