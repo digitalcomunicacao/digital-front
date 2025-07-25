@@ -24,7 +24,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Login />} />
-         <Route path="resetar-senha" element={<NovaSenha/>}/>
+          <Route path="resetar-senha" element={<NovaSenha/>}/>
           <Route
             path="/painel-usuario"
             element={
