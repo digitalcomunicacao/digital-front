@@ -92,7 +92,7 @@ function AppBarUsuario() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/login');
+     navigate('/');
   };
 
   const settings = [
@@ -116,7 +116,7 @@ function AppBarUsuario() {
     { segment: 'meus-cursos', title: 'Meus conteúdos', icon: <VideoLibraryOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
     { segment: 'catalago', title: 'Catálogo', icon: <ImportContactsIcon sx={{ color: theme.palette.primary.main }} /> },
     { segment: 'eventos', title: 'Eventos', icon: <ConfirmationNumberOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
-    { segment: 'forum', title: 'Fórum', icon: <ForumOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
+    // { segment: 'forum', title: 'Fórum', icon: <ForumOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
   ];
 
   const drawerContent = (
@@ -296,10 +296,10 @@ function AppBarUsuario() {
                       <Typography color="textPrimary" sx={{ fontSize: 16, fontWeight: "bolder" }}>{user.nome}</Typography>
                       <Typography color="textSecondary" sx={{ fontSize: 14 }}>{user.email}</Typography>
                     </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", border: 1, borderRadius: 2, px: 2 }}>
+                    {/* <Box sx={{ display: "flex", alignItems: "center", border: 1, borderRadius: 2, px: 2 }}>
                       <Person />
                       <Typography sx={{ fontWeight: "bolder" }}>Perfil</Typography>
-                    </Box>
+                    </Box> */}
                   </Box>
 
                   <Divider sx={{ mt: 2 }} />
@@ -319,7 +319,7 @@ function AppBarUsuario() {
                   </MenuItem>
                 ))}
 
-                <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2,p:2 }}>
                   <Button variant="outlined" onClick={handleLogout} sx={{ fontSize: 14, borderColor: "divider", color: theme.palette.text.primary }} endIcon={<ExitToApp />}>
                     Sair da conta
                   </Button>
