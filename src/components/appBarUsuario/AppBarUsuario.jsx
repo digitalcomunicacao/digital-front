@@ -92,7 +92,7 @@ function AppBarUsuario() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-     navigate('/');
+    navigate('/');
   };
 
   const settings = [
@@ -237,7 +237,7 @@ function AppBarUsuario() {
 
               <Badge
                 badgeContent={12}
-            
+
                 sx={{
                   '& .MuiBadge-badge': {
                     backgroundColor: theme.palette.background.containedAzul,
@@ -275,7 +275,7 @@ function AppBarUsuario() {
                 PaperProps={{
                   elevation: 0,
                   sx: {
-                    width: { xs: "100%", md: "400px" },
+                    width: { xs: "100%", sm: "50%", md: "50%", lg: "30%", xl: "20%" },
                     p: { md: 3 },
                     backgroundColor: theme.palette.background.default,
                     border: 1,
@@ -319,7 +319,19 @@ function AppBarUsuario() {
                   </MenuItem>
                 ))}
 
-                <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2,p:2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                    mt: 2,
+                    p: 2,
+                    gap: 2,
+                    '& > :not(:first-of-type)': {
+                      mt: { xs: 2, md: 0 }, // se estiver em telas menores (wrap), aplica mt
+                    },
+                  }}
+                >
                   <Button variant="outlined" onClick={handleLogout} sx={{ fontSize: 14, borderColor: "divider", color: theme.palette.text.primary }} endIcon={<ExitToApp />}>
                     Sair da conta
                   </Button>
@@ -343,20 +355,20 @@ function AppBarUsuario() {
         }}>
           <Box sx={{
             display: 'flex', alignItems: 'center', bgcolor: theme.palette.background.de,
-          
+
           }}>
-              <TextField
-                placeholder="Busque por assuntos e aulas"
-                variant="outlined"
-                sx={{ p: 0, m: 0, width: "100%", height: "100%" }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+            <TextField
+              placeholder="Busque por assuntos e aulas"
+              variant="outlined"
+              sx={{ p: 0, m: 0, width: "100%", height: "100%" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon color="action" />
+                  </InputAdornment>
+                ),
+              }}
+            />
             <IconButton onClick={() => setSearchOpen(false)}>✖️</IconButton>
           </Box>
         </Box>
@@ -371,7 +383,7 @@ function AppBarUsuario() {
           sx: {
             width: drawerWidth,
             bgcolor: theme.palette.background.paper,
-            top: {xs:"72px",sm:"80px",md:"95px"},
+            top: { xs: "72px", sm: "80px", md: "95px" },
             height: { xs: 'calc(100% - 72px)', sm: 'calc(100% - 80px)' },
             overflowX: 'hidden',
             transition: 'width 0.3s',

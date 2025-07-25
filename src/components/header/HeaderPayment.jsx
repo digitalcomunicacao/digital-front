@@ -23,7 +23,7 @@ export const HeaderPayment = () => {
                              <Box sx={{display:"flex",alignItems:"center",gap:1}}>
                                 <VerifiedUserOutlinedIcon color="success" sx={{fontSize:"40px"}}/>
                                   <Box sx={{border:1,borderRadius:5,p:1}}>
-                            <Typography sx={{fontWeight:"bolder",fontSize:19}}>Compra Segura</Typography>
+                            <Typography sx={{fontWeight:"bolder",fontSize:14,textAlign:"center"}}>Compra Segura</Typography>
                         </Box>
                              </Box>
                       

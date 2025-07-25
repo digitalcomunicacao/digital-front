@@ -37,6 +37,7 @@ const getPlanos = () => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              flexDirection:{xs:"column",md:"row"},
               border: 2,
               borderColor: isSelected ? theme.palette.background.paperAzul : "divider",
               borderRadius: 5,
@@ -45,11 +46,12 @@ const getPlanos = () => {
               mb: 5,
               cursor: "pointer",
               transition: "border 0.2s",
+              
             }}
           >
-            <Box sx={{ width: "45%" }}>
+            <Box sx={{ width:{xs:"100%",md:"45%"},display:"flex",flexDirection:"column"}}>
               <Box sx={{ width:{xs:"60px",md:"115px"}, height: {xs:"32px",md:"65px"} }}>
-                <img src={plano.intervalo==="year" ? "aseets/logo-dark.png":"aseets/logo-prata.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
+                <img src={plano.intervalo==="year" ? "aseets/logo-color.svg":"aseets/logo-azul.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
               </Box>
               <Typography color="textPrimary" sx={{ mt: 2 }}>
                 Acesso total à plataforma com todas as formações e experiências da Digital Educa.
@@ -57,23 +59,25 @@ const getPlanos = () => {
             </Box>
 
             <Box sx={{ display: "flex", flexDirection:{xs:"column",md:"row"},gap: 1, alignItems:{md:"start",xs:"center"} }}>
-              <Box sx={{ position: "relative", width: "fit-content" }}>
-                
+              {plano.intervalo ==="year" && (
+
+            
+              <Box sx={{ position: "relative", width: "fit-content"}}>
                 <img src="/aseets/icone_anual.png" alt="ícone anual" />
                 <Typography
                   sx={{
                     position: "absolute",
                     top: 8,
                     left: 20,
-                    color: theme.palette.text.secondary,
+                    color: theme.palette.text.primary,
                     fontSize: 28,
-                    fontWeight: "bold"
+                    fontWeight: "bolder"
                   }}
                 >
                   1
                 </Typography>
               </Box>
-
+  )}
               <Box sx={{ textAlign: "center" }}>
                 <Typography color="textPrimary" sx={{ fontSize: {xs:15,md:20} }}>
                   Assinatura {plano.nome}

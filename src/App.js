@@ -13,7 +13,8 @@ import { Checkout } from "./pages/checkout/Checkout";
 import {NovaSenha} from "./pages/login/NovaSenha"
 import { Configuracoes } from "./pages/painelUsuario/configuracoes/Configuracoes";
 import { HomeUsuario } from "./pages/painelUsuario/HomeUsuario";
-import { VideoPlayer } from "./pages/painelUsuario/VideoPlayer";
+import { VideoPlayer } from "./pages/player/VideoPlayer";
+
 
 
 function App() {

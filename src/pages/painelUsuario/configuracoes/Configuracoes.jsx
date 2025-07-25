@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowForward } from "@mui/icons-material";
 
 dayjs.locale('pt-br');
-const stripePromise = loadStripe("pk_test_51Rkqnl4UJY192FzeyHoJGjBYq3ZI6iJFhkk1F5ZFCbEDxUQAbjD2aRU4E8jggtzaXGr71uxBQVNe7bugB0t7pTfu00CM9glODz");
+const stripePromise = loadStripe("pk_test_51Rnh22B2ukqKBRKpu7vmzpy9tGj7bQh3GA7fnxQlqXkxk5VHIttkglAYcfivKQA5u201Aq30hTJVnHcMUdFTfAi500L9MnXJNG");
 
 export const Configuracoes = () => {
 
@@ -83,7 +83,7 @@ export const Configuracoes = () => {
                 setUsuario(res.data);
                 setLoading(false);
                 console.log(res.data)
-                
+
             })
             .catch((err) => {
                 console.log(err);
@@ -115,7 +115,7 @@ export const Configuracoes = () => {
     }, []);
 
     return (
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" sx={{ pb: 5 }}>
             <Box sx={{ textAlign: 'start', mt: 15 }}>
                 <Typography sx={{ fontSize: 30, fontWeight: 'bolder', color: theme.palette.text.primary }}>Configurações da Conta</Typography>
                 <Typography sx={{ fontSize: 20, color: theme.palette.text.secondary, mt: 2 }}>Gerencie suas informações pessoais e assinatura</Typography>
@@ -148,7 +148,7 @@ export const Configuracoes = () => {
                     </Box>
 
                     {/* SE FOR ASSINANTE */}
-        {usuario.assinatura && usuario.assinatura.status === "ATIVA" ? (
+                    {usuario.assinatura && usuario.assinatura.status === "ATIVA" ? (
 
                         <Box sx={{ mt: 10, p: 3, bgcolor: theme.palette.background.paper, borderRadius: 3 }}>
                             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -198,23 +198,23 @@ export const Configuracoes = () => {
                                     <Divider variant="fullWidth" sx={{ my: 2 }} />
 
                                     <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2 }}>
-                                        <Button variant="outlined" onClick={handleOpenModal}>Alterar Pagamento</Button>
-                                        {clientSecret && (
-                                            <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'night' } }}>
-                                                <ModalMetodoPagamento
-                                                    openModal={openModal}
-                                                    handleCloseModal={handleCloseModal}
-                                                    planoSelecionado={usuario.assinatura}
-                                                />
-                                            </Elements>
-                                        )}
-                                        <Button color="error" variant="contained" onClick={handleOpenCancelDialog}>Cancelar Assinatura</Button>
-                                        <DialogCancelar
+                                        <Button variant="contained" sx={{color:theme.palette.textPrimary,fontWeight:"bolder"}} onClick={handleOpenModal}>Alterar Pagamento</Button>
+                                  {clientSecret && openModal && (
+  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'night' } }}>
+    <ModalMetodoPagamento
+      openModal={openModal}
+      handleCloseModal={handleCloseModal}
+    />
+  </Elements>
+)}
+
+                                        {/* <Button color="error" variant="contained" onClick={handleOpenCancelDialog}>Cancelar Assinatura</Button> */}
+                                        {/* <DialogCancelar
                                             usuario={usuario}
                                             confirmCancelOpen={confirmCancelOpen}
                                             handleCancelarAssinatura={handleCancelarAssinatura}
                                             handleCloseCancelDialog={handleCloseCancelDialog}
-                                        />
+                                        /> */}
                                     </Box>
                                 </Box>
                             )}

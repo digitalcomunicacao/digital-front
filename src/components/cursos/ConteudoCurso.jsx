@@ -104,7 +104,7 @@ const handleIniciarJornada = async () => {
   return (
     <>
       <Grid container>
-        <Grid size={{ xs: 12, lg: 9 }} >
+        <Grid size={{ xs: 12, lg: 9 }}  sx={{order:{xs:2,lg:1}}}>
           {curso.modulos.map((modulo, index) => (
             <Box
               key={index}
@@ -154,9 +154,9 @@ const handleIniciarJornada = async () => {
             </Box>
           ))}
         </Grid>
-        <Grid size={{ xs: 12, lg: 3 }}>
+        <Grid size={{ xs: 12, lg: 3 }}  sx={{order:{xs:1,lg:2}}}>
           {user.assinante && (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, justifyContent: "center", borderRadius: "15px", width: "100%", border: 1, borderColor: 'divider', bgcolor: theme.palette.background.paper, p: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column",mb:3, gap: 2, justifyContent: "center", borderRadius: "15px", width: "100%", border: 1, borderColor: 'divider', bgcolor: theme.palette.background.paper, p: 2 }}>
             <ProgressoCurso curso={curso} />
             <Button
               variant="outlined"

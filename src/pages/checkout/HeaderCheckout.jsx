@@ -1,5 +1,7 @@
-import { Box, Typography, Stepper, Step, StepButton } from '@mui/material';
+import { Box, Typography, Stepper, Step, StepButton, StepLabel } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { CustomStepIcon } from './CustomStepIconRoot';
+import { CustomConnector } from './CustomStepConnector';
 
 const stepContent = [
   {
@@ -22,7 +24,7 @@ export const HeaderCheckout = ({ activeStep, completed, handleStep, theme, steps
   return (
     <Box
       sx={{
-        display: "flex", justifyContent: "space-between", alignItems: "center",flexDirection:{xs:"column",md:"row"},
+        display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: { xs: "column", md: "row" },
         mt: 10,
         border: 1,
         borderColor: "divider",
@@ -32,35 +34,26 @@ export const HeaderCheckout = ({ activeStep, completed, handleStep, theme, steps
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <SettingsOutlinedIcon sx={{ fontSize: "50px", color: theme.palette.primary.main }} />
+        <Box>
+          <img src='/aseets/icon-digitaleduca.png'/>
+        </Box>
         <Box>
           <Typography sx={{ fontSize: 29, fontWeight: "bolder" }}>{title}</Typography>
           <Typography color='textSecondary'>{subtitle}</Typography>
         </Box>
       </Box>
 
-      <Box sx={{ width: {xs:"100%",md:"30%"},mt:{xs:2,md:0}}}>
+      <Box sx={{ width: { xs: "100%", md: "30%" }, mt: { xs: 2, md: 0 } }}>
         <Stepper
           nonLinear
           activeStep={activeStep}
-          sx={{
-            '& .MuiStepConnector-line': {
-              borderTopWidth: 3,
-            },
-            '& .MuiStepIcon-root': {
-              color: theme.palette.primary.main,
-            },
-            '& .MuiStepIcon-root.Mui-completed': {
-              color: theme.palette.primary.dark,
-            },
-            '& .MuiStepIcon-text': {
-              display: 'none',
-            },
-          }}
+           connector={<CustomConnector />}
+        
         >
           {steps.map((_, index) => (
             <Step key={index} completed={completed[index]}>
-              <StepButton onClick={handleStep(index)} />
+              <StepLabel StepIconComponent={CustomStepIcon} />
+
             </Step>
           ))}
         </Stepper>

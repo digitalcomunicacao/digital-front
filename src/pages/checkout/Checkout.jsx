@@ -200,7 +200,7 @@ const handleComplete = async () => {
 
   return (
   
-    <Box>
+    <Box sx={{pb:5}}>
 
     <HeaderPayment/>
       <Container>
@@ -215,33 +215,39 @@ const handleComplete = async () => {
         <Box sx={{ mt: 10 }}>{getStepContent(activeStep)}</Box>
 
         {/* Botões */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-          {activeStep > 0 && (
-            <Button onClick={handleBack} variant="outlined"
-              sx={{borderRadius:"15px",color:theme.palette.text.secondary,fontWeight:"bold",fontSize:17}}
-              startIcon={<ArrowBack sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />}>
-              Voltar
-            </Button>
-          )}
+{activeStep < totalSteps - 1 && (
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+    {activeStep > 0 && (
+      <Button
+        onClick={handleBack}
+        variant="outlined"
+        sx={{ borderRadius: "15px", color: theme.palette.text.secondary, fontWeight: "bold", fontSize: 17 }}
+        startIcon={<ArrowBack sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />}
+      >
+        Voltar
+      </Button>
+    )}
 
-          <Box sx={{ flex: '1 1 auto' }} />
+    <Box sx={{ flex: '1 1 auto' }} />
 
-          {allStepsCompleted() ? (
-            <Button onClick={handleReset} variant="contained">
-              Resetar
-            </Button>
-          ) : (
-            <Button
-              onClick={handleComplete}
-              variant="outlined"
-              sx={{borderRadius:"15px",color:theme.palette.text.primary,fontWeight:"bold",fontSize:17}}
-              endIcon={<ArrowForward sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />}
-              disabled={activeStep === 0 && !selectedPlano} // não avança sem plano
-            >
-              {activeStep === totalSteps - 1 ? 'Finalizar' : 'Avançar'}
-            </Button>
-          )}
-        </Box>
+    {allStepsCompleted() ? (
+      <Button onClick={handleReset} variant="contained">
+        Resetar
+      </Button>
+    ) : (
+      <Button
+        onClick={handleComplete}
+        variant="outlined"
+        sx={{ borderRadius: "15px", color: theme.palette.text.primary, fontWeight: "bold", fontSize: 17 }}
+        endIcon={<ArrowForward sx={{ fontSize: "50px", color: theme.palette.background.paperAzul }} />}
+        disabled={activeStep === 0 && !selectedPlano}
+      >
+        {activeStep === totalSteps - 2 ? 'Finalizar' : 'Avançar'}
+      </Button>
+    )}
+  </Box>
+)}
+
       </Container>
           </Box>
   );
