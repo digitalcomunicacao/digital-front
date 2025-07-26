@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom"
 import TabPanel from "@mui/lab/TabPanel"
 import { Lancamentos } from "../../components/lancamentos/Lancamentos"
 import TabContext from "@mui/lab/TabContext"
+import { Eventos } from "../../components/eventos/eventos"
 export const HomeUsuario = () => {
   const [cursos, setCursos] = useState([])
   const { miniDrawer } = useMiniDrawer(); // true ou false
@@ -68,8 +69,6 @@ export const HomeUsuario = () => {
   
   return (
     <Box>
-
-
     <Grid container spacing={2}>
             <Grid size={{ xs: 12, lg: miniDrawer ? 10 : 10}} >
         <Box sx={{mt:5}}>
@@ -164,7 +163,7 @@ export const HomeUsuario = () => {
     <Lancamentos />
   </TabPanel>
   <TabPanel value="1" sx={{ p: 0, mt: 2 }}>
-    <Typography>Eventos em breve...</Typography>
+   <Eventos/>
   </TabPanel>
 </TabContext>
 
