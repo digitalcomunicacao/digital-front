@@ -144,8 +144,11 @@ function AppBarUsuario() {
                   minHeight: 48,
                   justifyContent: miniDrawer ? 'center' : 'flex-start',
                   px: 2.5,
-                  bgcolor: selected ? theme.palette.primary.light : 'transparent',
-
+                  bgcolor: selected
+                    ? theme.palette.mode === 'dark'
+                      ? theme.palette.action.hover
+                      : theme.palette.primary.light
+                    : 'transparent',
                 }}
               >
                 <ListItemIcon
@@ -171,7 +174,7 @@ function AppBarUsuario() {
           })}
         </List>
       </Box>
-
+{/* 
       <Box sx={{ p: 2 }}>
         <Tooltip title="Facebook">
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -181,7 +184,7 @@ function AppBarUsuario() {
             {!miniDrawer && <Typography>Comunidade</Typography>}
           </Box>
         </Tooltip>
-      </Box>
+      </Box> */}
     </>
   );
 
@@ -235,7 +238,7 @@ function AppBarUsuario() {
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 
-              <Badge
+              {/* <Badge
                 badgeContent={12}
 
                 sx={{
@@ -251,7 +254,7 @@ function AppBarUsuario() {
                 <CircleNotificationsIcon
                   sx={{ fontSize: 40, color: theme.palette.background.contained }}
                 />
-              </Badge>
+              </Badge> */}
 
 
 

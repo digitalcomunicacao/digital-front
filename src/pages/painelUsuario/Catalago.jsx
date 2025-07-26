@@ -52,7 +52,7 @@ export const Catalago = () => {
           <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
             Catálogo
           </Typography>
-          <Typography sx={{ fontSize: 14, color: theme.palette.text.tertiary, mt: 2 }}>
+          <Typography sx={{ fontSize: 14, color: theme.palette.text.secondary, mt: 2 }}>
             Navegue por todo o conteúdo da DigitalEduca
           </Typography>
         </Box>

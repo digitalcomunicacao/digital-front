@@ -79,7 +79,7 @@ if (cursos.length === 0) {
                     <Typography sx={{ fontSize: 24, fontWeight: 'bolder', color: theme.palette.text.primary }}>
                         Meus conteúdos
                     </Typography>
-                    <Typography sx={{ fontSize: 14, color: theme.palette.text.tertiary, mt: 2 }}>
+                    <Typography sx={{ fontSize: 14, color: theme.palette.text.secondary, mt: 2 }}>
                         Acesse os seus conteúdos assistidos
                     </Typography>
                 </Box>
@@ -94,7 +94,7 @@ if (cursos.length === 0) {
                     scrollButtons="auto"
                     sx={{
                         mb: 4,
-
+                        
                         '& .MuiTabs-indicator': {
                             display: 'none',
                         },

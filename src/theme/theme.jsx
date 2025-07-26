@@ -1,27 +1,31 @@
-// theme.ts
+// themeDark.ts
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#FFB800',
+      main: '#E0A027',
+      light: '#FFE9BC',
+      dark: '#E0A027',
     },
     secondary: {
-      main: '#141E30', 
+      main: '#ffffff',
     },
     background: {
-      default: '#141E30',
-      paper: '#0D68F914', 
-      paperSolid: '#141E30',  
-      paperAzul:"#0D68F9"
+      default: '#121212',
+      paper: '#1E1E1E',
+      contained: '#2C2C2C',
+      containedAzul: '#1A4DBF',
+      paperAzul: '#3B3B3B',
     },
     text: {
       primary: '#FFFFFF',
-      secondary: '#0D68F9', 
-      tertiary:"#CBDAFB"
+      secondary: '#B0B0B0',
+      tertiary: '#ffff',
     },
-divider: '#40619D',
+    divider: '#3A3A3A',
+    lancamentos: '#03A982',
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -38,25 +42,27 @@ divider: '#40619D',
           fontWeight: 500,
           padding: '8px 16px',
         },
-        containedPrimary: {
-          backgroundColor: '#FFB800',
-          color: '#0A1128',
-          '&:hover': {
-            backgroundColor: '#dba600', // Amarelo escurecido mais fechado
-            boxShadow: '0 4px 12px rgba(255, 184, 0, 0.25)', // Sombra sutil
-          },
-        },
-        outlinedPrimary: {
-          borderColor: '#FFB800',
-          color: '#FFB800',
-          '&:hover': {
-            borderColor: '#dba600', // Combina com o hover do `contained`
-            backgroundColor: 'rgba(255, 184, 0, 0.08)', // Bem leve, não chama muita atenção
-          },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#1E1E1E',
+          borderRadius: '10px',
         },
       },
     },
-
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          backgroundColor: '#1E1E1E',
+        },
+        notchedOutline: {
+          borderColor: '#555',
+        },
+      },
+    },
   },
 });
 

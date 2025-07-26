@@ -25,6 +25,7 @@ const themeLight = createTheme({
       tertiary: '#fff',
     },
     divider: '#E8E8E8',
+    lancamentos:"#03A982"
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
