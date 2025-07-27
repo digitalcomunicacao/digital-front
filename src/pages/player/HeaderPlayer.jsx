@@ -9,17 +9,13 @@ export const HeaderPlayer = ({ titulo, subtitulo, thumb }) => {
     <Box sx={{ border: 1, width: "100%", bgcolor: theme.palette.background.paper, borderColor: 'divider', p: 2 }}>
       <Box sx={{ display: "flex", gap: 2 }}>
         <IconButton
+        disableRipple
           onClick={() => navigate(-1)}
           sx={{
-           
-            bgcolor: theme.palette.primary.main,
-            px: 2,
-            "&:hover": {
-              bgcolor: theme.palette.primary.main, // 👈 mesma cor que o normal
-            },
+          
           }}
         >
-          <ArrowBackOutlinedIcon />
+          <ArrowBackOutlinedIcon fontSize="small" />
         </IconButton>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <Box sx={{ width: 50, height: 50, boxShadow: "rgba(0, 0, 0, 0.2) 0px 3px 3px -2px, rgba(0, 0, 0, 0.14) 0px 3px 4px 0px, rgba(0, 0, 0, 0.12) 0px 1px 8px 0px", border: 2, borderColor: theme.palette.text.tertiary, borderRadius: 1 }}>

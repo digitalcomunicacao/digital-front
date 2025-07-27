@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import api from "../../config/Api"
 import { Box, Typography, useTheme } from "@mui/material"
+import { useThemeMode } from "../../context/ThemeContext"
 
 export const Planos = ({ selectedPlano, setSelectedPlano }) => {
   const [planos, setPlanos] = useState([])
   const theme = useTheme()
-
+  const { darkMode} = useThemeMode();
 const getPlanos = () => {
   api.get("/planos")
     .then((response) => {
@@ -18,8 +19,6 @@ const getPlanos = () => {
     })
     .catch((error) => console.log(error));
 };
-
-
   useEffect(() => {
     getPlanos()
     console.log(planos)
@@ -29,7 +28,6 @@ const getPlanos = () => {
     <Box>
       {planos.map((plano, index) => {
         const isSelected = selectedPlano?.id === plano.id
-
         return (
           <Box
             key={index}
@@ -39,7 +37,7 @@ const getPlanos = () => {
               justifyContent: "space-between",
               flexDirection:{xs:"column",md:"row"},
               border: 2,
-              borderColor: isSelected ? theme.palette.background.paperAzul : "divider",
+              borderColor: isSelected ? theme.palette.primary.main : "divider",
               borderRadius: 5,
               p: 5,
               bgcolor: theme.palette.background.paper,
@@ -51,7 +49,7 @@ const getPlanos = () => {
           >
             <Box sx={{ width:{xs:"100%",md:"45%"},display:"flex",flexDirection:"column"}}>
               <Box sx={{ width:{xs:"60px",md:"115px"}, height: {xs:"32px",md:"65px"} }}>
-                <img src={plano.intervalo==="year" ? "aseets/logo-color.svg":"aseets/logo-azul.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
+                <img src={plano.intervalo==="year" && darkMode ? "/aseets/logo-brilhante.png":plano.intervalo==="year" && !darkMode ? "/aseets/logo-color.svg" :"/aseets/logo-azul.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
               </Box>
               <Typography color="textPrimary" sx={{ mt: 2 }}>
                 Acesso total à plataforma com todas as formações e experiências da Digital Educa.

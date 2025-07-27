@@ -6,11 +6,13 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
 import CheckIcon from '@mui/icons-material/Check';
 import { useNavigate } from "react-router-dom";
+import { useThemeMode } from "../../context/ThemeContext";
 export const RecuperarSenha = ({ setPasso }) => {
     const [email, setEmail] = useState()
     const [loading, setLoading] = useState(false)
     const [emailEnviado, setEmailEnviado] = useState(false)
     const navigate=useNavigate()
+      const { darkMode, toggleTheme } = useThemeMode();
     const theme = useTheme()
     const { showSnackbar } = useSnackbar();
     const handleEnviarSenha = (e) => {
@@ -38,9 +40,9 @@ export const RecuperarSenha = ({ setPasso }) => {
                         <ArrowBackIcon />
                         <Typography>Voltar</Typography>
                     </IconButton>
-                       <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "end" }}>
+                       <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "center" }}>
               <Box sx={{ width: "100px", height: "auto" }}>
-              <img src={"/aseets/logo-color.svg"} style={{ width: "100%", height: "100%" }} />
+                            <img src={darkMode? "/aseets/logo-brilhante.png" :"/aseets/logo-color.svg"} style={{ width: "100%", height: "100%" }} />
               </Box>
             </Box>
                 </Box>

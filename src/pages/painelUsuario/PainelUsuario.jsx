@@ -39,7 +39,7 @@ export const PainelUsuario = () => {
     <Outlet />
   </Box>
 ) : (
-  <Container maxWidth="xl">
+ 
 <Box
   component="main"
   sx={{
@@ -51,10 +51,11 @@ export const PainelUsuario = () => {
     boxSizing: 'border-box',
   }}
 >
-
+ <Container maxWidth="xl">
       <Outlet />
+      </Container>
     </Box>
-  </Container>
+
 )}
 
     </Box>

@@ -6,6 +6,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../context/SnackBarContext";
 import InputMask from 'react-input-mask';
+import { useThemeMode } from "../../context/ThemeContext";
 export const Cadastro = ({ setPasso }) => {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export const Cadastro = ({ setPasso }) => {
     const [confirmSenha, setConfirmSenha] = useState("");
     const [celular, setCelular] = useState("")
     const { showSnackbar } = useSnackbar();
+    const { darkMode, toggleTheme } = useThemeMode();
     const theme = useTheme()
     const navigate = useNavigate()
     const [showSenha, setShowSenha] = useState(false);
@@ -43,9 +45,6 @@ export const Cadastro = ({ setPasso }) => {
 
             // Salva o token no localStorage
             localStorage.setItem("token", response.data.access_token);
-
-            // Redireciona para o painel do usuário
-            // Assumindo que você tenha o hook navigate do react-router-dom
             navigate("/painel-usuario/home-usuario");
 
         } catch (error) {
@@ -57,9 +56,9 @@ export const Cadastro = ({ setPasso }) => {
     return (
         <Box sx={{ width: { xs: "100%", md: "30%" }, bgcolor: theme.palette.background.paper, display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Box sx={{ width: "400px", p: 5 }}>
-            <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "end" }}>
+            <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "center" }}>
               <Box sx={{ width: "100px", height: "auto" }}>
-              <img src={"/aseets/logo-color.svg"} style={{ width: "100%", height: "100%" }} />
+               <img src={darkMode? "/aseets/logo-brilhante.png" :"/aseets/logo-color.svg"} style={{ width: "100%", height: "100%" }} />
               </Box>
             </Box>
                 <Box component={"form"} onSubmit={cadastrarUsuario} sx={{ display: "flex", flexDirection: "column", mt: 5 }}>

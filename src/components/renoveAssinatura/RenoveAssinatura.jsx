@@ -1,17 +1,19 @@
 import { Box, Button, Typography, useTheme } from "@mui/material"
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useNavigate } from "react-router-dom";
+import { useThemeMode } from "../../context/ThemeContext";
 export const RenoveAssinatura = () => {
     const theme = useTheme()
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const navigate=useNavigate()
+       const { darkMode} = useThemeMode();
     return (
         <>
         {!user.assinante && (
         <Box sx={{ width: "100%", height: "auto", border: 1, bgcolor: theme.palette.background.paper, borderColor: "divider", borderRadius: 5 }}>
             <Box sx={{ p: 5, textAlign: "center", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center", gap: 3 }}>
                 <Box sx={{ width: 90, height: 50 }}>
-                    <img src="/aseets/logo-dark.png" style={{ width: "100%", height: "100%" }} />
+                    <img src={darkMode? "/aseets/logo-brilhante.png":"/aseets/logo-azul.png"} style={{ width: "100%", height: "100%" }} />
                 </Box>
                 <Typography sx={{ fontWeight: "bolder", fontSize: 23, lineHeight: 1 }}>Renove sua assinatura</Typography>
                 <Box>

@@ -1,9 +1,9 @@
 import { Box, Button, IconButton, InputAdornment, Link, TextField, Typography, useTheme } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Cadastro } from "./Cadastro"
 import api from "../../config/Api"
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useSnackbar } from "../../context/SnackBarContext"
 import { RecuperarSenha } from "./RecuperarSenha"
 import { useThemeMode } from "../../context/ThemeContext";
@@ -35,7 +35,17 @@ export const Login = () => {
     })
   }
 
+  const location = useLocation();
+
+useEffect(() => {
+  if (location.state?.recuperarSenha) {
+    setPasso(2);
+  }
+}, [location.state]);
+
+
   return (
+    
 <Box
   sx={{
     minHeight: "100vh",
@@ -67,9 +77,9 @@ export const Login = () => {
       {passo === 0 && (
         <Box sx={{ width: { xs: "100%", md: "30%" },bgcolor:theme.palette.background.paper, display: "flex", justifyContent: "center", alignItems: "center" }}>
           <Box sx={{ width: "400px", p: 5 }}>
-            <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "end" }}>
+            <Box sx={{ display:{xs:"flex",md:"none"} ,justifyContent: "center" }}>
               <Box sx={{ width: "100px", height: "auto" }}>
-              <img src={"/aseets/logo-color.svg"} style={{ width: "100%", height: "100%" }} />
+              <img src={darkMode? "/aseets/logo-brilhante.png" :"/aseets/logo-color.svg"} style={{ width: "100%", height: "100%" }} />
               </Box>
             </Box>
             <Box component={"form"} onSubmit={logar} sx={{ display: "flex", flexDirection: "column", mt: 5 }}>
@@ -146,7 +156,7 @@ export const Login = () => {
               <Typography variant="body2" sx={{ color: "#EDEDED", textAlign: "center" }}>
                 Não tem uma conta? <br />
                 <span style={{ color: "#FFB800", fontWeight: "bolder" }}>
-                  Crie sua conta grátis
+                 Assine agora
                 </span>
               </Typography>
             </Box>

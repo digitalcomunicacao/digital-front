@@ -1,5 +1,5 @@
 import {
-    Box, Button, CircularProgress, Container, Divider, TextField, Typography,
+    Box, Button, CircularProgress, Container, Divider, IconButton, InputAdornment, TextField, Typography,
     useTheme
 } from "@mui/material";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -15,13 +15,17 @@ import { DialogCancelar } from "./DialogCancelar";
 import { ModalSelecionarPlano } from "./ModalSelecionarPlano";
 import { Planos } from "../../checkout/Planos";
 import { useNavigate } from "react-router-dom";
-import { ArrowForward } from "@mui/icons-material";
+import { ArrowForward, Visibility, VisibilityOff } from "@mui/icons-material";
+import InputMask from 'react-input-mask';
+import { useSnackbar } from "../../../context/SnackBarContext";
 
 dayjs.locale('pt-br');
 const stripePromise = loadStripe("pk_test_51Rnh22B2ukqKBRKpu7vmzpy9tGj7bQh3GA7fnxQlqXkxk5VHIttkglAYcfivKQA5u201Aq30hTJVnHcMUdFTfAi500L9MnXJNG");
 
 export const Configuracoes = () => {
-
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [celular, setCelular] = useState("")
     const token = localStorage.getItem("token");
     const theme = useTheme();
     const navigate = useNavigate()
@@ -33,7 +37,7 @@ export const Configuracoes = () => {
     const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
     const [openModalPlano, setOpenModalPlano] = useState(false);
     const [selectedPlano, setSelectedPlano] = useState(null);
-
+    const { showSnackbar } = useSnackbar();
     const handleOpenModal = async () => {
         setLoading(true);
         try {
@@ -109,10 +113,24 @@ export const Configuracoes = () => {
         }
     };
 
+    const handleEditarUsuario = () => {
+        api.put("/usuario/update", {
+            nome,
+            email,
+            celular,
+        }).then(function (response) {
+            showSnackbar('Dados Alterado com sucesso!', 'success');
+        }).catch(function (error) {
+            console.log(error)
+            showSnackbar(error.response.data.message, 'error');
+        })
+    }
     useEffect(() => {
         getUsuario();
         getPlanos();
     }, []);
+
+
 
     return (
         <Container maxWidth="xl" sx={{ pb: 5 }}>
@@ -134,16 +152,41 @@ export const Configuracoes = () => {
 
                         <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 5, mt: 5 }}>
                             <Box sx={{ display: "flex", flexDirection: "column", gap: 5, width: "100%" }}>
-                                <TextField fullWidth label="Nome completo" defaultValue={usuario.nome} />
-                                <TextField fullWidth label="Celular" defaultValue={usuario.celular} />
+                                <TextField fullWidth label="Nome completo" defaultValue={usuario.nome} onChange={(e) => setNome(e.target.value)} />
+                                <InputMask
+                                    mask="(99) 99999-9999"
+                                    defaultValue={usuario.celular}
+                                    onChange={(e) => setCelular(e.target.value)}
+                                >
+                                    {(inputProps) => (
+                                        <TextField
+                                            {...inputProps}
+                                            label="Celular"
+                                            variant="outlined"
+                                            required
+
+                                            sx={{ mt: 5 }}
+                                            fullWidth
+                                        />
+                                    )}
+                                </InputMask>
+
                             </Box>
                             <Box sx={{ display: "flex", flexDirection: "column", gap: 5, width: "100%" }}>
-                                <TextField fullWidth label="Email" defaultValue={usuario.email} />
+                                <TextField fullWidth label="Email" defaultValue={usuario.email} onChange={(e) => setEmail(e.target.value)} />
+                                <Button
+                                    onClick={() => navigate('/', { state: { recuperarSenha: true } })}
+                                    sx={{ mt: 5, height: 55, borderRadius: 3 }}
+                                    variant="outlined"
+                                >
+                                    Alterar Senha
+                                </Button>
+
                             </Box>
                         </Box>
 
                         <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
-                            <Button variant="contained" sx={{ fontWeight: "bolder" }}>Salvar Alterações</Button>
+                            <Button onClick={() => handleEditarUsuario()} variant="contained" sx={{ fontWeight: "bolder" }}>Salvar Alterações</Button>
                         </Box>
                     </Box>
 
@@ -198,15 +241,42 @@ export const Configuracoes = () => {
                                     <Divider variant="fullWidth" sx={{ my: 2 }} />
 
                                     <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2 }}>
-                                        <Button variant="contained" sx={{color:theme.palette.textPrimary,fontWeight:"bolder"}} onClick={handleOpenModal}>Alterar Pagamento</Button>
-                                  {clientSecret && openModal && (
-  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'night' } }}>
-    <ModalMetodoPagamento
-      openModal={openModal}
-      handleCloseModal={handleCloseModal}
-    />
-  </Elements>
-)}
+                                        <Button variant="contained" sx={{ color: theme.palette.textPrimary, fontWeight: "bolder" }} onClick={handleOpenModal}>Alterar Pagamento</Button>
+                                        {clientSecret && openModal && (
+                                            <Elements
+                                                stripe={stripePromise}
+                                                options={{
+                                                    clientSecret,
+                                                    appearance: {
+                                                        theme: 'none',
+                                                        variables: {
+                                                            colorBackground: theme.palette.background.default,
+                                                            colorText: theme.palette.text.primary,
+                                                            borderRadius: '10px',
+                                                        },
+                                                        rules: {
+                                                            '.Input': {
+                                                                backgroundColor: theme.palette.background.paper, // fundo do input
+                                                                color: theme.palette.text.primary,               // cor do texto
+                                                                borderColor: theme.palette.divider,              // borda
+                                                            },
+                                                            '.Input:focus': {
+                                                                borderColor: theme.palette.primary.main,         // borda ao focar
+                                                                boxShadow: `0 0 0 1px ${theme.palette.primary.main}`,
+                                                            },
+                                                            '.Label': {
+                                                                color: theme.palette.text.secondary,             // cor do label
+                                                            },
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                <ModalMetodoPagamento
+                                                    openModal={openModal}
+                                                    handleCloseModal={handleCloseModal}
+                                                />
+                                            </Elements>
+                                        )}
 
                                         {/* <Button color="error" variant="contained" onClick={handleOpenCancelDialog}>Cancelar Assinatura</Button> */}
                                         {/* <DialogCancelar

@@ -38,7 +38,7 @@ export const ProgressoCurso = ({ curso, showText = true }) => {
         sx={{
           width: "100%",
           height: 8,
-          borderRadius: 3,
+          
           mt: 1,
           backgroundColor: theme.palette.primary.light, // fundo da barra
           "& .MuiLinearProgress-bar": {

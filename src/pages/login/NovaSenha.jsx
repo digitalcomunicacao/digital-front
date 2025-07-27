@@ -5,11 +5,13 @@ import api from '../../config/Api';
 import { useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSnackbar } from '../../context/SnackBarContext';
+import { useThemeMode } from '../../context/ThemeContext';
 
 export const NovaSenha = () => {
   const [novaSenha, setNovaSenha] = useState('');
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
+  const { darkMode, toggleTheme } = useThemeMode();
   const [confirmSenha, setConfirmSenha] = useState("");
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmSenha, setShowConfirmSenha] = useState(false);

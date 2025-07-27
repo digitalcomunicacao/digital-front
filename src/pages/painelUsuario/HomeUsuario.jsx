@@ -89,7 +89,7 @@ export const HomeUsuario = () => {
                   <Typography sx={{ fontSize: 16, fontWeight: "bolder", color: theme.palette.text.secondary }}>{curso.titulo}</Typography>
                           <PlayCircleFilledWhiteOutlinedIcon/>   
                 </Box>
-                <Box sx={{ position: "relative", bottom: 35, left: 30, px: 5 }}>
+                <Box sx={{ position: "relative", bottom: 25, left: 30, px: 5 }}>
                   <ProgressoCurso curso={curso} showText={false} />
                 </Box>
 

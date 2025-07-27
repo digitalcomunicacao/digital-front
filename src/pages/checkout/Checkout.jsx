@@ -3,8 +3,8 @@ import {
   Box,
   Button,
   Container,
-  useTheme,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { Planos } from './Planos';
 import { PlanoSelecionado } from './PlanoSelecionado';
@@ -28,7 +28,6 @@ export const Checkout = () => {
   const [clientSecret, setClientSecret] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
     const location = useLocation();
-
   const stepInicial = location.state?.stepInicial || 0;
   const planoSelecionadoInicial = location.state?.planoSelecionado || null;
 
@@ -188,7 +187,34 @@ const handleComplete = async () => {
           return <Typography>Por favor, selecione um plano antes de continuar.</Typography>;
         }
         return (
-          <Elements stripe={stripePromise} options={{ clientSecret }}>
+         <Elements
+           stripe={stripePromise}
+           options={{
+             clientSecret,
+             appearance: {
+               theme: 'none',
+               variables: {
+                 colorBackground: theme.palette.background.default,
+                 colorText: theme.palette.text.primary,
+                 borderRadius: '10px',
+               },
+               rules: {
+                 '.Input': {
+                   backgroundColor: theme.palette.background.paper, // fundo do input
+                   color: theme.palette.text.primary,               // cor do texto
+                   borderColor: theme.palette.divider,              // borda
+                 },
+                 '.Input:focus': {
+                   borderColor: theme.palette.primary.main,         // borda ao focar
+                   boxShadow: `0 0 0 1px ${theme.palette.primary.main}`,
+                 },
+                 '.Label': {
+                   color: theme.palette.text.secondary,             // cor do label
+                 },
+               },
+             },
+           }}
+         >
             <PaymentForma plano={selectedPlano} selectedPlanId={selectedPlano.id} />
           </Elements>
         );

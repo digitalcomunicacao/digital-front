@@ -6,6 +6,7 @@ import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../../config/Api"
+import { useThemeMode } from "../../context/ThemeContext"
 
 const PaymentForma = ({ selectedPlanId, plano, handleCloseModal }) => {
   const stripe = useStripe()
@@ -15,7 +16,7 @@ const PaymentForma = ({ selectedPlanId, plano, handleCloseModal }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [couponCode, setCouponCode] = useState("")
-
+  const { darkMode} = useThemeMode();
 const handleSubmit = async (e) => {
   e.preventDefault();
   setError("");
@@ -100,7 +101,7 @@ const handleSubmit = async (e) => {
           >
             <Box sx={{ width:{xs:"100%",md:"45%"},display:"flex",flexDirection:"column"}}>
               <Box sx={{ width:{xs:"60px",md:"115px"}, height: {xs:"32px",md:"65px"} }}>
-                <img src={plano.intervalo==="year" ? "aseets/logo-color.svg":"aseets/logo-azul.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
+             <img src={plano.intervalo==="year" && darkMode ? "/aseets/logo-brilhante.png":plano.intervalo==="year" && !darkMode ? "/aseets/logo-color.svg" :"/aseets/logo-azul.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
               </Box>
               <Typography color="textPrimary" sx={{ mt: 2 }}>
                 Acesso total à plataforma com todas as formações e experiências da Digital Educa.
@@ -183,7 +184,8 @@ const handleSubmit = async (e) => {
             <Button
               type="submit"
               variant="contained"
-              color="warning"
+              sx={{bgcolor:theme.palette.primary.main,color:theme.palette.text.primary,fontWeight:"bolder"}}
+              
               fullWidth
               disabled={!stripe || loading}
             >

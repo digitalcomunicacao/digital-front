@@ -17,7 +17,7 @@ const theme = createTheme({
       paper: '#1E1E1E',
       contained: '#2C2C2C',
       containedAzul: '#1A4DBF',
-      paperAzul: '#3B3B3B',
+  paperAzul: "#E0A027"
     },
     text: {
       primary: '#FFFFFF',

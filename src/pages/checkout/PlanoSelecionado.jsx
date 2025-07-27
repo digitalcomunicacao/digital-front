@@ -10,13 +10,14 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import InputMask from 'react-input-mask';
+import { useThemeMode } from "../../context/ThemeContext";
 
 export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado }) => {
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmSenha, setShowConfirmSenha] = useState(false);
   const toggleShowSenha = () => setShowSenha((prev) => !prev);
   const toggleShowConfirmSenha = () => setShowConfirmSenha((prev) => !prev);
-
+  const { darkMode} = useThemeMode();
   const theme = useTheme();
 
   const handleChange = (field) => (e) => {
@@ -49,7 +50,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado 
           >
             <Box sx={{ width:{xs:"100%",md:"45%"},display:"flex",flexDirection:"column"}}>
               <Box sx={{ width:{xs:"60px",md:"115px"}, height: {xs:"32px",md:"65px"} }}>
-                <img src={plano.intervalo==="year" ? "aseets/logo-color.svg":"aseets/logo-azul.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
+           <img src={plano.intervalo==="year" && darkMode ? "/aseets/logo-brilhante.png":plano.intervalo==="year" && !darkMode ? "/aseets/logo-color.svg" :"/aseets/logo-azul.png"} alt="logo" style={{ width: "100%", height: "100%" }} />
               </Box>
               <Typography color="textPrimary" sx={{ mt: 2 }}>
                 Acesso total à plataforma com todas as formações e experiências da Digital Educa.

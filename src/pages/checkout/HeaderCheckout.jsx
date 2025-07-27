@@ -2,6 +2,7 @@ import { Box, Typography, Stepper, Step, StepButton, StepLabel } from '@mui/mate
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { CustomStepIcon } from './CustomStepIconRoot';
 import { CustomConnector } from './CustomStepConnector';
+import { useThemeMode } from '../../context/ThemeContext';
 
 const stepContent = [
   {
@@ -20,7 +21,7 @@ const stepContent = [
 
 export const HeaderCheckout = ({ activeStep, completed, handleStep, theme, steps }) => {
   const { title, subtitle } = stepContent[activeStep] || {};
-
+  const { darkMode} = useThemeMode();
   return (
     <Box
       sx={{
@@ -35,7 +36,7 @@ export const HeaderCheckout = ({ activeStep, completed, handleStep, theme, steps
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <Box>
-          <img src='/aseets/icon-digitaleduca.png'/>
+          <img src={darkMode ? "/aseets/icon-digital-dark.png":"/aseets/icon-digitaleduca.png"}/>
         </Box>
         <Box>
           <Typography sx={{ fontSize: 29, fontWeight: "bolder" }}>{title}</Typography>
