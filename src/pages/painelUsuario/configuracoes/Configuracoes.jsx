@@ -86,7 +86,7 @@ export const Configuracoes = () => {
             .then((res) => {
                 setUsuario(res.data);
                 setLoading(false);
-                console.log(res.data)
+                console.log("usuario atualizado",res.data)
 
             })
             .catch((err) => {
@@ -112,19 +112,44 @@ export const Configuracoes = () => {
             console.error("Erro ao trocar plano:", err);
         }
     };
+const handleEditarUsuario = () => {
+  const payload = {};
 
-    const handleEditarUsuario = () => {
-        api.put("/usuario/update", {
-            nome,
-            email,
-            celular,
-        }).then(function (response) {
-            showSnackbar('Dados Alterado com sucesso!', 'success');
-        }).catch(function (error) {
-            console.log(error)
-            showSnackbar(error.response.data.message, 'error');
-        })
-    }
+  if (nome && nome !== usuario.nome) payload.nome = nome;
+  if (email && email !== usuario.email) payload.email = email;
+  if (celular && celular !== usuario.celular) payload.celular = celular;
+
+  if (Object.keys(payload).length === 0) {
+    showSnackbar("Nenhuma informação foi alterada.", "info");
+    return;
+  }
+
+  api.put("/usuario/update", payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      showSnackbar("Dados alterados com sucesso!", "success");
+      
+      // Atualiza localStorage só com os campos alterados:
+      const userFromStorage = JSON.parse(localStorage.getItem('user')) || {};
+
+      // Só atualiza os campos que estão no payload:
+      const updatedUser = {
+        ...userFromStorage,
+        ...payload,
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+      showSnackbar(error.response?.data?.message || "Erro ao atualizar", "error");
+    });
+};
+
     useEffect(() => {
         getUsuario();
         getPlanos();
