@@ -73,6 +73,9 @@ if (cursos.length === 0) {
 }
 
     return (
+        <Box sx={{pb:5}}>
+
+
         <Grid container spacing={2}>
             <Grid size={{ xs: 12, lg: miniDrawer ? 10 : 10 }}>
                 <Box sx={{ textAlign: 'start', mt: 5 }}>
@@ -165,7 +168,7 @@ if (cursos.length === 0) {
                                         <Grid size={{ xs: 12, md:6,lg: 4 }}>
                                             <CardCurso key={index} curso={curso} origin="meus-conteudos" />
 
-                                            <Box sx={{ position: "relative", bottom: 131, left: 0 }}>
+                                            <Box sx={{ position: "relative", bottom: 131, left: 2,width:"99%"}}>
                                                 <ProgressoCurso curso={curso} showText={false} />
                                             </Box>
                                         </Grid>
@@ -211,5 +214,6 @@ if (cursos.length === 0) {
 
             </Grid>
         </Grid>
+                </Box>
     );
 };

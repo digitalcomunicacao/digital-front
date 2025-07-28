@@ -46,6 +46,9 @@ export const Catalago = () => {
     );
   }
   return (
+    <Box sx={{pb:5}}>
+
+
     <Grid container spacing={2}>
       <Grid size={{ xs: 12,  md: miniDrawer ? 10 : 10 }}>
         <Box sx={{ textAlign: 'start', mt: 5 }}>
@@ -174,5 +177,6 @@ export const Catalago = () => {
 
       </Grid>
     </Grid>
+        </Box>
   );
 };

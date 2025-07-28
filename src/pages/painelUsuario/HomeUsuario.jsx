@@ -100,7 +100,7 @@ export const HomeUsuario = () => {
         </Box>
               <Divider variant="fullWidth" sx={{ mt: 2, mb: 3 }} />
 
-                 <Container>
+           
       <Box>
         <Typography sx={{ fontWeight: "bolder", fontSize: { xs: 16, md: 24 } }}>Veja o que vem aí</Typography>
         <Typography sx={{ color:theme.palette.text.secondary, fontSize: { xs: 12, md: 14 } }}>Descubra as novidades do Digital Educa</Typography>
@@ -127,7 +127,7 @@ export const HomeUsuario = () => {
         minWidth: "unset",
         border: 1,
         borderRadius: 5,
-        ml: 2,
+        
         color: theme.palette.text.primary,
         '&.Mui-selected': {
           color: theme.palette.text.tertiary,
@@ -169,7 +169,7 @@ export const HomeUsuario = () => {
 
                    </Box>
       </Box>
-    </Container>
+
       </Grid>
             
       <Grid size={{ xs: 12, lg: miniDrawer ? 2 : 2 }} >

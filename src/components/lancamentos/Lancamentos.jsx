@@ -5,10 +5,10 @@ export const Lancamentos = () => {
     return (
         <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: 3,mb:2}}>
-                    <Box sx={{ display: "flex", flexDirection: "column", borderRight: 1, borderColor: "divider" }}>
-                        <Box sx={{ bgcolor: theme.palette.lancamentos, p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 3, width: { xs: "50%", md: "100%" } }}>
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: "10px",mb:2}}>
+                    <Box sx={{ display: "flex", flexDirection: "column",borderRight:{xs:0,md:1},borderColor:{xs:"unset",md:"divider"}}}>
+                        <Box sx={{ bgcolor: theme.palette.lancamentos,borderRadius:{xs:"10px 10px 0px 0px ",md:"10px 0px 0px 0px"}, p: 2, display: "flex", justifyContent: "center", alignItems: "center"}}>
+                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: "10px", width: { xs: "50%", md: "100%" } }}>
                                 <Typography sx={{ fontWeight: "bolder", color: theme.palette.text.tertiary, textAlign: "center" }}>Curso</Typography>
                             </Box>
                         </Box>
@@ -32,10 +32,10 @@ export const Lancamentos = () => {
                             nível em programação, em apenas uma semana.</Typography>
                     </Box>
                 </Box>
-                        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: 3 }}>
-                    <Box sx={{ display: "flex", flexDirection: "column", borderRight: 1, borderColor: "divider" }}>
-                        <Box sx={{ bgcolor: theme.palette.lancamentos, p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 3, width: { xs: "50%", md: "100%" } }}>
+                        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: "10px" }}>
+                       <Box sx={{ display: "flex", flexDirection: "column",borderRight:{xs:0,md:1},borderColor:{xs:"unset",md:"divider"}}}>
+                        <Box sx={{ bgcolor: theme.palette.lancamentos,borderRadius:{xs:"10px 10px 0px 0px ",md:"10px 0px 0px 0px"}, p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: "10px", width: { xs: "50%", md: "100%" } }}>
                                 <Typography sx={{ fontWeight: "bolder", color: theme.palette.text.tertiary, textAlign: "center" }}>Curso</Typography>
                             </Box>
                         </Box>
@@ -61,10 +61,10 @@ export const Lancamentos = () => {
                 </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-                     <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: 3,mb:2}}>
-                    <Box sx={{ display: "flex", flexDirection: "column", borderRight: 1, borderColor: "divider" }}>
-                        <Box sx={{ bgcolor: theme.palette.lancamentos, p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 3, width: { xs: "50%", md: "100%" } }}>
+                     <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: "10px",mb:2}}>
+                       <Box sx={{ display: "flex", flexDirection: "column",borderRight:{xs:0,md:1},borderColor:{xs:"unset",md:"divider"}}}>
+                        <Box sx={{ bgcolor: theme.palette.lancamentos,borderRadius:{xs:"10px 10px 0px 0px ",md:"10px 0px 0px 0px"}, p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: "10px", width: { xs: "50%", md: "100%" } }}>
                                 <Typography sx={{ fontWeight: "bolder", color: theme.palette.text.tertiary, textAlign: "center" }}>Curso</Typography>
                             </Box>
                         </Box>
@@ -88,10 +88,10 @@ export const Lancamentos = () => {
                             nível em programação, em apenas uma semana.</Typography>
                     </Box>
                 </Box>
-                        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: 3 }}>
-                    <Box sx={{ display: "flex", flexDirection: "column", borderRight: 1, borderColor: "divider" }}>
-                        <Box sx={{ bgcolor: theme.palette.lancamentos, p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 3, width: { xs: "50%", md: "100%" } }}>
+                        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, border: 1, borderColor: "divider", borderRadius: "10px" }}>
+                       <Box sx={{ display: "flex", flexDirection: "column",borderRight:{xs:0,md:1},borderColor:{xs:"unset",md:"divider"}}}>
+                        <Box sx={{ bgcolor: theme.palette.lancamentos,borderRadius:{xs:"10px 10px 0px 0px ",md:"10px 0px 0px 0px"}, p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <Box sx={{ border: 1, borderColor: 'divider', borderRadius: "10px", width: { xs: "50%", md: "100%" } }}>
                                 <Typography sx={{ fontWeight: "bolder", color: theme.palette.text.tertiary, textAlign: "center" }}>Curso</Typography>
                             </Box>
                         </Box>

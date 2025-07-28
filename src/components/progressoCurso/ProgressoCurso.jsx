@@ -42,7 +42,7 @@ export const ProgressoCurso = ({ curso, showText = true }) => {
           mt: 1,
           backgroundColor: theme.palette.primary.light, // fundo da barra
           "& .MuiLinearProgress-bar": {
-            borderRadius: 5,
+            
             backgroundColor: theme.palette.primary.dark, // preenchimento da barra
           },
         }}
