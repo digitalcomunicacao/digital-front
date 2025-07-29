@@ -14,11 +14,13 @@ import {NovaSenha} from "./pages/login/NovaSenha"
 import { Configuracoes } from "./pages/painelUsuario/configuracoes/Configuracoes";
 import { HomeUsuario } from "./pages/painelUsuario/HomeUsuario";
 import { VideoPlayer } from "./pages/player/VideoPlayer";
+import { CursoProvider } from "./context/CursoContext";
 
 
 
 function App() {
   return (
+    <CursoProvider>
     <SnackbarProvider>
       <BrowserRouter>
         <ScrollToTop />
@@ -47,6 +49,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </SnackbarProvider>
+    </CursoProvider>
   );
 }
 

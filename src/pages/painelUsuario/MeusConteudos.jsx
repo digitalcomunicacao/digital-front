@@ -8,9 +8,11 @@ import { useMiniDrawer } from "../../context/DrawerContext";
 import { ProgressoCurso } from "../../components/progressoCurso/ProgressoCurso";
 import { useNavigate } from "react-router-dom";
 import { RenoveAssinatura } from "../../components/renoveAssinatura/RenoveAssinatura";
+import { useCursoContext } from "../../context/CursoContext";
 
 export const MeusConteudos = () => {
     const [cursos, setCursos] = useState([]);
+    const { setQuantidadeCursos } = useCursoContext();
     const [categorias, setCategorias] = useState([]);
     const [tabAtiva, setTabAtiva] = useState(0);
     const { miniDrawer } = useMiniDrawer(); // true ou false
@@ -27,6 +29,7 @@ export const MeusConteudos = () => {
             headers: { Authorization: `Bearer ${token}` },
         }).then(function (response) {
             setCursos(response.data)
+             setQuantidadeCursos(response.data.length); // <-- aqui atualiza o contexto
             console.log(response)
         }).catch(function (error) {
             console.log(error)
@@ -166,11 +169,14 @@ if (cursos.length === 0) {
                                 <Grid container spacing={2}>
                                     {cursosDaCategoria.map((curso, index) => (
                                         <Grid size={{ xs: 12, md:6,lg: 4 }}>
-                                            <CardCurso key={index} curso={curso} origin="meus-conteudos" />
-
-                                            <Box sx={{ position: "relative", bottom: 131, left: 2,width:"99%"}}>
+                                            <Box sx={{position:"relative"}}>
+       <CardCurso key={index} curso={curso} origin="meus-conteudos" />
+         <Box sx={{ position: "absolute", top:150, left: 2,width:"99%"}}>
                                                 <ProgressoCurso curso={curso} showText={false} />
                                             </Box>
+                                            </Box>
+                                     
+                                          
                                         </Grid>
                                     ))}
                                 </Grid>

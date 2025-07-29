@@ -52,7 +52,7 @@ export const CardCurso = ({ curso, origin = ""}) => {
                 component={"form"}
                 onClick={() => handleDetalhes(curso.id)}
                 sx={{
-                    height: "285px",
+                    height: "auto",
                     position: "relative", // necessário para overlay funcionar
                     border: 2,
                     borderColor: "divider",

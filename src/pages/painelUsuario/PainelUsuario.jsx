@@ -4,6 +4,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import theme from "../../theme/theme";
 import { useEffect } from "react";
 import { useMiniDrawer } from "../../context/DrawerContext";
+import api from "../../config/Api";
+import { useCursoContext } from "../../context/CursoContext";
 
 export const PainelUsuario = () => {
   const { miniDrawer, setMiniDrawer } = useMiniDrawer();
@@ -11,7 +13,21 @@ export const PainelUsuario = () => {
   const isPlayerPage = location.pathname.includes("/painel-usuario/player");
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isMdDown = useMediaQuery(theme.breakpoints.down('lg'));
-
+      const token = localStorage.getItem("token");
+      const { setQuantidadeCursos } = useCursoContext();
+    const getCursos = () => {
+        api.get("/curso-selecionado/cursos", {
+            headers: { Authorization: `Bearer ${token}` },
+        }).then(function (response) {
+             setQuantidadeCursos(response.data.length); // <-- aqui atualiza o contexto
+            console.log(response)
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
+    useEffect(()=>{
+      getCursos()
+    },[])
   useEffect(() => {
     if (!isMobile) {
       setMiniDrawer(isMdDown);

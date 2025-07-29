@@ -71,6 +71,7 @@ export const HomeUsuario = () => {
     <Box>
     <Grid container spacing={2}>
             <Grid size={{ xs: 12, lg: miniDrawer ? 10 : 10}} >
+              {cursos.length > 0 && (
         <Box sx={{mt:5}}>
           <Typography sx={{ fontWeight: "bolder", fontSize: { xs: 16, md: 24 } }}>Continuar estudando</Typography>
           <Box sx={{ display: "flex", gap: { xs: 2, md: 5 }, p: 2,overflowX:"auto"}}>
@@ -97,11 +98,14 @@ export const HomeUsuario = () => {
             ))}
           </Box>
 
+          <Divider variant="fullWidth" sx={{ mt: 2, mb: 3 }} />
+           
         </Box>
-              <Divider variant="fullWidth" sx={{ mt: 2, mb: 3 }} />
+              )}
+           
 
            
-      <Box>
+      <Box sx={{mt:cursos.length >0 ? 0:5}}>
         <Typography sx={{ fontWeight: "bolder", fontSize: { xs: 16, md: 24 } }}>Veja o que vem aí</Typography>
         <Typography sx={{ color:theme.palette.text.secondary, fontSize: { xs: 12, md: 14 } }}>Descubra as novidades do Digital Educa</Typography>
             <Box sx={{mt:5}}>

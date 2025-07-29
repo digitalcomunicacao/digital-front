@@ -112,6 +112,7 @@ export const Configuracoes = () => {
             console.error("Erro ao trocar plano:", err);
         }
     };
+
 const handleEditarUsuario = () => {
   const payload = {};
 
@@ -159,7 +160,7 @@ const handleEditarUsuario = () => {
 
     return (
         <Container maxWidth="xl" sx={{ pb: 5 }}>
-            <Box sx={{ textAlign: 'start', mt: 15 }}>
+            <Box sx={{ textAlign: 'start', mt: 5 }}>
                 <Typography sx={{ fontSize: 30, fontWeight: 'bolder', color: theme.palette.text.primary }}>Configurações da Conta</Typography>
                 <Typography sx={{ fontSize: 20, color: theme.palette.text.secondary, mt: 2 }}>Gerencie suas informações pessoais e assinatura</Typography>
             </Box>

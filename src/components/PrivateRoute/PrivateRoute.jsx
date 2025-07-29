@@ -7,33 +7,31 @@ export const PrivateRoute = ({ children }) => {
   const [isAuth, setIsAuth] = useState(null);
 
 useEffect(() => {
-  const verifyToken = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setIsAuth(false);
-      return;
-    }
+const verifyToken = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    setIsAuth(false);
+    return;
+  }
 
-    try {
-      const response = await api.get('/auth/check', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  try {
+    const response = await api.get('/auth/check', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const user = response.data.user;
+    localStorage.setItem('user', JSON.stringify(user));
+    setIsAuth(true);
+  } catch (error) {
+    setIsAuth(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
+};
 
-      const user = response.data.user;
-   
-      // Salvar no localStorage ou contexto global
-      localStorage.setItem('user', JSON.stringify(user));
-      console.log(response)
-      setIsAuth(true);
-    } catch (error) {
-      setIsAuth(false);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    }
-  };
 
   verifyToken();
 }, []);
+
 
 
   if (isAuth === null)

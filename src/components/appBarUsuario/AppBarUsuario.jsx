@@ -47,6 +47,7 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeMode } from '../../context/ThemeContext';
 import { useMiniDrawer } from '../../context/DrawerContext';
+import { useCursoContext } from '../../context/CursoContext';
 
 function AppBarUsuario() {
   const { miniDrawer, toggleMiniDrawer } = useMiniDrawer();
@@ -59,6 +60,7 @@ function AppBarUsuario() {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { quantidadeCursos } = useCursoContext();
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10); // Você pode ajustar esse valor
@@ -109,15 +111,46 @@ function AppBarUsuario() {
       subTitle: "Gerencie seus certificados"
     }
   ];
+const NAVIGATION = [
+  {
+    segment: 'home-usuario',
+    title: 'Home',
+    icon: <HomeOutlinedIcon sx={{ color: theme.palette.primary.main }} />,
+  },
+  { kind: 'header', title: 'Progresso' },
+  {
+    segment: 'meus-cursos',
+    title: 'Meus conteúdos',
+    icon: (
+      <Badge
+        badgeContent={quantidadeCursos}
+        color="primary"
+        sx={{
+          '& .MuiBadge-badge': {
+            backgroundColor: theme.palette.background.containedAzul,
+            color: theme.palette.text.tertiary,
+            fontSize: '10px',
+            fontWeight: 'bold',
+            transform: 'translate(30%, -25%)',
+          },
+        }}
+      >
+        <VideoLibraryOutlinedIcon sx={{ color: theme.palette.primary.main }} />
+      </Badge>
+    ),
+  },
+  {
+    segment: 'catalago',
+    title: 'Catálogo',
+    icon: <ImportContactsIcon sx={{ color: theme.palette.primary.main }} />,
+  },
+  {
+    segment: 'eventos',
+    title: 'Eventos',
+    icon: <ConfirmationNumberOutlinedIcon sx={{ color: theme.palette.primary.main }} />,
+  },
+];
 
-  const NAVIGATION = [
-    { segment: 'home-usuario', title: 'Home', icon: <HomeOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
-    { kind: 'header', title: 'Progresso' },
-    { segment: 'meus-cursos', title: 'Meus conteúdos', icon: <VideoLibraryOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
-    { segment: 'catalago', title: 'Catálogo', icon: <ImportContactsIcon sx={{ color: theme.palette.primary.main }} /> },
-    { segment: 'eventos', title: 'Eventos', icon: <ConfirmationNumberOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
-    // { segment: 'forum', title: 'Fórum', icon: <ForumOutlinedIcon sx={{ color: theme.palette.primary.main }} /> },
-  ];
 
   const drawerContent = (
     <>
