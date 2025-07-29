@@ -7,7 +7,7 @@ import { Ads } from "../../components/ads/Ads";
 import { useMiniDrawer } from "../../context/DrawerContext";
 import { RenoveAssinatura } from "../../components/renoveAssinatura/RenoveAssinatura";
 
-export const Catalago = () => {
+export const Catalogo = () => {
   const [cursos, setCursos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [tabAtiva, setTabAtiva] = useState(0);

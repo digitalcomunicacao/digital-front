@@ -41,7 +41,7 @@ const verifyToken = async () => {
       </Box>
     );
 
-  if (!isAuth) return <Navigate to="/login" />;
+  if (!isAuth) return <Navigate to="/" />;
 
   return children;
 };

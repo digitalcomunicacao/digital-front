@@ -6,7 +6,6 @@ import ScrollToTop from "./components/scrollToTop/ScrollToTop";
 import { PainelUsuario } from "./pages/painelUsuario/PainelUsuario";
 import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
 import { MeusConteudos } from "./pages/painelUsuario/MeusConteudos";
-import { Catalago } from "./pages/painelUsuario/Catalago";
 import { SnackbarProvider } from "./context/SnackBarContext";
 import { Eventos } from "./pages/painelUsuario/Eventos";
 import { Checkout } from "./pages/checkout/Checkout";
@@ -15,6 +14,7 @@ import { Configuracoes } from "./pages/painelUsuario/configuracoes/Configuracoes
 import { HomeUsuario } from "./pages/painelUsuario/HomeUsuario";
 import { VideoPlayer } from "./pages/player/VideoPlayer";
 import { CursoProvider } from "./context/CursoContext";
+import { Catalogo } from "./pages/painelUsuario/Catalogo";
 
 
 
@@ -35,10 +35,10 @@ function App() {
               </PrivateRoute>
             }
           >
-            <Route path="catalago" element={<Catalago />} />
+            <Route path="catalogo" element={<Catalogo />} />
             <Route path="meus-cursos" element={<MeusConteudos />} />
-            <Route path="home-usuario" element={<HomeUsuario />} />
-            <Route path="eventos" element={<Eventos />} />
+            {/* <Route path="home-usuario" element={<HomeUsuario />} /> */}
+            {/* <Route path="eventos" element={<Eventos />} /> */}
             <Route path="configuracoes" element={<Configuracoes />} />
            <Route path="curso/detalhe" element={<DetalhesCurso />} />
          <Route path="player" element={<VideoPlayer />} />

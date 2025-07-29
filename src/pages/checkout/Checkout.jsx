@@ -27,7 +27,7 @@ export const Checkout = () => {
   
   const [clientSecret, setClientSecret] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-    const location = useLocation();
+  const location = useLocation();
   const stepInicial = location.state?.stepInicial || 0;
   const planoSelecionadoInicial = location.state?.planoSelecionado || null;
 

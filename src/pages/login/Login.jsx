@@ -25,7 +25,7 @@ export const Login = () => {
       senha: senha
     }).then(function (response) {
       localStorage.setItem("token", response.data.access_token);
-      navigate("/painel-usuario/home-usuario");
+      navigate("/painel-usuario/catalogo");
       showSnackbar('Login realizado com sucesso!', 'success');
       console.log(response)
     }).catch(function (error) {
@@ -135,7 +135,7 @@ useEffect(() => {
 
             <Box
               component="form"
-              onClick={() => setPasso(1)}
+              onClick={()=>navigate("/checkout")}
               sx={{
                 cursor: "pointer",
                 transition: "all 0.3s ease",
@@ -163,9 +163,9 @@ useEffect(() => {
           </Box>
         </Box>
       )}
-      {passo === 1 && (
+      {/* {passo === 1 && (
         <Cadastro setPasso={setPasso} />
-      )}
+      )} */}
       {passo === 2 && (
         <RecuperarSenha setPasso={setPasso} />
       )}

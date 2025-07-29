@@ -48,6 +48,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeMode } from '../../context/ThemeContext';
 import { useMiniDrawer } from '../../context/DrawerContext';
 import { useCursoContext } from '../../context/CursoContext';
+import { SubscriptionMenu } from '../subscription/SubscripitionMenu';
 
 function AppBarUsuario() {
   const { miniDrawer, toggleMiniDrawer } = useMiniDrawer();
@@ -104,19 +105,19 @@ function AppBarUsuario() {
       title: 'Minha Conta',
       subTitle: "Gerencie seus dados pessoais"
     },
-    {
-      segment: "configuracoes",
-      icon: <WorkspacePremiumIcon fontSize="large" />,
-      title: 'Meus Certificados',
-      subTitle: "Gerencie seus certificados"
-    }
+    // {
+    //   segment: "configuracoes",
+    //   icon: <WorkspacePremiumIcon fontSize="large" />,
+    //   title: 'Meus Certificados',
+    //   subTitle: "Gerencie seus certificados"
+    // }
   ];
 const NAVIGATION = [
-  {
-    segment: 'home-usuario',
-    title: 'Home',
-    icon: <HomeOutlinedIcon sx={{ color: theme.palette.primary.main }} />,
-  },
+  // {
+  //   segment: 'home-usuario',
+  //   title: 'Home',
+  //   icon: <HomeOutlinedIcon sx={{ color: theme.palette.primary.main }} />,
+  // },
   { kind: 'header', title: 'Progresso' },
   {
     segment: 'meus-cursos',
@@ -140,15 +141,15 @@ const NAVIGATION = [
     ),
   },
   {
-    segment: 'catalago',
+    segment: 'catalogo',
     title: 'Catálogo',
     icon: <ImportContactsIcon sx={{ color: theme.palette.primary.main }} />,
   },
-  {
-    segment: 'eventos',
-    title: 'Eventos',
-    icon: <ConfirmationNumberOutlinedIcon sx={{ color: theme.palette.primary.main }} />,
-  },
+  // {
+  //   segment: 'eventos',
+  //   title: 'Eventos',
+  //   icon: <ConfirmationNumberOutlinedIcon sx={{ color: theme.palette.primary.main }} />,
+  // },
 ];
 
 
@@ -241,7 +242,7 @@ const NAVIGATION = [
               <IconButton size="large" edge="start" onClick={handleToggleDrawer}>
                 {(isMobile ? mobileOpen : !miniDrawer) ? <MenuOpenIcon /> : <MenuIcon />}
               </IconButton>
-              <Box onClick={() => navigate("/painel-usuario/home-usuario")} sx={{ cursor: "pointer", ml: 2, width: "94px", height: "52px" }}>
+              <Box onClick={() => navigate("/painel-usuario/catalogo")} sx={{ cursor: "pointer", ml: 2, width: "94px", height: "52px" }}>
                 <img src={!darkMode ? "/aseets/logo-color.svg" : "/aseets/logo-digital-educa.png"} style={{ width: "100%", height: "100%" }} />
               </Box>
             </Box>
@@ -352,9 +353,10 @@ const NAVIGATION = [
                         <Typography color='textSecondary' sx={{ fontSize: 12 }}>{setting.subTitle}</Typography>
                       </Box>
                     </Box>
+               
                   </MenuItem>
                 ))}
-
+                     <SubscriptionMenu/>
                 <Box
                   sx={{
                     display: "flex",

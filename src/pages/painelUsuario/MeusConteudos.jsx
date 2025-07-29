@@ -56,7 +56,7 @@ if (cursos.length === 0) {
       </Typography>
       <Box sx={{ mt: 4 }}>
         <button
-          onClick={() => navigate("/painel-usuario/catalago")}
+          onClick={() => navigate("/painel-usuario/catalogo")}
           style={{
             backgroundColor: theme.palette.primary.main,
             color: "white",
@@ -197,10 +197,13 @@ if (cursos.length === 0) {
                                 .filter((curso) => curso.categoria?.id === categorias[tabAtiva - 1]?.id)
                                 .map((curso, index) => (
                                     <Grid size={{ xs: 12, md:6,lg: 4 }}>
-                                        <CardCurso key={index} curso={curso} origin="meus-conteudos" />
-                                     <Box sx={{ position: "relative", bottom: 131, left: 0 }}>
-                                            <ProgressoCurso curso={curso}  showText={false}/>
-                                        </Box>
+                                                                  <Box sx={{position:"relative"}}>
+       <CardCurso key={index} curso={curso} origin="meus-conteudos" />
+         <Box sx={{ position: "absolute", top:150, left: 2,width:"99%"}}>
+                                                <ProgressoCurso curso={curso} showText={false} />
+                                            </Box>
+                                            </Box>
+                                     
 
                                     </Grid>
 
