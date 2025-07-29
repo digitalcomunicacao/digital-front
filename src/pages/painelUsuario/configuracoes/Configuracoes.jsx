@@ -20,7 +20,7 @@ import InputMask from 'react-input-mask';
 import { useSnackbar } from "../../../context/SnackBarContext";
 
 dayjs.locale('pt-br');
-const stripePromise = loadStripe("pk_test_51Rnh22B2ukqKBRKpu7vmzpy9tGj7bQh3GA7fnxQlqXkxk5VHIttkglAYcfivKQA5u201Aq30hTJVnHcMUdFTfAi500L9MnXJNG");
+const stripePromise = loadStripe("pk_live_51RlzIBEUbmb1KS7ATvhyQ0AqE8tqIWmVAPE7Gxkov2zqxtJ6lnKxfocUfPfc3xzERObhrCOxZcKUQyXHqnR8y7qi001B3SbDqr");
 
 export const Configuracoes = () => {
     const [nome, setNome] = useState("");

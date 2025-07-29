@@ -20,7 +20,7 @@ import { useLocation } from 'react-router-dom';
 
 const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 const stripePromise = loadStripe(
-  "pk_test_51Rnh22B2ukqKBRKpu7vmzpy9tGj7bQh3GA7fnxQlqXkxk5VHIttkglAYcfivKQA5u201Aq30hTJVnHcMUdFTfAi500L9MnXJNG"
+  "pk_live_51RlzIBEUbmb1KS7ATvhyQ0AqE8tqIWmVAPE7Gxkov2zqxtJ6lnKxfocUfPfc3xzERObhrCOxZcKUQyXHqnR8y7qi001B3SbDqr"
 );
 
 export const Checkout = () => {
