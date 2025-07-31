@@ -228,7 +228,7 @@ const PaymentForma = ({ selectedPlanId, plano, handleCloseModal }) => {
               <PaymentElement />
             </Box>
 
-            <TextField
+            {/* <TextField
               type="text"
               placeholder="Cupom de desconto"
               value={couponCode}
@@ -243,7 +243,7 @@ const PaymentForma = ({ selectedPlanId, plano, handleCloseModal }) => {
               }}
               error={!isCouponValido}
               helperText={!isCouponValido ? "Cupom inválido" : ""}
-            />
+            /> */}
 
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
