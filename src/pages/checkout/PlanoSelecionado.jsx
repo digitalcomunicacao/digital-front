@@ -94,6 +94,7 @@ export const PlanoSelecionado = ({ plano, usuarioData, setUsuarioData, isLogado 
                 {plano.nome}
               </Typography>
             </Box>
+           <Typography color="textSecondary" sx={{mt:2,fontSize:18,textDecoration:"line-through"}}>de R$ 149 por</Typography>
             <Typography sx={{ fontSize: { md: 38, xs: 20 }, fontWeight: "bolder", mt: 2 }}>
               R$ {plano.preco.toFixed(2)}
             </Typography>

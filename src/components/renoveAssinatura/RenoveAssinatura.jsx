@@ -17,8 +17,9 @@ export const RenoveAssinatura = () => {
                 </Box>
                 <Typography sx={{ fontWeight: "bolder", fontSize: 23, lineHeight: 1 }}>Renove sua assinatura</Typography>
                 <Box>
-                   <Typography color="textPrimary" sx={{fontSize:45,fontWeight:"bolder"}}><span style={{fontSize:15,fontWeight:"normal"}}>R$</span>49,00</Typography>
-                    <Typography color="textSecondary" sx={{fontSize:12}}>ou R$ 350/anual</Typography>
+                        <Typography color="textSecondary" sx={{fontSize:18,textDecoration:"line-through"}}>de R$ 149 por</Typography>
+                   <Typography color="textPrimary" sx={{fontSize:45,fontWeight:"bolder"}}><span style={{fontSize:15,fontWeight:"normal"}}>R$</span>79,90</Typography>
+                
                 </Box>
                 <Button variant="outlined" onClick={()=>navigate('/checkout')} sx={{ fontSize: 17, fontWeight: "bolder", color: theme.palette.text.primary }} fullWidth endIcon={<OpenInNewIcon />}>Assinar</Button>
             </Box>
