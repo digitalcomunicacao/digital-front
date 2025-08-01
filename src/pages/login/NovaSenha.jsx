@@ -34,7 +34,7 @@ export const NovaSenha = () => {
       novaSenha,
     }).then(function (response) {
       showSnackbar(response.data.message, "success")
-      navigate('/login')
+      navigate('/')
       console.log(response)
       setLoading(false)
     }).catch(function (error) {
