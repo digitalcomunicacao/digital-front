@@ -17,6 +17,7 @@ import { HeaderCheckout } from './HeaderCheckout';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { HeaderPayment } from '../../components/header/HeaderPayment';
 import { useLocation } from 'react-router-dom';
+import { DialogCadastro } from '../../components/dialogCadastrado/DialogCadastro';
 
 const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 const stripePromise = loadStripe(
@@ -30,6 +31,7 @@ export const Checkout = () => {
   const location = useLocation();
   const stepInicial = location.state?.stepInicial || 0;
   const planoSelecionadoInicial = location.state?.planoSelecionado || null;
+  const [openDialog, setOpenDialog] = useState(false);
 
   const [activeStep, setActiveStep] = React.useState(stepInicial);
   const [completed, setCompleted] = React.useState({});
@@ -91,41 +93,53 @@ export const Checkout = () => {
         );
         setClientSecret(res.data.clientSecret);
       } catch (error) {
-        showSnackbar("Erro ao buscar clientSecret", "error");
+        localStorage.removeItem("token");
+        setToken(null);
+        
       }
     };
 
     fetchClientSecret();
   }, [token]);
 
-  const cadastrarUsuario = async () => {
+const cadastrarUsuario = async () => {
+  if (usuarioData.senha !== usuarioData.confirmSenha) {
+    showSnackbar("As senhas não coincidem", "error");
+    return false;
+  }
 
-    if (usuarioData.senha !== usuarioData.confirmSenha) {
-      showSnackbar("As senhas não coincidem", "error");
-      return false;
+  try {
+    await api.post("usuario/create", {
+      nome: usuarioData.nome,
+      email: usuarioData.email,
+      senha: usuarioData.senha,
+      celular: usuarioData.celular,
+    });
+
+    const response = await api.post("auth/login", {
+      email: usuarioData.email,
+      senha: usuarioData.senha,
+    });
+
+    localStorage.setItem("token", response.data.access_token);
+    setToken(response.data.access_token);
+    return true;
+  } catch (error) {
+    const msg = error.response?.data?.message;
+
+    if (
+      error.response?.status === 409 ||
+      typeof msg === 'string' && msg.toLowerCase().includes("já cadastrado")
+    ) {
+      setOpenDialog(true); // ← abre o dialog
+    } else {
+      showSnackbar(msg || "Erro ao cadastrar", "error");
     }
-    try {
-      await api.post("usuario/create", {
-        nome: usuarioData.nome,
-        email: usuarioData.email,
-        senha: usuarioData.senha,
-        celular: usuarioData.celular,
-      });
 
-      const response = await api.post("auth/login", {
-        email: usuarioData.email,
-        senha: usuarioData.senha,
-      });
+    return false;
+  }
+};
 
-      localStorage.setItem("token", response.data.access_token);
-      setToken(response.data.access_token); // atualiza o estado token aqui
-      return true;
-    } catch (error) {
-      console.log(error);
-      showSnackbar(error.response?.data?.message || "Erro ao cadastrar", "error");
-      return false;
-    }
-  };
 
 const handleComplete = async () => {
   if (activeStep === 1 && !token) {
@@ -273,7 +287,7 @@ const handleComplete = async () => {
     )}
   </Box>
 )}
-
+  <DialogCadastro openDialog={openDialog} setOpenDialog={setOpenDialog}/>
       </Container>
           </Box>
   );
